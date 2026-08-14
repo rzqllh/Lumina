@@ -19,6 +19,7 @@ import { ServiceEditRoute } from '@/routes/catalog/ServiceEditRoute';
 import { PackagesListRoute } from '@/routes/catalog/PackagesListRoute';
 import { PackageNewRoute } from '@/routes/catalog/PackageNewRoute';
 import { PackageEditRoute } from '@/routes/catalog/PackageEditRoute';
+import { WorkflowTemplatesRoute } from '@/routes/catalog/WorkflowTemplatesRoute';
 import { SettingsRoute } from '@/routes/settings/SettingsRoute';
 
 export const router = createBrowserRouter([
@@ -121,6 +122,11 @@ export const router = createBrowserRouter([
       {
         path: 'packages/:packageId/edit',
         element: <PackageEditRoute />,
+      },
+      // Real Workflow Templates Catalog Module
+      {
+        path: 'workflows',
+        element: <WorkflowTemplatesRoute />,
       },
       // Workspace Settings Hub
       {

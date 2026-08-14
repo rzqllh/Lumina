@@ -6,8 +6,8 @@ export function SettingsRoute() {
 
   const settingSections = [
     {
-      title: 'Commercial Catalog',
-      description: 'Reusable services and multi-item commercial packages for quoting.',
+      title: 'Commercial & Production Catalog',
+      description: 'Reusable services, packages, and production stage pipelines.',
       items: [
         {
           title: 'Services Catalog',
@@ -23,19 +23,19 @@ export function SettingsRoute() {
           to: '/packages',
           active: true,
         },
+        {
+          title: 'Workflow Templates',
+          description: 'Standardized stage pipelines and milestone checklists for projects.',
+          icon: Workflow,
+          to: '/workflows',
+          active: true,
+        },
       ],
     },
     {
       title: 'Future Configurations',
-      description: 'Upcoming pipeline templates and external account integrations.',
+      description: 'Upcoming calendar and storage synchronization integrations.',
       items: [
-        {
-          title: 'Workflow Templates',
-          description: 'Customizable stage pipelines and milestone checklists (Feature #6).',
-          icon: Workflow,
-          to: '#',
-          active: false,
-        },
         {
           title: 'Google Integrations',
           description: 'Google Drive and Google Calendar synchronization (Feature #7 / #8).',

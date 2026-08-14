@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import {
   ArrowLeft,
@@ -6,19 +7,25 @@ import {
   Hash,
   Coins,
   Calendar,
-  Layers,
   Clock,
   Package,
   AlertCircle,
 } from 'lucide-react';
 import { useProject, ProjectStatusBadge } from '@/features/projects';
 import { ProjectPricingSection } from '@/features/project-pricing';
+import {
+  ProjectWorkflowSection,
+  ProjectTasksSection,
+  useProjectStages,
+} from '@/features/project-workflow';
 
 export function ProjectDetailRoute() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
+  const [selectedStageId, setSelectedStageId] = useState<string | null>(null);
 
   const { data: project, isLoading, error, refetch } = useProject(projectId);
+  const { data: stages = [] } = useProjectStages(project?.workspace_id || '', project?.id || '');
 
   if (isLoading) {
     return (
@@ -60,6 +67,8 @@ export function ProjectDetailRoute() {
       </div>
     );
   }
+
+  const isForceClosed = project.status === 'force_closed';
 
   return (
     <div className="space-y-6">
@@ -160,20 +169,32 @@ export function ProjectDetailRoute() {
         </div>
       </div>
 
-      {/* Sub-feature Placeholders (Truthful & Clutter-free) */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {/* Workflow Placeholder */}
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-2xs">
-          <div className="flex items-center gap-2 text-text-muted mb-2">
-            <Layers className="h-4 w-4" />
-            <h3 className="text-xs font-bold uppercase tracking-wider">Workflow Stages</h3>
-          </div>
-          <p className="text-xs text-text-muted">
-            Workflow — Not configured yet. You will be able to attach pipeline templates in Feature
-            #6.
-          </p>
-        </div>
+      {/* Commercial Pricing & Services (Feature #5) */}
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <ProjectPricingSection projectId={project.id} />
+      </div>
 
+      {/* Production Workflow & Stages (Feature #6) */}
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <ProjectWorkflowSection
+          workspaceId={project.workspace_id}
+          projectId={project.id}
+          isForceClosed={isForceClosed}
+          selectedStageId={selectedStageId}
+          onSelectStage={setSelectedStageId}
+        />
+        <ProjectTasksSection
+          workspaceId={project.workspace_id}
+          projectId={project.id}
+          stages={stages}
+          isForceClosed={isForceClosed}
+          selectedStageId={selectedStageId}
+          onSelectStage={setSelectedStageId}
+        />
+      </div>
+
+      {/* Sub-feature Placeholders (Sessions #7, Deliverables #8) */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Sessions Placeholder */}
         <div className="rounded-2xl border border-border bg-surface p-5 shadow-2xs">
           <div className="flex items-center gap-2 text-text-muted mb-2">
@@ -197,11 +218,6 @@ export function ProjectDetailRoute() {
             Feature #8.
           </p>
         </div>
-      </div>
-
-      {/* Project Pricing & Services */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-        <ProjectPricingSection projectId={project.id} />
       </div>
     </div>
   );

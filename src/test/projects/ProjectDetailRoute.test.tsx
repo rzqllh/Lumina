@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, WorkspaceProvider } from '@/lib/auth';
@@ -22,7 +22,7 @@ vi.mock('@/lib/supabase', () => ({
   },
 }));
 
-describe('ProjectDetailRoute (PROJ-REQ-004)', () => {
+describe('ProjectDetailRoute (PROJ-REQ-004 / WORKFLOW-REQ-002)', () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {
@@ -79,7 +79,7 @@ describe('ProjectDetailRoute (PROJ-REQ-004)', () => {
     );
   }
 
-  it('renders project metadata, linked client card, and truthful placeholders (PROJ-REQ-004)', async () => {
+  it('renders project metadata, linked client card, pricing, workflow, and remaining placeholders', async () => {
     vi.mocked(supabase.from).mockReturnValue(createMockQueryBuilder(mockProjectList[0]) as never);
 
     renderProjectDetail();
@@ -90,8 +90,11 @@ describe('ProjectDetailRoute (PROJ-REQ-004)', () => {
     expect(screen.getByText('Sarah & Dave Wedding')).toBeInTheDocument();
     expect(screen.getByText('IDR')).toBeInTheDocument();
 
-    // Truthful placeholders
-    expect(screen.getByText(/Workflow — Not configured yet/i)).toBeInTheDocument();
+    // Workflow & Tasks sections (Feature #6)
+    expect(screen.getByText('Production Workflow')).toBeInTheDocument();
+    expect(screen.getByText('Action Items & Tasks')).toBeInTheDocument();
+
+    // Truthful placeholders for future milestones (Sessions #7, Deliverables #8)
     expect(screen.getByText(/Sessions — None scheduled yet/i)).toBeInTheDocument();
     expect(screen.getByText(/Deliverables — None created yet/i)).toBeInTheDocument();
   });
@@ -104,8 +107,6 @@ describe('ProjectDetailRoute (PROJ-REQ-004)', () => {
     const editBtn = await screen.findByTestId('edit-project-btn');
     fireEvent.click(editBtn);
 
-    await waitFor(() => {
-      expect(screen.getByTestId('edit-project-page')).toBeInTheDocument();
-    });
+    expect(screen.getByTestId('edit-project-page')).toBeInTheDocument();
   });
 });
