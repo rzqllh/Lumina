@@ -5,6 +5,10 @@ import { PublicOnlyRoute } from '@/components/auth/PublicOnlyRoute';
 import { LoginRoute } from '@/routes/auth/LoginRoute';
 import { AuthCallbackRoute } from '@/routes/auth/AuthCallbackRoute';
 import { PlaceholderRoute } from '@/routes/PlaceholderRoute';
+import { ClientsListRoute } from '@/routes/clients/ClientsListRoute';
+import { ClientNewRoute } from '@/routes/clients/ClientNewRoute';
+import { ClientDetailRoute } from '@/routes/clients/ClientDetailRoute';
+import { ClientEditRoute } from '@/routes/clients/ClientEditRoute';
 
 export const router = createBrowserRouter([
   // Public-only Authentication Routes
@@ -57,14 +61,22 @@ export const router = createBrowserRouter([
           />
         ),
       },
+      // Real Clients & Contacts Module
       {
         path: 'clients',
-        element: (
-          <PlaceholderRoute
-            title="Clients & Directory"
-            description="Client contact directory, engagement history, and active project assignments."
-          />
-        ),
+        element: <ClientsListRoute />,
+      },
+      {
+        path: 'clients/new',
+        element: <ClientNewRoute />,
+      },
+      {
+        path: 'clients/:clientId',
+        element: <ClientDetailRoute />,
+      },
+      {
+        path: 'clients/:clientId/edit',
+        element: <ClientEditRoute />,
       },
       {
         path: 'settings',
