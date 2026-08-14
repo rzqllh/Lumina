@@ -29,7 +29,7 @@ ALTER TABLE oauth_credentials ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Workspace members can view audit logs"
 ON audit_logs FOR SELECT TO authenticated
-USING (is_workspace_member(workspace_id));
+USING (public.is_workspace_member(workspace_id));
 
 -- OAuth credentials accessible only via Service Role (Edge functions)
 CREATE INDEX idx_audit_logs_workspace_event ON audit_logs(workspace_id, event_type);

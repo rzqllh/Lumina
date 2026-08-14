@@ -33,20 +33,23 @@ CREATE TABLE project_contacts (
 
 -- Cross-parent trigger: project_contacts must belong to same client as project
 CREATE OR REPLACE FUNCTION check_project_contact_client_match()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = ''
+AS $$
 DECLARE
     proj_client_id UUID;
     cont_client_id UUID;
 BEGIN
-    SELECT client_id INTO proj_client_id FROM projects WHERE id = NEW.project_id;
-    SELECT client_id INTO cont_client_id FROM client_contacts WHERE id = NEW.client_contact_id;
+    SELECT client_id INTO proj_client_id FROM public.projects WHERE id = NEW.project_id;
+    SELECT client_id INTO cont_client_id FROM public.client_contacts WHERE id = NEW.client_contact_id;
     IF proj_client_id IS DISTINCT FROM cont_client_id THEN
         RAISE EXCEPTION 'Cross-parent violation: ClientContact % does not belong to Project % client %',
             NEW.client_contact_id, NEW.project_id, proj_client_id;
     END IF;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER trg_check_project_contact_client_match
 BEFORE INSERT OR UPDATE ON project_contacts
@@ -139,12 +142,15 @@ CREATE TABLE tasks (
 
 -- Trigger: Task stage scope match
 CREATE OR REPLACE FUNCTION check_task_project_scope()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = ''
+AS $$
 DECLARE
     stage_proj_id UUID;
 BEGIN
     IF NEW.stage_id IS NOT NULL THEN
-        SELECT project_id INTO stage_proj_id FROM project_workflow_stages WHERE id = NEW.stage_id;
+        SELECT project_id INTO stage_proj_id FROM public.project_workflow_stages WHERE id = NEW.stage_id;
         IF stage_proj_id IS DISTINCT FROM NEW.project_id THEN
             RAISE EXCEPTION 'Cross-parent violation: Stage % does not belong to Project %',
                 NEW.stage_id, NEW.project_id;
@@ -152,7 +158,7 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER trg_check_task_project_scope
 BEFORE INSERT OR UPDATE ON tasks
@@ -160,18 +166,21 @@ FOR EACH ROW EXECUTE FUNCTION check_task_project_scope();
 
 -- Trigger: Force-Close Operational Freeze (OD-001)
 CREATE OR REPLACE FUNCTION check_project_operational_freeze()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = ''
+AS $$
 DECLARE
     proj_status TEXT;
 BEGIN
-    SELECT status INTO proj_status FROM projects WHERE id = NEW.project_id;
+    SELECT status INTO proj_status FROM public.projects WHERE id = NEW.project_id;
     IF proj_status = 'force_closed' THEN
         RAISE EXCEPTION 'Operational freeze violation: Project % is force_closed. Operational mutations are blocked.',
             NEW.project_id;
     END IF;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER trg_freeze_tasks_on_force_closed
 BEFORE INSERT OR UPDATE ON tasks

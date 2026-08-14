@@ -46,14 +46,17 @@ CREATE TABLE briefs (
 
 -- Trigger ensuring every newly created Project automatically receives its canonical 1:1 Brief (Total Participation)
 CREATE OR REPLACE FUNCTION create_project_canonical_brief()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = ''
+AS $$
 BEGIN
-    INSERT INTO briefs (workspace_id, project_id, title)
+    INSERT INTO public.briefs (workspace_id, project_id, title)
     VALUES (NEW.workspace_id, NEW.id, NEW.title || ' Brief')
     ON CONFLICT (project_id) DO NOTHING;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER trg_create_project_canonical_brief
 AFTER INSERT ON projects

@@ -39,12 +39,15 @@ FOREIGN KEY (deliverable_id) REFERENCES deliverables(id) ON DELETE SET NULL;
 
 -- Trigger: Check task deliverable scope
 CREATE OR REPLACE FUNCTION check_task_deliverable_scope()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = ''
+AS $$
 DECLARE
     deliv_proj_id UUID;
 BEGIN
     IF NEW.deliverable_id IS NOT NULL THEN
-        SELECT project_id INTO deliv_proj_id FROM deliverables WHERE id = NEW.deliverable_id;
+        SELECT project_id INTO deliv_proj_id FROM public.deliverables WHERE id = NEW.deliverable_id;
         IF deliv_proj_id IS DISTINCT FROM NEW.project_id THEN
             RAISE EXCEPTION 'Cross-parent violation: Deliverable % does not belong to Project %',
                 NEW.deliverable_id, NEW.project_id;
@@ -52,7 +55,7 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER trg_check_task_deliverable_scope
 BEFORE INSERT OR UPDATE ON tasks
@@ -64,20 +67,23 @@ BEFORE INSERT OR UPDATE ON deliverables
 FOR EACH ROW EXECUTE FUNCTION check_project_operational_freeze();
 
 CREATE OR REPLACE FUNCTION check_revision_operational_freeze()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = ''
+AS $$
 DECLARE
     deliv_proj_id UUID;
     proj_status TEXT;
 BEGIN
-    SELECT project_id INTO deliv_proj_id FROM deliverables WHERE id = NEW.deliverable_id;
-    SELECT status INTO proj_status FROM projects WHERE id = deliv_proj_id;
+    SELECT project_id INTO deliv_proj_id FROM public.deliverables WHERE id = NEW.deliverable_id;
+    SELECT status INTO proj_status FROM public.projects WHERE id = deliv_proj_id;
     IF proj_status = 'force_closed' THEN
         RAISE EXCEPTION 'Operational freeze violation: Parent project of Deliverable % is force_closed.',
             NEW.deliverable_id;
     END IF;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER trg_freeze_revisions_on_force_closed
 BEFORE INSERT OR UPDATE ON revisions

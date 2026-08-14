@@ -20,12 +20,15 @@ CREATE TABLE file_references (
 
 -- Trigger: Check file reference project scope
 CREATE OR REPLACE FUNCTION check_file_ref_project_scope()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = ''
+AS $$
 DECLARE
     deliv_proj_id UUID;
 BEGIN
     IF NEW.deliverable_id IS NOT NULL THEN
-        SELECT project_id INTO deliv_proj_id FROM deliverables WHERE id = NEW.deliverable_id;
+        SELECT project_id INTO deliv_proj_id FROM public.deliverables WHERE id = NEW.deliverable_id;
         IF deliv_proj_id IS DISTINCT FROM NEW.project_id THEN
             RAISE EXCEPTION 'Cross-parent violation: Deliverable % does not belong to Project %',
                 NEW.deliverable_id, NEW.project_id;
@@ -33,7 +36,7 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER trg_check_file_ref_project_scope
 BEFORE INSERT OR UPDATE ON file_references

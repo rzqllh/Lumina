@@ -46,7 +46,7 @@ Lumina helps visual creators manage client engagements from initial down payment
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/lumina.git
+   git clone https://github.com/rzqllh/lumina.git
    cd lumina
    ```
 

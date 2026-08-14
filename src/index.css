@@ -2,32 +2,38 @@
 
 @layer base {
   :root {
-    --background: #09090b;
-    --foreground: #fafafa;
+    /* App background: very-light neutral with subtle lavender-grey cast (DESIGN.md §2.2) */
+    --background: #f8f7fb;
+    --foreground: #18181b;
 
-    --surface: #121215;
-    --surface-muted: #18181b;
-    --surface-elevated: #27272a;
+    /* Surfaces: clean white cards, subtle muted lavender-grey utility containers */
+    --surface: #ffffff;
+    --surface-muted: #f4f3f8;
+    --surface-elevated: #ffffff;
 
-    --text-primary: #fafafa;
-    --text-secondary: #a1a1aa;
+    /* Typography: crisp dark slate text hierarchy */
+    --text-primary: #18181b;
+    --text-secondary: #52525b;
     --text-muted: #71717a;
 
-    --border: #27272a;
-    --border-subtle: #1f1f23;
+    /* Borders: thin low-contrast zinc and soft lavender */
+    --border: #e4e4e7;
+    --border-subtle: #f0eef6;
 
-    --primary: #fafafa;
-    --primary-foreground: #09090b;
+    /* Primary actions: Purple family (DESIGN.md §2.3) */
+    --primary: #7c3aed;
+    --primary-foreground: #ffffff;
 
-    --accent: #3b82f6;
+    --accent: #8b5cf6;
     --accent-foreground: #ffffff;
 
-    --status-success: #22c55e;
-    --status-warning: #eab308;
+    /* Statuses: Red reserved for overdue/danger/error; Green success; Amber warning */
+    --status-success: #16a34a;
+    --status-warning: #d97706;
     --status-danger: #ef4444;
     --status-info: #3b82f6;
 
-    --ring: #3b82f6;
+    --ring: #7c3aed;
     --radius: 0.5rem;
   }
 }
