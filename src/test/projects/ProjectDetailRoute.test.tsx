@@ -80,7 +80,21 @@ describe('ProjectDetailRoute (PROJ-REQ-004 / WORKFLOW-REQ-002)', () => {
   }
 
   it('renders project metadata, linked client card, pricing, workflow, and remaining placeholders', async () => {
-    vi.mocked(supabase.from).mockReturnValue(createMockQueryBuilder(mockProjectList[0]) as never);
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'projects') {
+        return createMockQueryBuilder(mockProjectList[0]) as never;
+      }
+      if (table === 'briefs') {
+        return createMockQueryBuilder({
+          id: 'brief-1',
+          workspace_id: 'ws_wedding_123',
+          project_id: 'proj_wedding_123',
+          title: 'Sarah & Dave Brief',
+          sections: [],
+        }) as never;
+      }
+      return createMockQueryBuilder([]) as never;
+    });
 
     renderProjectDetail();
 
@@ -94,13 +108,36 @@ describe('ProjectDetailRoute (PROJ-REQ-004 / WORKFLOW-REQ-002)', () => {
     expect(screen.getByText('Production Workflow')).toBeInTheDocument();
     expect(screen.getByText('Action Items & Tasks')).toBeInTheDocument();
 
-    // Truthful placeholders for future milestones (Sessions #7, Deliverables #8)
-    expect(screen.getByText(/Sessions — None scheduled yet/i)).toBeInTheDocument();
-    expect(screen.getByText(/Deliverables — None created yet/i)).toBeInTheDocument();
+    // Project Completion & Closure Gate (Feature #9)
+    expect(screen.getByTestId('project-closure-control')).toBeInTheDocument();
+
+    // Financial Health & Schedule (Feature #9)
+    expect(await screen.findByTestId('financial-summary-card')).toBeInTheDocument();
+
+    // Production Sessions section (Feature #7)
+    expect(screen.getByText('Production Sessions')).toBeInTheDocument();
+    expect(await screen.findByText('No sessions scheduled yet')).toBeInTheDocument();
+
+    // Project Deliverables section (Feature #8)
+    expect(screen.getByText('Project Deliverables')).toBeInTheDocument();
+    expect(await screen.findByText('No deliverables added yet')).toBeInTheDocument();
+
+    // Creative Brief & Client Intake (Feature #11)
+    expect(await screen.findByText('Project Creative Brief & Client Intake')).toBeInTheDocument();
+
+    // External Files & Client Portal (Feature #12)
+    expect(
+      await screen.findByText('External Files, Google Drive & Client Portal')
+    ).toBeInTheDocument();
   });
 
   it('navigates to edit project route when Edit Project is clicked', async () => {
-    vi.mocked(supabase.from).mockReturnValue(createMockQueryBuilder(mockProjectList[0]) as never);
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'projects') {
+        return createMockQueryBuilder(mockProjectList[0]) as never;
+      }
+      return createMockQueryBuilder([]) as never;
+    });
 
     renderProjectDetail();
 

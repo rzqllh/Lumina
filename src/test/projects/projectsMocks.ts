@@ -84,8 +84,11 @@ export function createMockQueryBuilder(data: unknown = null, error: unknown = nu
     delete: ReturnType<typeof vi.fn>;
     eq: ReturnType<typeof vi.fn>;
     neq: ReturnType<typeof vi.fn>;
+    in: ReturnType<typeof vi.fn>;
+    not: ReturnType<typeof vi.fn>;
     order: ReturnType<typeof vi.fn>;
     single: ReturnType<typeof vi.fn>;
+    maybeSingle: ReturnType<typeof vi.fn>;
     then: (resolve: (val: { data: unknown; error: unknown }) => unknown) => Promise<unknown>;
   } = {
     select: vi.fn(),
@@ -94,8 +97,11 @@ export function createMockQueryBuilder(data: unknown = null, error: unknown = nu
     delete: vi.fn(),
     eq: vi.fn(),
     neq: vi.fn(),
+    in: vi.fn(),
+    not: vi.fn(),
     order: vi.fn(),
     single: vi.fn().mockImplementation(() => Promise.resolve({ data, error })),
+    maybeSingle: vi.fn().mockImplementation(() => Promise.resolve({ data, error })),
     then: (resolve) => Promise.resolve({ data, error }).then(resolve),
   };
 
@@ -105,6 +111,8 @@ export function createMockQueryBuilder(data: unknown = null, error: unknown = nu
   builder.delete.mockImplementation(() => builder);
   builder.eq.mockImplementation(() => builder);
   builder.neq.mockImplementation(() => builder);
+  builder.in.mockImplementation(() => builder);
+  builder.not.mockImplementation(() => builder);
   builder.order.mockImplementation(() => builder);
 
   return builder;

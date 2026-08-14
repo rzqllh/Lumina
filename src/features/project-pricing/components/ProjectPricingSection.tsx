@@ -32,7 +32,9 @@ export function ProjectPricingSection({ projectId }: ProjectPricingSectionProps)
   } = useProjectServiceMutations(projectId);
 
   const { data: allServices = [] } = useServices(true); // activeOnly = true
-  const availableServiceItems: ServicePickerItem[] = allServices.map((s) => ({
+  const availableServiceItems: ServicePickerItem[] = (
+    Array.isArray(allServices) ? allServices : []
+  ).map((s) => ({
     id: s.id,
     label: s.label,
     default_unit_price: s.default_unit_price,

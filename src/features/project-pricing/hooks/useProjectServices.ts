@@ -7,9 +7,16 @@ export function projectServicesQueryKey(workspaceId: string, projectId: string) 
   return ['projectPricing', 'services', workspaceId, projectId] as const;
 }
 
-export function useProjectServices(projectId: string | undefined) {
-  const { workspaceId } = useWorkspace();
-  const wsId = workspaceId ?? '';
+export function useProjectServices(projectId: string | undefined, workspaceIdOverride?: string) {
+  let wsId = workspaceIdOverride ?? '';
+  try {
+    const ws = useWorkspace();
+    if (!wsId && ws?.workspaceId) {
+      wsId = ws.workspaceId;
+    }
+  } catch {
+    // If outside WorkspaceProvider, rely on workspaceIdOverride
+  }
 
   return useQuery<ProjectService[], Error>({
     queryKey: projectServicesQueryKey(wsId, projectId ?? ''),

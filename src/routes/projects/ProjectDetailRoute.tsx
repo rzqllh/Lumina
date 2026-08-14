@@ -1,16 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import {
-  ArrowLeft,
-  Edit2,
-  User,
-  Hash,
-  Coins,
-  Calendar,
-  Clock,
-  Package,
-  AlertCircle,
-} from 'lucide-react';
+import { ArrowLeft, Edit2, User, Hash, Coins, Calendar, AlertCircle } from 'lucide-react';
 import { useProject, ProjectStatusBadge } from '@/features/projects';
 import { ProjectPricingSection } from '@/features/project-pricing';
 import {
@@ -18,6 +8,11 @@ import {
   ProjectTasksSection,
   useProjectStages,
 } from '@/features/project-workflow';
+import { ProjectSessionsSection } from '@/features/sessions';
+import { ProjectDeliverablesSection } from '@/features/deliverables';
+import { ProjectFinancialsSection, ProjectClosureControl } from '@/features/finance';
+import { ProjectBriefSection } from '@/features/briefs';
+import { ProjectFilesSection } from '@/features/files';
 
 export function ProjectDetailRoute() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -111,6 +106,9 @@ export function ProjectDetailRoute() {
         </button>
       </div>
 
+      {/* Project Completion & Lifecycle Gate (Feature #9) */}
+      <ProjectClosureControl project={project} />
+
       {/* Overview Metadata Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {/* Linked Client Card */}
@@ -174,6 +172,48 @@ export function ProjectDetailRoute() {
         <ProjectPricingSection projectId={project.id} />
       </div>
 
+      {/* Financial Health, Payments, Expenses & Crew (Feature #9) */}
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <ProjectFinancialsSection
+          workspaceId={project.workspace_id}
+          projectId={project.id}
+          currency={project.currency}
+          isForceClosed={isForceClosed}
+        />
+      </div>
+
+      {/* Production Sessions (Feature #7) */}
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <ProjectSessionsSection
+          workspaceId={project.workspace_id}
+          projectId={project.id}
+          isForceClosed={isForceClosed}
+        />
+      </div>
+
+      {/* Promised Deliverables & Revisions (Feature #8) */}
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <ProjectDeliverablesSection
+          workspaceId={project.workspace_id}
+          projectId={project.id}
+          isForceClosed={isForceClosed}
+        />
+      </div>
+
+      {/* Creative Brief & Client Intake (Feature #11) */}
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <ProjectBriefSection workspaceId={project.workspace_id} projectId={project.id} />
+      </div>
+
+      {/* External Files, Google Drive & Client Portal (Feature #12) */}
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <ProjectFilesSection
+          workspaceId={project.workspace_id}
+          projectId={project.id}
+          isForceClosed={isForceClosed}
+        />
+      </div>
+
       {/* Production Workflow & Stages (Feature #6) */}
       <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
         <ProjectWorkflowSection
@@ -191,33 +231,6 @@ export function ProjectDetailRoute() {
           selectedStageId={selectedStageId}
           onSelectStage={setSelectedStageId}
         />
-      </div>
-
-      {/* Sub-feature Placeholders (Sessions #7, Deliverables #8) */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {/* Sessions Placeholder */}
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-2xs">
-          <div className="flex items-center gap-2 text-text-muted mb-2">
-            <Clock className="h-4 w-4" />
-            <h3 className="text-xs font-bold uppercase tracking-wider">Shoot Sessions</h3>
-          </div>
-          <p className="text-xs text-text-muted">
-            Sessions — None scheduled yet. Booking shoot dates and calendar sync arriving in Feature
-            #7.
-          </p>
-        </div>
-
-        {/* Deliverables Placeholder */}
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-2xs">
-          <div className="flex items-center gap-2 text-text-muted mb-2">
-            <Package className="h-4 w-4" />
-            <h3 className="text-xs font-bold uppercase tracking-wider">Deliverables</h3>
-          </div>
-          <p className="text-xs text-text-muted">
-            Deliverables — None created yet. Media delivery and client review queues arriving in
-            Feature #8.
-          </p>
-        </div>
       </div>
     </div>
   );

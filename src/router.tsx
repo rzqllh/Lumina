@@ -4,7 +4,8 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { PublicOnlyRoute } from '@/components/auth/PublicOnlyRoute';
 import { LoginRoute } from '@/routes/auth/LoginRoute';
 import { AuthCallbackRoute } from '@/routes/auth/AuthCallbackRoute';
-import { PlaceholderRoute } from '@/routes/PlaceholderRoute';
+import { DashboardRoute } from '@/routes/dashboard/DashboardRoute';
+import { CalendarRoute } from '@/routes/calendar/CalendarRoute';
 import { ClientsListRoute } from '@/routes/clients/ClientsListRoute';
 import { ClientNewRoute } from '@/routes/clients/ClientNewRoute';
 import { ClientDetailRoute } from '@/routes/clients/ClientDetailRoute';
@@ -21,6 +22,8 @@ import { PackageNewRoute } from '@/routes/catalog/PackageNewRoute';
 import { PackageEditRoute } from '@/routes/catalog/PackageEditRoute';
 import { WorkflowTemplatesRoute } from '@/routes/catalog/WorkflowTemplatesRoute';
 import { SettingsRoute } from '@/routes/settings/SettingsRoute';
+import { PublicBriefIntakeRoute } from '@/routes/briefs/PublicBriefIntakeRoute';
+import { PublicProjectStatusRoute } from '@/routes/portal/PublicProjectStatusRoute';
 
 export const router = createBrowserRouter([
   // Public-only Authentication Routes
@@ -46,14 +49,10 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
+      // Real Daily Operating Dashboard (Feature #10)
       {
         index: true,
-        element: (
-          <PlaceholderRoute
-            title="Overview & Dashboard"
-            description="High-level workspace operational summary, urgent tasks, and upcoming shoots."
-          />
-        ),
+        element: <DashboardRoute />,
       },
       // Real Projects & Engagements Module
       {
@@ -72,14 +71,10 @@ export const router = createBrowserRouter([
         path: 'projects/:projectId/edit',
         element: <ProjectEditRoute />,
       },
+      // Real Production Calendar Module (Feature #10)
       {
         path: 'calendar',
-        element: (
-          <PlaceholderRoute
-            title="Schedule & Calendar"
-            description="Shoot sessions, client meetings, and milestone deadlines synced with Google Calendar."
-          />
-        ),
+        element: <CalendarRoute />,
       },
       // Real Clients & Contacts Module
       {
@@ -139,27 +134,11 @@ export const router = createBrowserRouter([
   // Public Anonymous Projection Routes (Isolated Shell, No Auth Required)
   {
     path: '/share/:token',
-    element: (
-      <main className="flex min-h-screen items-center justify-center bg-background p-4">
-        <PlaceholderRoute
-          title="Client Project Status Portal"
-          description="Live project progress projection, session schedules, and approved deliverables."
-          isPublic
-        />
-      </main>
-    ),
+    element: <PublicProjectStatusRoute />,
   },
   {
     path: '/brief/:token',
-    element: (
-      <main className="flex min-h-screen items-center justify-center bg-background p-4">
-        <PlaceholderRoute
-          title="Client Brief Intake Form"
-          description="Interactive questionnaire for project requirements, moodboards, and logistics."
-          isPublic
-        />
-      </main>
-    ),
+    element: <PublicBriefIntakeRoute />,
   },
 
   // Catch-all route
