@@ -1,8 +1,8 @@
 # Lumina — Product Requirements Document
 
-**Status:** Draft  
+**Status:** Draft — consistency-checked against locked domain model  
 **Owner:** TBD  
-**Last updated:** YYYY-MM-DD  
+**Last updated:** 2026-08-14  
 **Target:** MVP / Personal use
 
 ## 1. Product summary
@@ -129,38 +129,74 @@ High-level domains:
 
 ## 8. Success criteria
 
-For MVP, define measurable outcomes based on real use rather than vanity metrics.
+### Product outcomes (core goals)
+- The owner can immediately identify today's required work and critical deadlines upon opening the app.
+- Every active project maintains an explicit, visible operational state and next action.
+- Overdue tasks, deadlines, and payments are visible on the primary dashboard without opening individual projects.
+- Projects can be initialized rapidly from reusable templates without duplicating configuration effort.
+- Project profitability is directly calculable from recorded revenue, generic expenses, and committed collaborator costs.
+- Client brief collection and project status viewing require zero client account creation.
+- Public client links expose strictly allow-listed data and leak zero internal/financial fields.
 
-Candidate measures:
-- owner can determine today’s required work in under 10 seconds
-- every active project has a visible next action or explicit “no action”
-- overdue project work and payment are visible without opening each project
-- project creation from a saved template takes under N minutes
-- project profit can be calculated from recorded revenue and expenses
-- client brief submission requires no client account
-- project public link leaks zero internal-only fields
+### Initial validation targets & hypotheses
+These are initial usability and performance benchmarks to test with real-world project workflows (not locked empirical requirements):
 
-Replace candidates with accepted values before implementation.
+| ID | Outcome / Area | Target Hypothesis | Validation Method | Status |
+|---|---|---|---|---|
+| VH-001 | Daily orientation | Owner determines today's required work in ≤10 seconds from app open | Usability testing | Hypothesis |
+| VH-002 | Project intake speed | Project creation from saved template in ≤2 minutes | Time-to-complete test | Hypothesis |
+| VH-003 | Action clarity | 100% of active projects display next action or explicit "no action needed" | Workspace audit | Hypothesis |
+| VH-004 | Public link safety | Zero internal-only / financial fields exposed via public projection | Security testing | Security Target |
 
 ## 9. Functional requirements
 
-Use stable requirement IDs.
+Detailed functional requirements are distributed across canonical documents:
 
-Example format:
+| Concern | Canonical owner |
+|---|---|
+| Feature scope and priority | `FEATURE_INVENTORY.md` |
+| Entity definitions and invariants | `DOMAIN_MODEL.md` |
+| State machines and business flows | `WORKFLOWS.md` |
+| Per-feature detail | `docs/specs/<feature>/` |
+
+This section captures cross-cutting product-level requirements not owned by any single feature.
 
 ### PRJ-001 — Create project after DP
 **Requirement:** Owner can create a project after a DP has been received.  
 **Rules:**
 - one project can contain multiple services
 - one project can contain multiple sessions
-- package values must be snapshotted
+- package values must be snapshotted at project creation
 - workflow remains editable after creation
 
-**Acceptance:**
-- [ ] ...
-- [ ] ...
+### PRJ-002 — Project closure rules
+**Requirement:** Projects close normally when deliverables are approved and payment is complete. Owner can force-close with confirmation and reason.  
+**Rules:**
+- normal close requires: all deliverables approved + fully paid
+- force-close requires: explicit confirmation + written reason + timestamp
+- force-close must not mark unpaid balances as paid
+- see `WORKFLOWS.md` §2 for full state rules
 
-Add requirements here only at product level. Feature-specific behavior belongs in feature specs.
+### PRJ-003 — Template/package snapshot invariant
+**Requirement:** Editing a package or template must never change values in existing projects.  
+**Rules:**
+- project services are snapshots of package/service values at creation time
+- source references are audit-only, not live bindings
+- see `DOMAIN_MODEL.md` INV-001, INV-015
+
+### PRJ-004 — Client brief submission safety
+**Requirement:** Client brief submissions must not silently overwrite canonical project data.  
+**Rules:**
+- submissions are stored as immutable records
+- owner reviews per-field before applying changes
+- see `DOMAIN_MODEL.md` INV-003, INV-012
+
+### PRJ-005 — Public link security
+**Requirement:** Public project links must expose only allow-listed fields.  
+**Rules:**
+- tokenized, revocable access
+- never expose: profit, expenses, collaborator fees, internal notes, internal tasks, private brief fields, other clients
+- see `DOMAIN_MODEL.md` INV-004
 
 ## 10. Non-functional requirements
 
@@ -211,30 +247,39 @@ Architecture details are owned by `ARCHITECTURE.md`.
 
 ## 12. Out of scope
 
-Initial candidates:
+The following are explicitly not part of Lumina. See `FEATURE_INVENTORY.md` §5 for the full locked list.
+
 - photo/video editing
 - RAW processing
 - AI culling
-- full cloud media storage
+- full cloud media storage / Drive replacement
 - payroll
 - team permission administration
 - general-purpose accounting
 - payment gateway
 - full client account/portal
 - generic personal calendar replacement
-
-Confirm in `FEATURE_INVENTORY.md`.
+- enterprise workflow engine
+- arbitrary Notion-style database builder
+- generic CRM lead pipeline before DP
 
 ## 13. Risks and assumptions
 
 | ID | Type | Statement | How to validate | Status |
 |---|---|---|---|---|
-| A-001 | Assumption | PWA is sufficient for initial Android use | real-device test | Open |
-| A-002 | Assumption | Drive links are sufficient for large media | real projects | Open |
-| R-001 | Risk | flexible templates can become configuration-heavy | usability test | Open |
+| A-001 | Assumption | PWA is sufficient for initial Android use | Real-device testing | Open |
+| A-002 | Assumption | Drive links are sufficient for large media | Real project use | Open |
+| R-001 | Risk | Flexible templates can become configuration-heavy | Usability testing | Open |
+| R-002 | Risk | Brief Builder field types may need iteration after real use | Field usage analytics | Open |
+| R-003 | Risk | Google Calendar sync direction may need revision after API integration | Integration testing | Open |
+
+### Revisit triggers
+- **Brief cardinality:** Revisit 1:1 Brief per Project if real Lumina usage demonstrates a recurring need for independently managed Briefs inside one Project.
 
 ## 14. Open questions
 
 Only unresolved product questions belong here.
 
-- ...
+- Post-force-close lifecycle: Should force-closed projects become strictly read-only, or should reopening to active and recording late payments be supported?
+- Payment due window: How many days before due_date should an unpaid payment be highlighted as "Due" on the dashboard?
+- Brief Builder v1 field subset: What is the priority subset of field types to implement in MVP v1?
