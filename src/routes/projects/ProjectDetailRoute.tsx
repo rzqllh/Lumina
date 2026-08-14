@@ -12,6 +12,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { useProject, ProjectStatusBadge } from '@/features/projects';
+import { ProjectPricingSection } from '@/features/project-pricing';
 
 export function ProjectDetailRoute() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -196,6 +197,11 @@ export function ProjectDetailRoute() {
             Feature #8.
           </p>
         </div>
+      </div>
+
+      {/* Project Pricing & Services */}
+      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <ProjectPricingSection projectId={project.id} />
       </div>
     </div>
   );
