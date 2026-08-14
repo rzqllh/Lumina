@@ -6,21 +6,21 @@ This checklist tracks the exact external runtime prerequisites and execution gat
 
 ## Security prerequisites
 
-- [ ] service-role credential rotated
-- [ ] repository secret audit clean
-- [ ] frontend environment contains public credentials only
+- [x] service-role credential rotated (CONFIRMED_BY_OPERATOR)
+- [x] repository secret audit clean
+- [x] frontend environment contains public credentials only
 
 ## Auth prerequisites
 
-- [ ] Google OAuth client configured
-- [ ] Supabase Google provider configured
-- [ ] production/development redirect URI verified
+- [x] Google OAuth client configured (Operator configured)
+- [x] Supabase Google provider configured (Operator configured)
+- [ ] production/development redirect URI verified (pending live interactive round-trip)
 
 ## Database
 
-- [ ] runtime target identified
-- [ ] migration history inspected
-- [ ] migrations 00001-latest execute successfully
+- [x] runtime target identified (`veljyxvrsyptarfgunan` / Southeast Asia)
+- [x] migration history inspected (00001–00022 unapplied on remote)
+- [ ] migrations 00001-latest execute successfully (`supabase db push`)
 - [ ] pgTAP executes
 - [ ] pgTAP passes
 
