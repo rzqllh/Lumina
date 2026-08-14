@@ -1,4 +1,3 @@
-
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formatIDR } from '@/lib/money';
@@ -127,8 +126,14 @@ export function ProjectServiceForm({
 
       {/* Label */}
       <div>
-        <label htmlFor="ps-label" className="block text-xs font-semibold text-text-secondary mb-1.5">
-          Service label <span className="text-status-danger" aria-hidden="true">*</span>
+        <label
+          htmlFor="ps-label"
+          className="block text-xs font-semibold text-text-secondary mb-1.5"
+        >
+          Service label{' '}
+          <span className="text-status-danger" aria-hidden="true">
+            *
+          </span>
         </label>
         <input
           id="ps-label"
@@ -149,7 +154,10 @@ export function ProjectServiceForm({
 
       {/* Description */}
       <div>
-        <label htmlFor="ps-description" className="block text-xs font-semibold text-text-secondary mb-1.5">
+        <label
+          htmlFor="ps-description"
+          className="block text-xs font-semibold text-text-secondary mb-1.5"
+        >
           Description <span className="text-text-muted">(optional)</span>
         </label>
         <textarea
@@ -164,8 +172,14 @@ export function ProjectServiceForm({
       {/* Quantity and Unit Price */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label htmlFor="ps-quantity" className="block text-xs font-semibold text-text-secondary mb-1.5">
-            Quantity <span className="text-status-danger" aria-hidden="true">*</span>
+          <label
+            htmlFor="ps-quantity"
+            className="block text-xs font-semibold text-text-secondary mb-1.5"
+          >
+            Quantity{' '}
+            <span className="text-status-danger" aria-hidden="true">
+              *
+            </span>
           </label>
           <input
             id="ps-quantity"
@@ -186,8 +200,14 @@ export function ProjectServiceForm({
         </div>
 
         <div>
-          <label htmlFor="ps-unit-price" className="block text-xs font-semibold text-text-secondary mb-1.5">
-            Unit Price (IDR) <span className="text-status-danger" aria-hidden="true">*</span>
+          <label
+            htmlFor="ps-unit-price"
+            className="block text-xs font-semibold text-text-secondary mb-1.5"
+          >
+            Unit Price (IDR){' '}
+            <span className="text-status-danger" aria-hidden="true">
+              *
+            </span>
           </label>
           <input
             id="ps-unit-price"
@@ -204,7 +224,11 @@ export function ProjectServiceForm({
             Enter whole Rupiah (e.g. 2500000)
           </p>
           {errors.unit_price && (
-            <p id="ps-unit-price-error" role="alert" className="mt-1 text-[11px] text-status-danger">
+            <p
+              id="ps-unit-price-error"
+              role="alert"
+              className="mt-1 text-[11px] text-status-danger"
+            >
               {errors.unit_price.message}
             </p>
           )}
@@ -218,7 +242,9 @@ export function ProjectServiceForm({
         </p>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="ps-adjustment-label" className="sr-only">Adjustment label</label>
+            <label htmlFor="ps-adjustment-label" className="sr-only">
+              Adjustment label
+            </label>
             <input
               id="ps-adjustment-label"
               type="text"
@@ -255,7 +281,9 @@ export function ProjectServiceForm({
         aria-atomic="true"
       >
         <div className="flex justify-between text-xs text-text-secondary mb-1">
-          <span>Subtotal ({safeQty} × {formatIDR(safePrice)})</span>
+          <span>
+            Subtotal ({safeQty} × {formatIDR(safePrice)})
+          </span>
           <span className="font-semibold tabular-nums">{formatIDR(subtotal)}</span>
         </div>
         {safeAdj !== 0 && (

@@ -22,7 +22,7 @@ export function PackagePickerModal({ onApply, onClose, isApplying }: PackagePick
   function getPackageCatalogTotal(pkg: PackageWithItems): number {
     return (pkg.package_items ?? []).reduce(
       (acc, item) => acc + item.quantity * item.unit_price,
-      0,
+      0
     );
   }
 
@@ -114,7 +114,9 @@ export function PackagePickerModal({ onApply, onClose, isApplying }: PackagePick
                         <span className="block text-xs font-bold tabular-nums text-text-primary">
                           {formatIDR(catalogTotal)}
                         </span>
-                        <span className="block text-[10px] text-text-muted mt-0.5">catalog total</span>
+                        <span className="block text-[10px] text-text-muted mt-0.5">
+                          catalog total
+                        </span>
                       </div>
                     </div>
                   </button>
@@ -135,7 +137,9 @@ export function PackagePickerModal({ onApply, onClose, isApplying }: PackagePick
                     key={item.id}
                     className="flex items-center justify-between gap-2 rounded-lg bg-surface-muted px-3 py-2"
                   >
-                    <span className="text-xs text-text-secondary truncate flex-1">{item.label}</span>
+                    <span className="text-xs text-text-secondary truncate flex-1">
+                      {item.label}
+                    </span>
                     <span className="text-xs tabular-nums text-text-primary shrink-0">
                       {item.quantity} × {formatIDR(item.unit_price)}
                     </span>
@@ -143,8 +147,8 @@ export function PackagePickerModal({ onApply, onClose, isApplying }: PackagePick
                 ))}
               </div>
               <p className="mt-2 text-[11px] text-text-muted">
-                Each item will be added as an independent pricing snapshot line.
-                Applying again will append another set.
+                Each item will be added as an independent pricing snapshot line. Applying again will
+                append another set.
               </p>
             </div>
           )}

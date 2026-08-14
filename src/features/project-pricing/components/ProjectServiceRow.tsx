@@ -8,7 +8,11 @@ interface ProjectServiceRowProps {
   onRemove: (ps: ProjectService) => void;
 }
 
-export function ProjectServiceRow({ projectService: ps, onEdit, onRemove }: ProjectServiceRowProps) {
+export function ProjectServiceRow({
+  projectService: ps,
+  onEdit,
+  onRemove,
+}: ProjectServiceRowProps) {
   const netLineTotal = computeNetLineTotal(ps);
   const hasAdjustment = Boolean(ps.adjustment_label || ps.adjustment_amount !== 0);
 
@@ -50,9 +54,7 @@ export function ProjectServiceRow({ projectService: ps, onEdit, onRemove }: Proj
       {/* Adjustment row (only shown when present) */}
       {hasAdjustment && (
         <div className="mt-1 flex items-center justify-between gap-2">
-          <span className="text-xs text-text-secondary">
-            {ps.adjustment_label || 'Adjustment'}
-          </span>
+          <span className="text-xs text-text-secondary">{ps.adjustment_label || 'Adjustment'}</span>
           <span
             data-testid={`adjustment-amount-${ps.id}`}
             className="text-xs font-medium tabular-nums text-text-secondary"

@@ -8,12 +8,7 @@ import { ProjectServiceForm } from './ProjectServiceForm';
 import { PackagePickerModal } from './PackagePickerModal';
 import type { ProjectService, ServicePickerItem } from '../types/projectPricingTypes';
 import type { ProjectServiceFormValues } from '../schemas/projectPricingSchemas';
-import {
-  AlertCircle,
-  Plus,
-  Package,
-  Coins,
-} from 'lucide-react';
+import { AlertCircle, Plus, Package, Coins } from 'lucide-react';
 
 interface ProjectPricingSectionProps {
   projectId: string;
@@ -62,7 +57,7 @@ export function ProjectPricingSection({ projectId }: ProjectPricingSectionProps)
             adjustment_amount: values.adjustment_amount,
           },
         },
-        { onSuccess: () => setView({ mode: 'list' }) },
+        { onSuccess: () => setView({ mode: 'list' }) }
       );
     } else {
       if (values.source_service_id) {
@@ -74,7 +69,7 @@ export function ProjectPricingSection({ projectId }: ProjectPricingSectionProps)
             unit_price: values.unit_price,
             source_service_id: values.source_service_id,
           },
-          { onSuccess: () => setView({ mode: 'list' }) },
+          { onSuccess: () => setView({ mode: 'list' }) }
         );
       } else {
         addCustomLineMutation.mutate(
@@ -84,7 +79,7 @@ export function ProjectPricingSection({ projectId }: ProjectPricingSectionProps)
             quantity: values.quantity,
             unit_price: values.unit_price,
           },
-          { onSuccess: () => setView({ mode: 'list' }) },
+          { onSuccess: () => setView({ mode: 'list' }) }
         );
       }
     }
@@ -159,7 +154,10 @@ export function ProjectPricingSection({ projectId }: ProjectPricingSectionProps)
 
       {/* Mutation error */}
       {mutationError && (
-        <div role="alert" className="mb-3 flex items-start gap-2 rounded-xl border border-status-danger/25 bg-status-danger/5 px-3 py-2.5 text-xs text-status-danger">
+        <div
+          role="alert"
+          className="mb-3 flex items-start gap-2 rounded-xl border border-status-danger/25 bg-status-danger/5 px-3 py-2.5 text-xs text-status-danger"
+        >
           <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" aria-hidden="true" />
           <span>{mutationError}</span>
         </div>

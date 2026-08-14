@@ -7,10 +7,7 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { ProjectDetailRoute } from '@/routes/projects/ProjectDetailRoute';
 import { supabase } from '@/lib/supabase';
 import { mockSession, mockWorkspaceRow } from '../auth/authMocks';
-import {
-  mockProjectServices,
-  mockProjectId,
-} from './pricingMocks';
+import { mockProjectServices, mockProjectId } from './pricingMocks';
 
 vi.mock('@/lib/supabase', () => ({
   supabase: {
@@ -110,7 +107,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
             </MemoryRouter>
           </WorkspaceProvider>
         </AuthProvider>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
   }
 
@@ -120,7 +117,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
         projects: mockProject,
         project_services: mockProjectServices,
         services: [],
-      }) as never,
+      }) as never
     );
 
     renderProjectDetail();
@@ -136,7 +133,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
         projects: mockProject,
         project_services: mockProjectServices,
         services: [],
-      }) as never,
+      }) as never
     );
 
     renderProjectDetail();
@@ -152,7 +149,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
         projects: mockProject,
         project_services: [],
         services: [],
-      }) as never,
+      }) as never
     );
 
     renderProjectDetail();
@@ -168,7 +165,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
         projects: mockProject,
         project_services: mockProjectServices,
         services: [],
-      }) as never,
+      }) as never
     );
 
     renderProjectDetail();
@@ -190,12 +187,14 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
         projects: mockProject,
         project_services: mockProjectServices,
         services: [],
-      }) as never,
+      }) as never
     );
 
     renderProjectDetail();
 
-    const removeBtn = await screen.findByTestId(`remove-project-service-${mockProjectServices[0].id}`);
+    const removeBtn = await screen.findByTestId(
+      `remove-project-service-${mockProjectServices[0].id}`
+    );
     fireEvent.click(removeBtn);
 
     await waitFor(() => {
@@ -211,7 +210,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
         projects: mockProject,
         project_services: mockProjectServices,
         services: [],
-      }) as never,
+      }) as never
     );
 
     renderProjectDetail();
@@ -231,7 +230,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
         project_services: mockProjectServices,
         services: [],
         packages: [],
-      }) as never,
+      }) as never
     );
 
     renderProjectDetail();

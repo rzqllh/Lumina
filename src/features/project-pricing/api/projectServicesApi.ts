@@ -10,7 +10,7 @@ import type {
 
 export async function fetchProjectServices(
   workspaceId: string,
-  projectId: string,
+  projectId: string
 ): Promise<ProjectService[]> {
   const { data, error } = await supabase
     .from('project_services')
@@ -26,9 +26,7 @@ export async function fetchProjectServices(
 
 // ─── Add Service Snapshot (from catalog Service) ──────────────────────────────
 
-export async function addServiceSnapshot(
-  input: AddServiceSnapshotInput,
-): Promise<ProjectService> {
+export async function addServiceSnapshot(input: AddServiceSnapshotInput): Promise<ProjectService> {
   const subtotal = input.quantity * input.unit_price;
 
   const { data, error } = await supabase
@@ -56,9 +54,7 @@ export async function addServiceSnapshot(
 
 // ─── Add Custom Line (no catalog source) ─────────────────────────────────────
 
-export async function addCustomLine(
-  input: AddCustomLineInput,
-): Promise<ProjectService> {
+export async function addCustomLine(input: AddCustomLineInput): Promise<ProjectService> {
   const subtotal = input.quantity * input.unit_price;
 
   const { data, error } = await supabase
@@ -89,7 +85,7 @@ export async function addCustomLine(
 export async function updateProjectService(
   id: string,
   workspaceId: string,
-  input: UpdateProjectServiceInput,
+  input: UpdateProjectServiceInput
 ): Promise<ProjectService> {
   const updates: Record<string, unknown> = { ...input };
 
@@ -116,10 +112,7 @@ export async function updateProjectService(
 
 // ─── Remove Project Service ───────────────────────────────────────────────────
 
-export async function removeProjectService(
-  id: string,
-  workspaceId: string,
-): Promise<void> {
+export async function removeProjectService(id: string, workspaceId: string): Promise<void> {
   const { error } = await supabase
     .from('project_services')
     .delete()
@@ -134,7 +127,7 @@ export async function removeProjectService(
 export async function applyPackageToProject(
   workspaceId: string,
   projectId: string,
-  packageId: string,
+  packageId: string
 ): Promise<number> {
   const { data, error } = await supabase.rpc('apply_package_to_project', {
     p_workspace_id: workspaceId,

@@ -49,8 +49,7 @@ export function useProjectServiceMutations(projectId: string) {
   });
 
   const applyPackageMutation = useMutation({
-    mutationFn: (packageId: string) =>
-      applyPackageToProject(wsId, projectId, packageId),
+    mutationFn: (packageId: string) => applyPackageToProject(wsId, projectId, packageId),
     onSuccess: invalidate,
   });
 

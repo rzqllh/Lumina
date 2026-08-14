@@ -6,7 +6,10 @@ import { parseMoneyInput } from '@/lib/money';
 export const projectServiceFormSchema = z.object({
   label: z.string().min(1, 'Service label is required').max(200),
   description: z.string().max(1000).nullable().optional(),
-  quantity: z.coerce.number().int('Quantity must be a whole number').min(1, 'Minimum quantity is 1'),
+  quantity: z.coerce
+    .number()
+    .int('Quantity must be a whole number')
+    .min(1, 'Minimum quantity is 1'),
   unit_price: z.coerce
     .number()
     .int('Unit price must be a whole number (IDR minor units)')

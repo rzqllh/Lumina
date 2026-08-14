@@ -40,7 +40,13 @@ describe('Project Pricing — Domain Logic', () => {
 
     it('handles negative adjustments correctly (no float errors)', () => {
       const services = [
-        { ...mockProjectServices[0], unit_price: 1000000, subtotal: 1000000, quantity: 1, adjustment_amount: -333333 },
+        {
+          ...mockProjectServices[0],
+          unit_price: 1000000,
+          subtotal: 1000000,
+          quantity: 1,
+          adjustment_amount: -333333,
+        },
       ];
       expect(computeProjectValue(services)).toBe(666667);
     });
