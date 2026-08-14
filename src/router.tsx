@@ -1,12 +1,34 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { PublicOnlyRoute } from '@/components/auth/PublicOnlyRoute';
+import { LoginRoute } from '@/routes/auth/LoginRoute';
+import { AuthCallbackRoute } from '@/routes/auth/AuthCallbackRoute';
 import { PlaceholderRoute } from '@/routes/PlaceholderRoute';
 
 export const router = createBrowserRouter([
-  // Authenticated Owner Shell Routes
+  // Public-only Authentication Routes
+  {
+    path: '/login',
+    element: (
+      <PublicOnlyRoute>
+        <LoginRoute />
+      </PublicOnlyRoute>
+    ),
+  },
+  {
+    path: '/auth/callback',
+    element: <AuthCallbackRoute />,
+  },
+
+  // Authenticated Owner Shell Routes (Protected by ProtectedRoute)
   {
     path: '/',
-    element: <AppShell />,
+    element: (
+      <ProtectedRoute>
+        <AppShell />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -55,11 +77,12 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  // Public Anonymous Projection Routes (Isolated Shell)
+
+  // Public Anonymous Projection Routes (Isolated Shell, No Auth Required)
   {
     path: '/share/:token',
     element: (
-      <main className="min-h-screen flex items-center justify-center p-4 bg-[var(--background)]">
+      <main className="flex min-h-screen items-center justify-center bg-background p-4">
         <PlaceholderRoute
           title="Client Project Status Portal"
           description="Live project progress projection, session schedules, and approved deliverables."
@@ -71,7 +94,7 @@ export const router = createBrowserRouter([
   {
     path: '/brief/:token',
     element: (
-      <main className="min-h-screen flex items-center justify-center p-4 bg-[var(--background)]">
+      <main className="flex min-h-screen items-center justify-center bg-background p-4">
         <PlaceholderRoute
           title="Client Brief Intake Form"
           description="Interactive questionnaire for project requirements, moodboards, and logistics."
@@ -80,6 +103,7 @@ export const router = createBrowserRouter([
       </main>
     ),
   },
+
   // Catch-all route
   {
     path: '*',
