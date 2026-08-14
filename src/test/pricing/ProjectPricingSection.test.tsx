@@ -86,8 +86,8 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
     };
   }
 
-  function renderProjectDetail() {
-    return render(
+  async function renderProjectDetail() {
+    const utils = render(
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <WorkspaceProvider>
@@ -109,6 +109,11 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
         </AuthProvider>
       </QueryClientProvider>
     );
+
+    const financeTab = await screen.findByTestId('tab-finance');
+    fireEvent.click(financeTab);
+
+    return utils;
   }
 
   it('PRICE-REQ-001: renders all project service rows with correct labels', async () => {
@@ -120,7 +125,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
       }) as never
     );
 
-    renderProjectDetail();
+    await renderProjectDetail();
 
     expect(await screen.findByText('Wedding Photography (Full Day)')).toBeInTheDocument();
     expect(screen.getByText('Cinematic Videography')).toBeInTheDocument();
@@ -136,7 +141,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
       }) as never
     );
 
-    renderProjectDetail();
+    await renderProjectDetail();
 
     // Expected: 2500000 + 3000000 + 1500000 = 7000000
     expect(await screen.findByTestId('project-value-total')).toBeInTheDocument();
@@ -152,7 +157,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
       }) as never
     );
 
-    renderProjectDetail();
+    await renderProjectDetail();
 
     expect(await screen.findByTestId('pricing-empty')).toBeInTheDocument();
     expect(screen.getByTestId('empty-state-add-service')).toBeInTheDocument();
@@ -168,7 +173,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
       }) as never
     );
 
-    renderProjectDetail();
+    await renderProjectDetail();
 
     const editBtn = await screen.findByTestId(`edit-project-service-${mockProjectServices[0].id}`);
     fireEvent.click(editBtn);
@@ -190,7 +195,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
       }) as never
     );
 
-    renderProjectDetail();
+    await renderProjectDetail();
 
     const removeBtn = await screen.findByTestId(
       `remove-project-service-${mockProjectServices[0].id}`
@@ -213,7 +218,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
       }) as never
     );
 
-    renderProjectDetail();
+    await renderProjectDetail();
 
     const addBtn = await screen.findByTestId('add-service-cta');
     fireEvent.click(addBtn);
@@ -233,7 +238,7 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
       }) as never
     );
 
-    renderProjectDetail();
+    await renderProjectDetail();
 
     const applyBtn = await screen.findByTestId('apply-package-cta');
     fireEvent.click(applyBtn);
@@ -257,16 +262,40 @@ describe('ProjectPricingSection (F-PRICING-001)', () => {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         order: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockReturnThis(),
         then: () => blockingPromise.then(() => ({ data: [], error: null })),
       };
       return builder as never;
     });
 
-    renderProjectDetail();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <WorkspaceProvider>
+            <MemoryRouter initialEntries={[`/projects/${mockProjectId}`]}>
+              <Routes>
+                <Route
+                  path="/projects/:projectId"
+                  element={
+                    <ProtectedRoute>
+                      <ProjectDetailRoute />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/projects/:projectId/edit" element={<div>Edit</div>} />
+                <Route path="/clients/:clientId" element={<div>Client</div>} />
+              </Routes>
+            </MemoryRouter>
+          </WorkspaceProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    );
 
-    // Wait for project to load, then pricing should show skeleton
-    await screen.findByText('Pricing & Services');
-    expect(screen.queryByTestId('pricing-loading')).toBeInTheDocument();
+    const financeTab = await screen.findByTestId('tab-finance');
+    fireEvent.click(financeTab);
+
+    // Wait for pricing to show skeleton
+    expect(await screen.findByTestId('pricing-loading')).toBeInTheDocument();
 
     resolveQuery!();
   });

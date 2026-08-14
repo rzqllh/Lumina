@@ -33,7 +33,7 @@ export function ProjectDetailRoute() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const [selectedStageId, setSelectedStageId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<SectionTab>('all');
+  const [activeTab, setActiveTab] = useState<SectionTab>('workflow');
 
   const { data: project, isLoading, error, refetch } = useProject(projectId);
   const { data: stages = [] } = useProjectStages(project?.workspace_id || '', project?.id || '');

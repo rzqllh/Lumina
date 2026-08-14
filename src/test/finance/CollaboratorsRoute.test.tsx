@@ -46,6 +46,7 @@ function createMockQueryBuilder(data: unknown = null, error: unknown = null) {
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
     order: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
     insert: vi.fn().mockReturnThis(),
     update: vi.fn().mockReturnThis(),
     delete: vi.fn().mockReturnThis(),
@@ -163,6 +164,58 @@ describe('CollaboratorsRoute & CollaboratorsList (STAB-P1-001)', () => {
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
+      expect(supabase.from).toHaveBeenCalledWith('collaborators');
+    });
+  });
+
+  it('prevents deletion of a collaborator who is referenced in project engagements', async () => {
+    window.confirm = vi.fn().mockReturnValue(true);
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'collaborators') {
+        return createMockQueryBuilder(mockCollaborators) as never;
+      }
+      if (table === 'collaborator_engagements') {
+        // Return existing engagement referencing this collaborator
+        return createMockQueryBuilder([{ id: 'eng-1', collaborator_id: 'collab-1' }]) as never;
+      }
+      return createMockQueryBuilder([]) as never;
+    });
+
+    renderCollaboratorsPage();
+
+    const deleteBtn = await screen.findByTestId('delete-collaborator-btn-collab-1');
+    fireEvent.click(deleteBtn);
+
+    // Shows graceful error alert preserving historical records
+    expect(
+      await screen.findByText(
+        /Cannot delete crew member assigned to existing or historical projects/i
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('allows deletion of an unreferenced collaborator with confirmation', async () => {
+    window.confirm = vi.fn().mockReturnValue(true);
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'collaborators') {
+        return createMockQueryBuilder(mockCollaborators) as never;
+      }
+      if (table === 'collaborator_engagements') {
+        // No engagements found
+        return createMockQueryBuilder([]) as never;
+      }
+      return createMockQueryBuilder([]) as never;
+    });
+
+    renderCollaboratorsPage();
+
+    const deleteBtn = await screen.findByTestId('delete-collaborator-btn-collab-1');
+    fireEvent.click(deleteBtn);
+
+    await waitFor(() => {
+      expect(supabase.from).toHaveBeenCalledWith('collaborator_engagements');
       expect(supabase.from).toHaveBeenCalledWith('collaborators');
     });
   });

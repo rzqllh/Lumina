@@ -29,6 +29,7 @@ function createMockQueryBuilder(data: unknown = null, error: unknown = null) {
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
     order: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
     insert: vi.fn().mockReturnThis(),
     update: vi.fn().mockReturnThis(),
     delete: vi.fn().mockReturnThis(),

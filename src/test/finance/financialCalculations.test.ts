@@ -39,6 +39,35 @@ describe('Financial Calculations — Canonical Logic & Dashboard Consistency', (
     expect(summary.isFullyPaid).toBe(false);
   });
 
+  it('handles exact zero and negative receivable (overpayment/credit) without clamping', () => {
+    // Project Value = 10,000, Paid Amount = 2,000 → Receivable = 8,000
+    const summary1 = calculateFinancialSummary({
+      services: [{ unit_price: 10000, quantity: 1, subtotal: 10000 }],
+      payments: [{ amount: 2000, status: 'paid' }],
+    });
+    expect(summary1.contractValue).toBe(10000);
+    expect(summary1.totalPaid).toBe(2000);
+    expect(summary1.remainingBalance).toBe(8000);
+
+    // Project Value = 10,000, Paid Amount = 10,000 → Receivable = 0
+    const summary2 = calculateFinancialSummary({
+      services: [{ unit_price: 10000, quantity: 1, subtotal: 10000 }],
+      payments: [{ amount: 10000, status: 'paid' }],
+    });
+    expect(summary2.contractValue).toBe(10000);
+    expect(summary2.totalPaid).toBe(10000);
+    expect(summary2.remainingBalance).toBe(0);
+
+    // Project Value = 10,000, Paid Amount = 12,000 → Receivable = -2,000 (overpayment)
+    const summary3 = calculateFinancialSummary({
+      services: [{ unit_price: 10000, quantity: 1, subtotal: 10000 }],
+      payments: [{ amount: 12000, status: 'paid' }],
+    });
+    expect(summary3.contractValue).toBe(10000);
+    expect(summary3.totalPaid).toBe(12000);
+    expect(summary3.remainingBalance).toBe(-2000);
+  });
+
   it('correctly computes costs, projected profit, and profit margin', () => {
     const summary = calculateFinancialSummary({
       services: [{ unit_price: 10000000, quantity: 1, subtotal: 10000000, adjustment_amount: 0 }],

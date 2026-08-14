@@ -79,7 +79,7 @@ describe('ProjectDetailRoute (PROJ-REQ-004 / WORKFLOW-REQ-002)', () => {
     );
   }
 
-  it('renders project metadata, linked client card, pricing, workflow, and remaining placeholders', async () => {
+  it('renders project overview metadata and default Workflow & Tasks tab without mounting inactive sections', async () => {
     vi.mocked(supabase.from).mockImplementation((table: string) => {
       if (table === 'projects') {
         return createMockQueryBuilder(mockProjectList[0]) as never;
@@ -104,31 +104,26 @@ describe('ProjectDetailRoute (PROJ-REQ-004 / WORKFLOW-REQ-002)', () => {
     expect(screen.getByText('Sarah & Dave Wedding')).toBeInTheDocument();
     expect(screen.getByText('IDR')).toBeInTheDocument();
 
-    // Workflow & Tasks sections (Feature #6)
+    // Default tab is "Workflow & Tasks" (Feature #6)
     expect(screen.getByText('Production Workflow')).toBeInTheDocument();
     expect(screen.getByText('Action Items & Tasks')).toBeInTheDocument();
 
     // Project Completion & Closure Gate (Feature #9)
     expect(screen.getByTestId('project-closure-control')).toBeInTheDocument();
 
-    // Financial Health & Schedule (Feature #9)
+    // Inactive sections are NOT mounted on initial load (proving query reduction)
+    expect(screen.queryByTestId('financial-summary-card')).not.toBeInTheDocument();
+    expect(screen.queryByText('Production Sessions')).not.toBeInTheDocument();
+    expect(screen.queryByText('Project Deliverables')).not.toBeInTheDocument();
+    expect(screen.queryByText('Project Creative Brief & Client Intake')).not.toBeInTheDocument();
+
+    // Clicking "All Overview" mounts all sections
+    const allTab = screen.getByTestId('tab-all-sections');
+    fireEvent.click(allTab);
+
     expect(await screen.findByTestId('financial-summary-card')).toBeInTheDocument();
-
-    // Production Sessions section (Feature #7)
     expect(screen.getByText('Production Sessions')).toBeInTheDocument();
-    expect(await screen.findByText('No sessions scheduled yet')).toBeInTheDocument();
-
-    // Project Deliverables section (Feature #8)
     expect(screen.getByText('Project Deliverables')).toBeInTheDocument();
-    expect(await screen.findByText('No deliverables added yet')).toBeInTheDocument();
-
-    // Creative Brief & Client Intake (Feature #11)
-    expect(await screen.findByText('Project Creative Brief & Client Intake')).toBeInTheDocument();
-
-    // External Files & Client Portal (Feature #12)
-    expect(
-      await screen.findByText('External Files, Google Drive & Client Portal')
-    ).toBeInTheDocument();
   });
 
   it('navigates to edit project route when Edit Project is clicked', async () => {
@@ -157,20 +152,23 @@ describe('ProjectDetailRoute (PROJ-REQ-004 / WORKFLOW-REQ-002)', () => {
 
     renderProjectDetail();
 
-    // Click "Workflow & Tasks" tab
-    const workflowTab = await screen.findByTestId('tab-workflow');
-    fireEvent.click(workflowTab);
-
-    // Workflow is visible
-    expect(screen.getByText('Production Workflow')).toBeInTheDocument();
-    // Pricing is hidden
-    expect(screen.queryByText('Commercial Pricing & Services')).not.toBeInTheDocument();
+    // Initial default tab is "Workflow & Tasks"
+    expect(await screen.findByText('Production Workflow')).toBeInTheDocument();
+    expect(screen.queryByTestId('financial-summary-card')).not.toBeInTheDocument();
 
     // Click "Pricing & Finance" tab
     const financeTab = screen.getByTestId('tab-finance');
     fireEvent.click(financeTab);
 
-    expect(screen.getByTestId('financial-summary-card')).toBeInTheDocument();
+    expect(await screen.findByTestId('financial-summary-card')).toBeInTheDocument();
     expect(screen.queryByText('Production Workflow')).not.toBeInTheDocument();
+
+    // Click "Sessions & Deliverables" tab
+    const sessionsTab = screen.getByTestId('tab-sessions');
+    fireEvent.click(sessionsTab);
+
+    expect(await screen.findByText('Production Sessions')).toBeInTheDocument();
+    expect(screen.getByText('Project Deliverables')).toBeInTheDocument();
+    expect(screen.queryByTestId('financial-summary-card')).not.toBeInTheDocument();
   });
 });

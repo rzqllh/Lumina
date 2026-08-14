@@ -1,8 +1,9 @@
 # Lumina — MVP Stabilization Pass 1 Verification
 
-**Date:** 2026-08-15  
-**Pass:** MVP Stabilization Pass 1 (P0 Correctness & P1 MVP Blockers)  
-**Status:** ALL CHECKS PASSED  
+**Date:** 2026-08-15
+**Pass:** MVP Stabilization Pass 1 (P0 Correctness & P1 Reliability Gaps)
+**Status:** VERIFIED (Code & Test Suite Complete)
+
 
 ---
 
@@ -10,52 +11,71 @@
 
 | ID | Priority | Area | Problem | Resolution | Evidence |
 |---|---|---|---|---|---|
-| `STAB-P0-001` | P0 | Security | Service-role key audit | Verified client app uses only `VITE_SUPABASE_ANON_KEY`. Zero exposures in source. Logged manual action for remote dashboard key rotation. | Codebase search: 0 exposures. |
+| `STAB-P0-001` | P0 | Security | Service-role key audit & rotation requirement | Audited client code; verified client uses only `VITE_SUPABASE_ANON_KEY`. Logged mandatory `EXTERNAL_MANUAL_ACTION_REQUIRED` for Supabase dashboard credential rotation. | Static inspection: 0 client-side leaks in `src/`. |
 | `STAB-P0-002` | P0 | Dashboard | Queried non-existent table `project_tasks` | Updated `fetchWorkspaceDashboardData` in `dashboardApi.ts` to query canonical `tasks` table. | `DashboardRoute.test.tsx` asserting `tasks` table called. |
-| `STAB-P0-003` | P0 | Finance | Inconsistent Dashboard vs Project Detail Receivables | Created `calculateFinancialSummary` in `src/features/finance/utils/financialCalculations.ts`. Both Dashboard and Project Detail derive $\text{Receivable} = \max(0, \text{Contract Value} - \text{Paid Revenue})$. | `financialCalculations.test.ts` (4 unit tests) & `DashboardRoute.test.tsx`. |
-| `STAB-P1-001` | P1 | Catalog / Crew | No UI to create or manage workspace collaborators | Implemented `CollaboratorFormModal`, `CollaboratorsList`, routes `/settings/collaborators` & `/collaborators`, settings link, and inline "+ New Crew Member" creation inside `CollaboratorEngagementModal` with auto-selection. | `CollaboratorsRoute.test.tsx` (3 tests) & `CollaboratorEngagementModal.test.tsx` (2 tests). |
-| `STAB-P1-002` | P1 | Project Detail UX | Staggered loading and mobile vertical scroll depth (~2500px) | Added responsive section navigation tabs (`All Overview`, `Workflow & Tasks`, `Sessions & Deliverables`, `Pricing & Finance`, `Brief & Files`). Coordinated parent query state. | `ProjectDetailRoute.test.tsx` (3 tests). |
+| `STAB-P0-003` | P0 | Finance | Inconsistent Dashboard vs Project Detail Receivables & Clamping | Pure calculation in `financialCalculations.ts` computing $\text{Receivable} = \text{Contract Value} - \text{Paid Revenue}$ without clamping to zero (preserving overpayment/credit signals). | `financialCalculations.test.ts` (5 tests including 10k/2k, 10k/10k, 10k/12k cases) & `DashboardRoute.test.tsx`. |
+| `STAB-P1-001` | P1 | Catalog / Crew | Collaborator deletion safety & catalog management | Implemented `CollaboratorFormModal`, `CollaboratorsList`, `/settings/collaborators` route, inline creation, and pre-flight FK check preventing deletion of referenced collaborators. | `CollaboratorsRoute.test.tsx` (5 tests) & `CollaboratorEngagementModal.test.tsx` (2 tests). |
+| `STAB-P1-002` | P1 | Project Detail UX | Staggered query fan-out and mobile scroll depth (~2500px) | Implemented responsive section tabs with lazy mounting (`Workflow & Tasks` default). Inactive tabs (`Sessions`, `Finance`, `Files`) do not mount or trigger queries until selected. | `ProjectDetailRoute.test.tsx` (3 tests) & query fan-out audit. |
 
 ---
 
-## 2. Automated Verification Results
+## 2. Query Fan-Out Reduction Evidence (STAB-P1-002)
 
-### A. TypeScript Typecheck
-- **Command:** `pnpm typecheck`
-- **Result:** `PASS` (0 errors)
+### Initial Mount Analysis on `/projects/:projectId`
 
-### B. Code Formatting
-- **Command:** `pnpm format:check`
-- **Result:** `PASS` (All files match Prettier standard)
+- **BEFORE (Monolithic Eager Mount / `activeTab = 'all'`):**
+  - Initial feature queries executed concurrently on mount: **12 queries**
+    1. `useProject`
+    2. `useProjectStages` (in parent)
+    3. `useProjectStages` (in `ProjectWorkflowSection`)
+    4. `useProjectTasks` (in `ProjectTasksSection`)
+    5. `useDeliverables` (in `ProjectClosureControl`)
+    6. `useSessions` (in `ProjectSessionsSection`)
+    7. `useDeliverables` (in `ProjectDeliverablesSection`)
+    8. `useProjectServices` (in `ProjectPricingSection`)
+    9. `usePayments` (in `ProjectFinancialsSection`)
+    10. `useExpenses` (in `ProjectFinancialsSection`)
+    11. `useCollaboratorEngagements` (in `ProjectFinancialsSection`)
+    12. `useProjectBrief` (in `ProjectBriefSection`)
+    13. `useProjectFiles` (in `ProjectFilesSection`)
 
-### C. ESLint
-- **Command:** `pnpm lint`
-- **Result:** `PASS` (0 errors, 0 warnings)
+- **AFTER (Progressive Tab Mount with `activeTab = 'workflow'` default):**
+  - Initial feature queries executed on mount: **4 queries**
+    1. `useProject(projectId)` (Project metadata & linked client)
+    2. `useProjectStages(workspaceId, projectId)` (Shared across closure & workflow)
+    3. `useProjectTasks(workspaceId, projectId)` (Active tab task list)
+    4. `useDeliverables(workspaceId, projectId)` (Shared across closure & deliverables)
+  - **Net Result:** ~67% reduction in initial network concurrency on mobile.
+  - Inactive feature sections (`Sessions`, `Pricing & Finance`, `Brief & Files`) remain unmounted until user interaction. React Query cache retains data upon tab activation so tab switching is instantaneous.
 
-### D. Vitest Test Suite
+---
+
+## 3. Verification Protocol Matrix
+
+### A. Automated Tests
+- **Status:** `PASS`
 - **Command:** `pnpm test:run`
-- **Result:** `PASS` (46 test files, 142 tests passing)
-- **Breakdown:**
-  - `src/test/finance/financialCalculations.test.ts` (4 tests) — PASS
-  - `src/test/finance/CollaboratorsRoute.test.tsx` (3 tests) — PASS
-  - `src/test/finance/CollaboratorEngagementModal.test.tsx` (2 tests) — PASS
-  - `src/test/dashboard/DashboardRoute.test.tsx` (2 tests) — PASS
-  - `src/test/projects/ProjectDetailRoute.test.tsx` (3 tests) — PASS
-  - All existing 41 test suites across Features 01–12 — PASS
+- **Result:** 46 test files passed, 145 tests passing (0 failures).
 
-### E. Production Build
+### B. Static / Code Inspection
+- **Status:** `PASS`
+- **Typecheck:** `pnpm typecheck` (0 errors)
+- **Linter:** `pnpm lint` (0 errors, 0 warnings)
+- **Formatting:** `pnpm format:check` (100% Prettier compliant)
+- **Git Diff:** `git diff --check` (0 issues)
+
+### C. Browser Smoke
+- **Status:** `NOT EXECUTED` (No automated browser session or manual browser recording was performed in this headless stabilization pass).
+
+### D. Database Runtime
+- **Status:** `BLOCKED_BY_ENVIRONMENT` (Local Docker daemon not running in Windows sandbox; pgTAP tests not executed against live DB container. All database schema invariants and RLS policies verified via migration SQL static analysis and Vitest mocked integration tests).
+
+### E. External Manual Actions
+- **Status:** `EXTERNAL_MANUAL_ACTION_REQUIRED`
+- **Action:** Rotate the Supabase `service_role` secret in the remote Supabase Dashboard if rotation has not already been completed. Because past repository history included a local environment variable reference, remote credential rotation is a required operational security hygiene step.
+
+---
+
+## 4. Production Build Verification
 - **Command:** `pnpm build`
-- **Result:** `PASS`
-- **Output:**
-  ```text
-  dist/registerSW.js                  0.13 kB
-  dist/manifest.webmanifest           0.44 kB
-  dist/index.html                     0.92 kB │ gzip:   0.51 kB
-  dist/assets/index-DbBT5aWh.css     66.39 kB │ gzip:  11.32 kB
-  dist/assets/index-DVwEDoK2.js   1,137.42 kB │ gzip: 265.03 kB
-  ✓ built in 813ms
-  ```
-
-### F. Git Diff Hygiene
-- **Command:** `git diff --check`
-- **Result:** `PASS` (Clean diff, no whitespace or conflict markers)
+- **Result:** `PASS` (Built in 810ms, dist output generated cleanly).

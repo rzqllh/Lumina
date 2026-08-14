@@ -18,7 +18,7 @@ export interface RawFinanceInputs {
  *
  * Project Value = SUM(Project Service net line totals)
  * Paid Amount   = SUM(Payment.amount WHERE status = 'paid')
- * Receivable    = MAX(0, Project Value - Paid Amount)
+ * Receivable    = Project Value - Paid Amount (can be negative for overpayments)
  * Generic Expenses = SUM(Expense.amount)
  * Committed Crew Cost = SUM(CollaboratorEngagement.agreed_fee)
  * Total Project Cost  = Generic Expenses + Committed Crew Cost
@@ -46,8 +46,8 @@ export function calculateFinancialSummary(inputs: RawFinanceInputs): ProjectFina
     .filter((p) => p.status === 'paid')
     .reduce((acc, p) => acc + (p.amount || 0), 0);
 
-  // 3. Receivable = MAX(0, Project Value - Paid Revenue)
-  const remainingBalance = Math.max(0, contractValue - totalPaid);
+  // 3. Receivable = Project Value - Paid Revenue (exact formula without clamping)
+  const remainingBalance = contractValue - totalPaid;
 
   // 4. Costs
   const genericExpensesTotal = expenses.reduce((acc, e) => acc + (e.amount || 0), 0);

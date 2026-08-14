@@ -243,13 +243,36 @@ export async function deleteCollaborator(
   workspaceId: string,
   collaboratorId: string
 ): Promise<void> {
+  // Check if collaborator is engaged in any projects (historical accounting safety)
+  const { data: engagements, error: checkError } = await supabase
+    .from('collaborator_engagements')
+    .select('id')
+    .eq('workspace_id', workspaceId)
+    .eq('collaborator_id', collaboratorId)
+    .limit(1);
+
+  if (checkError) throw checkError;
+
+  if (engagements && engagements.length > 0) {
+    throw new Error(
+      'Cannot delete crew member assigned to existing or historical projects. Historical crew records are preserved for accounting integrity.'
+    );
+  }
+
   const { error } = await supabase
     .from('collaborators')
     .delete()
     .eq('workspace_id', workspaceId)
     .eq('id', collaboratorId);
 
-  if (error) throw error;
+  if (error) {
+    if (error.code === '23503') {
+      throw new Error(
+        'Cannot delete crew member assigned to existing or historical projects. Historical crew records are preserved for accounting integrity.'
+      );
+    }
+    throw error;
+  }
 }
 
 export async function fetchProjectCollaboratorEngagements(
