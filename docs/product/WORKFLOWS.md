@@ -75,7 +75,7 @@ A project normally enters Lumina after the initial DP has been received. The sys
 
 A project is eligible for normal closure when:
 
-1. All deliverables have reached `approved` status (or have been explicitly waived/removed)
+1. All required deliverables currently belonging to the Project have reached `approved` status
 2. Total paid amount equals project value (fully paid)
 
 The system should surface eligibility but not auto-close. The owner explicitly closes.
@@ -91,14 +91,11 @@ Owner may force-close when normal conditions are not met.
 
 **Effects of force-close:**
 - Project status → `force_closed`
-- All open tasks remain in their current state (not auto-completed)
-- All unpaid payments remain unpaid (not auto-marked paid)
-- All pending deliverables remain in their current state
-- All active workflow stages remain in their current state
-- Force-close reason and timestamp are recorded permanently
-
-> [!NOTE]
-> Post-force-close operational rules (such as whether force-closed projects become strictly read-only or can be reopened to active, and whether late payments may be recorded) are intentionally unresolved and deferred to future operational design.
+- Operational production mutation is blocked: creating new workflow stages, progressing stages, creating ordinary tasks, creating deliverables, and starting new revisions are disabled while in `force_closed` status.
+- All existing tasks, pending deliverables, and active stages remain preserved in their current state.
+- Unpaid payments remain unchanged; **late incoming payments against existing project receivables ARE allowed to be recorded** so that financial cashflow history remains accurate.
+- Force-close reason and timestamp are recorded permanently.
+- **Explicit Reopening:** The owner may explicitly reopen a `force_closed` project back to `active` via a confirmed owner action (recording a `reopened_at` audit timestamp). Reopening restores operational permission to continue project work without modifying or resetting existing entity states.
 
 **Invariant (INV-005):** Force-close must never silently mark unpaid balances as paid.
 
@@ -194,20 +191,18 @@ Lumina separates **persisted lifecycle state** from **derived temporal condition
 
 ### Persisted payment lifecycle
 
-Persisted state changes only upon explicit business events (recording payment or waiving).
+Persisted state changes only upon explicit business events (recording payment received).
 
 ```mermaid
 stateDiagram-v2
     [*] --> pending
     pending --> paid : Payment confirmed received
-    pending --> waived : Owner explicitly waives payment
 ```
 
 | Persisted Status | Meaning |
 |---|---|
 | `pending` | Payment scheduled / expected |
 | `paid` | Payment confirmed received |
-| `waived` | Owner has explicitly waived this payment |
 
 ### Derived temporal conditions
 
@@ -219,12 +214,11 @@ The operational condition of a payment is dynamically computed from `status`, `d
 | `Upcoming` | `status == pending` AND `due_date > today` |
 | `Due` | `status == pending` AND `due_date == today` (or within due window) |
 | `Overdue` | `status == pending` AND `due_date < today` |
-| `Waived` | `status == waived` |
 
 Rules:
 - Payment status is independent of project status. Never infer "paid" from project stage.
 - Temporal conditions (`Upcoming`, `Due`, `Overdue`) are evaluated dynamically in queries and UI views. They do not require scheduled background state mutation jobs.
-- `waived` requires explicit owner action and confirmation. Waiving an overdue payment does not mark it as paid.
+- Commercial reductions/discounts agreed with the client are recorded as Project Service price adjustments/discounts rather than creating fake payment records.
 - Overdue payments are surfaced in "Needs Attention" on the dashboard.
 
 ---
@@ -350,7 +344,7 @@ Creating a project from a template may generate:
 - Deliverables (from template defaults)
 - Session placeholders
 - File Reference slots
-- Client Share Link configuration
+- Public Share Link configuration
 
 All generated content is project-owned and editable. The template is a starting point, not a constraint.
 
@@ -381,7 +375,7 @@ Rules:
 
 ## 14. Public client view
 
-Public project status must be generated from an allow-list projection. The Client Share Link's `visible_sections` field controls what is exposed.
+Public project status must be generated from an allow-list projection. The Public Share Link configuration controls what is exposed.
 
 **Allowed (when enabled):**
 - project display name

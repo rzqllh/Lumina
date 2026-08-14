@@ -74,22 +74,24 @@ After implementation, these remain useful as history, but current product truth 
 As of 2026-08-14:
 
 - Artifact scaffolding: established
-- Product discovery: sufficiently mature for prioritization
-- Feature inventory: baseline classified (MVP Core / High-value / Later / Out)
-- Visual baseline: established — `DESIGN.md` captures the design language of the existing mobile mockup without freezing exact dashboard composition
-- Domain/schema design: next
+- Product discovery: locked for MVP planning
+- Feature inventory: baseline locked (MVP Core / High-value / Later / Out)
+- Visual baseline: established in `DESIGN.md`
+- Domain & workflows: locked in `DOMAIN_MODEL.md` and `WORKFLOWS.md`
+- Technical architecture, schema, security & integrations: locked in `docs/engineering/`
+- Architectural Decision Records: ADRs 0001–0007 accepted in `docs/decisions/`
 - Implementation: intentionally not started
+- Next step: repository scaffold (Pass C) followed by first feature specification
 
-## Recommended next order
+## Execution order
 
-1. Complete `PRD.md`.
-2. Complete `FEATURE_INVENTORY.md`.
-3. Lock `DOMAIN_MODEL.md` and `WORKFLOWS.md`.
-4. Finalize `DESIGN.md`.
-5. Finalize `ARCHITECTURE.md`.
-6. Design `DATABASE_SCHEMA.md`.
-7. Write initial ADRs.
-8. Only then create feature specs and implementation tasks.
+1. [x] Complete `PRD.md` and `FEATURE_INVENTORY.md`.
+2. [x] Lock `DOMAIN_MODEL.md` and `WORKFLOWS.md` (Pass A).
+3. [x] Lock `DESIGN.md`.
+4. [x] Finalize `ARCHITECTURE.md`, `DATABASE_SCHEMA.md`, `SECURITY.md`, `INTEGRATIONS.md` (Pass B).
+5. [x] Author and accept initial ADRs 0001–0007 (Pass B).
+6. [ ] Repository Foundation / Scaffold (Pass C).
+7. [ ] Feature specifications (`docs/specs/<feature>/`) and implementation.
 
 ## Research references
 

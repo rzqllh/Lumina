@@ -21,22 +21,24 @@ Pass B locks the technical architecture, data model, security boundaries, integr
 
 ## 2. Workstreams & Parallelism Strategy
 
-To ensure speed without creating cross-document contradictions, Pass B is split into **4 coordinated workstreams**:
+Pass B is organized into **5 coordinated workstreams**:
 
 ```text
                  ┌─ Workstream 1: Architecture Foundation ──────┐
-Pass A locked ───┤                                              ├─ Integration Reconciliation
-                 ├─ Workstream 2: Schema ↔ Security Co-Design ──┤
-                 └─ Workstream 3: ADR Drafting & Consolidation ─┘
-                                   ↓
-                       Cross-Document Verification
+                 │                                              │
+Pass A locked ───┼─ Workstream 2: Schema ↔ Security Co-Design ──┼──► Workstream 5: Cross-Doc Verification
+                 │                                              │
+                 ├─ Workstream 3: External Integrations Contract ┤
+                 │                                              │
+                 └─ Workstream 4: ADR Drafting & Consolidation ─┘
 ```
 
-### Parallel-Safe Workstreams:
+### Parallel-Safe Workstreams (1–4):
 - **Workstream 1 (Architecture Foundation):** Runtime environments, PWA service worker strategy, client/server boundaries, deployment topology.
 - **Workstream 2 (Schema ↔ Security Co-Design):** Physical relational schema, RLS policies, constraints, indexes, and public projection design. (These *must* be designed together).
-- **Workstream 3 (Integrations Design):** Google Drive Picker contract, Google Calendar sync direction, Supabase Storage buckets, and OAuth credential isolation.
-- **Workstream 4 (ADR Consolidation):** Formalizing durable architectural decisions (0001–0007) based on locked technical consensus.
+- **Workstream 3 (External Integrations Contract):** Google Drive Picker contract, Google Calendar sync direction, Supabase Storage buckets, and OAuth credential isolation.
+- **Workstream 4 (ADR Drafting & Consolidation):** Formalizing durable architectural decisions (0001–0007) based on primary research and locked technical consensus.
+- **Workstream 5 (Cross-Document Verification):** Convergence and holistic integrity audit (not a parallel authoring stream).
 
 ### Strict Coupling Rules (Do NOT parallelize independently):
 - ⚠️ **Physical Schema vs. Tenancy/RLS:** Do not design table schemas without designing their workspace ownership and RLS access model in the same pass.
@@ -48,11 +50,17 @@ Pass A locked ───┤                                              ├─ I
 
 ## 3. Decision & Dependency Gates
 
-Before certain schema components can be finalized, specific open decisions must be resolved:
+Specific open decisions block finalization of dependent tasks:
 
 ```text
 OD-001 (Post Force-Close Behavior)
-  └─ Blocks: `projects` schema state fields & force-close transition constraints (Task PB-S05)
+  └─ Blocks: Finalization of `projects` force-close state constraints (Task PB-S05)
+
+OD-004 (Public Link Model & History)
+  └─ Blocks: Finalization of `public_share_links` schema & public endpoint contracts (Task PB-S10)
+
+OD-005 (Payment Waiver Semantics)
+  └─ Blocks: Finalization of financial close database constraints (Tasks PB-S08, PB-S11)
 
 OD-002 (Payment Timing Labels) & OD-003 (Brief Field Palette)
   └─ Deferred: Non-blocking for Pass B physical schema
@@ -62,19 +70,17 @@ OD-002 (Payment Timing Labels) & OD-003 (Brief Field Palette)
 
 ## 4. Execution Sequence
 
-1. **Phase 1: Setup & Workstream Kickoff**
-   - Create execution tracking ledger (`PLAN.md`, `TASKS.md`, `DECISIONS.md`, `VERIFICATION.md`).
-   - Reconcile `OD-001` working recommendation in `DECISIONS.md`.
+1. **Phase 0: Setup & Ledger Reconciliation**
+   - Correct execution tracking ledger (`PLAN.md`, `TASKS.md`, `DECISIONS.md`, `VERIFICATION.md`).
+   - Remove deliverable waiver wording in `WORKFLOWS.md`.
 
-2. **Phase 2: Core Engineering Specifications**
+2. **Phase 1: Parallel Engineering Specifications**
    - Execute Workstream 1: Refine and lock `ARCHITECTURE.md`.
-   - Execute Workstream 2: Co-design `DATABASE_SCHEMA.md` and `SECURITY.md`.
+   - Execute Workstream 2: Co-design `DATABASE_SCHEMA.md` and `SECURITY.md` for all non-blocked tables.
    - Execute Workstream 3: Define contract specifications in `INTEGRATIONS.md`.
+   - Execute Workstream 4: Draft ADRs 0001 through 0007 in `docs/decisions/`.
 
-3. **Phase 3: ADR Formalization**
-   - Draft and accept ADRs 0001 through 0007 in `docs/decisions/`.
-
-4. **Phase 4: Verification & Audit**
-   - Run full cross-document consistency audit.
-   - Populate `VERIFICATION.md` with concrete evidence.
-   - Lock Pass B.
+3. **Phase 2: Reconciliation, Verification & Status Ledger**
+   - Run cross-document consistency audit across all workstreams.
+   - Record blocked tasks in `TASKS.md` against open decisions `OD-001`, `OD-004`, `OD-005`.
+   - Populate `VERIFICATION.md` with verified evidence.

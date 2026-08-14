@@ -44,7 +44,7 @@ A project contains:
 - zero or more Expenses
 - zero or more Collaborator Engagements
 - zero or more File References
-- zero or one Client Share Link configuration
+- zero or more Public Share Links (tokenized public access for status page and brief intake)
 
 ---
 
@@ -355,7 +355,7 @@ Incoming payment record. Belongs to Project.
 | label | Optional display label (e.g., "DP 50%", "Installment 2") |
 | amount | Payment amount |
 | due_date | When payment is due |
-| status | `pending` · `paid` · `waived` (persisted business state; temporal conditions such as `due` or `overdue` are dynamically derived, see WORKFLOWS.md) |
+| status | `pending` · `paid` (persisted business state; temporal conditions such as `due` or `overdue` are dynamically derived, see WORKFLOWS.md) |
 | paid_date | When actually received (null if not yet paid) |
 | payment_method | Optional free text (e.g., "Bank Transfer", "Cash") |
 | notes | Optional |
@@ -427,18 +427,20 @@ Metadata pointing to app storage or an external provider. Belongs to Project, op
 
 **Invariant (INV-009):** Large production media (RAW, footage, exports) is external by default. Lumina app storage is for small references (avatars, receipts, brief attachments).
 
-### Client Share Link
+### Public Share Link
 
-Revocable tokenized public access configuration. Belongs to Project.
+Revocable tokenized public access configuration. Belongs to Project, supporting multiple public client purposes (`status_page` and `brief_intake`).
 
 | Field | Description |
 |---|---|
 | project_id | Parent project |
-| token | Opaque, unique, URL-safe token |
-| is_active | Active/revoked state |
-| created_at | Creation timestamp |
+| purpose | `status_page` · `brief_intake` |
+| token_hash | SHA-256 hash of URL token (plain token is never stored) |
+| is_active | Active/revoked state (at most one active token per project and purpose) |
+| visible_sections | Purpose-specific allow-list configuration |
+| expires_at | Optional expiration timestamp |
 | revoked_at | Revocation timestamp (null if active) |
-| visible_sections | Allow-list of what the client can see |
+| created_at | Creation timestamp |
 
 **Invariant (INV-004):** Public client views never expose internal-only fields (profit, expenses, collaborator fees, internal notes, internal tasks, other clients, private brief fields).
 
@@ -463,6 +465,7 @@ Notes:
 - Collaborator fees and generic expenses are summed independently to avoid double-counting.
 - `Paid Amount` only includes payments with persisted status `paid`.
 - `Committed Collaborator Cost` uses `agreed_fee` (committed liability), not `paid_amount`.
+- Commercial reductions/discounts agreed with the client are recorded as Project Service adjustments/discounts, directly reducing `Project Value` rather than creating fake payment records.
 - UI may visually group generic expenses and collaborator fees together under "Project Costs".
 
 ---
@@ -535,5 +538,5 @@ erDiagram
     COLLABORATOR_ENGAGEMENT }o--|| COLLABORATOR : "engages"
     PROJECT ||--o{ FILE_REFERENCE : references
     DELIVERABLE ||--o{ FILE_REFERENCE : "optionally scoped"
-    PROJECT ||--o| CLIENT_SHARE_LINK : exposes
+    PROJECT ||--o{ PUBLIC_SHARE_LINK : exposes
 ```
