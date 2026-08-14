@@ -24,7 +24,7 @@
 ### Initial Mount Analysis on `/projects/:projectId`
 
 - **BEFORE (Monolithic Eager Mount / `activeTab = 'all'`):**
-  - Initial feature queries executed concurrently on mount: **12 queries**
+  - Initial feature queries executed concurrently on mount: **~13 initial feature queries**
     1. `useProject`
     2. `useProjectStages` (in parent)
     3. `useProjectStages` (in `ProjectWorkflowSection`)
@@ -46,7 +46,11 @@
     3. `useProjectTasks(workspaceId, projectId)` (Active tab task list)
     4. `useDeliverables(workspaceId, projectId)` (Shared across closure & deliverables)
   - **Net Result:** ~67% reduction in initial network concurrency on mobile.
-  - Inactive feature sections (`Sessions`, `Pricing & Finance`, `Brief & Files`) remain unmounted until user interaction. React Query cache retains data upon tab activation so tab switching is instantaneous.
+  - Inactive tabs do not eagerly execute their feature queries on initial mount.
+  - First opening a deferred tab may execute its required feature queries on demand.
+  - Already cached data may be reused according to React Query cache/staleTime configuration.
+  - Duplicate equivalent queries are deduplicated across components sharing query keys.
+
 
 ---
 
