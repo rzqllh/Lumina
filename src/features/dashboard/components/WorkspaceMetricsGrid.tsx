@@ -20,7 +20,7 @@ export const WorkspaceMetricsGrid: React.FC<WorkspaceMetricsGridProps> = ({
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="h-20 animate-pulse rounded-2xl border border-border bg-surface-muted/50"
+            className="h-[72px] animate-pulse rounded-[var(--radius-card)] border border-border bg-surface-muted/50"
           />
         ))}
       </div>
@@ -34,51 +34,59 @@ export const WorkspaceMetricsGrid: React.FC<WorkspaceMetricsGridProps> = ({
     sessionsScheduledThisMonth,
   } = metrics;
 
+  const items = [
+    {
+      label: 'Active Projects',
+      value: String(activeProjectsCount),
+      icon: Briefcase,
+      iconColor: 'text-primary',
+      testId: 'metric-active-projects',
+    },
+    {
+      label: 'Receivables',
+      value: formatMoney(unpaidReceivablesTotal, currency),
+      icon: Receipt,
+      iconColor: 'text-status-warning',
+      testId: 'metric-unpaid-receivables',
+    },
+    {
+      label: 'Revenue',
+      value: formatMoney(receivedRevenueTotal, currency),
+      icon: TrendingUp,
+      iconColor: 'text-status-success',
+      testId: 'metric-received-revenue',
+    },
+    {
+      label: 'Shoots This Month',
+      value: String(sessionsScheduledThisMonth),
+      icon: Camera,
+      iconColor: 'text-status-info',
+      testId: 'metric-monthly-shoots',
+    },
+  ];
+
   return (
     <div data-testid="workspace-metrics-grid" className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      {/* Active Projects */}
-      <div className="rounded-2xl border border-border bg-surface p-4 shadow-2xs space-y-1">
-        <div className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
-          <Briefcase className="h-4 w-4 text-primary" />
-          <span>Active Projects</span>
-        </div>
-        <p data-testid="metric-active-projects" className="text-xl font-bold text-text-primary">
-          {activeProjectsCount}
-        </p>
-      </div>
-
-      {/* Unpaid Receivables */}
-      <div className="rounded-2xl border border-border bg-surface p-4 shadow-2xs space-y-1">
-        <div className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
-          <Receipt className="h-4 w-4 text-amber-700" />
-          <span>Receivables</span>
-        </div>
-        <p data-testid="metric-unpaid-receivables" className="text-xl font-bold text-amber-800">
-          {formatMoney(unpaidReceivablesTotal, currency)}
-        </p>
-      </div>
-
-      {/* Received Revenue */}
-      <div className="rounded-2xl border border-border bg-surface p-4 shadow-2xs space-y-1">
-        <div className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
-          <TrendingUp className="h-4 w-4 text-emerald-700" />
-          <span>Received Revenue</span>
-        </div>
-        <p data-testid="metric-received-revenue" className="text-xl font-bold text-emerald-800">
-          {formatMoney(receivedRevenueTotal, currency)}
-        </p>
-      </div>
-
-      {/* Shoots This Month */}
-      <div className="rounded-2xl border border-border bg-surface p-4 shadow-2xs space-y-1">
-        <div className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
-          <Camera className="h-4 w-4 text-indigo-700" />
-          <span>Shoots This Month</span>
-        </div>
-        <p data-testid="metric-monthly-shoots" className="text-xl font-bold text-indigo-800">
-          {sessionsScheduledThisMonth}
-        </p>
-      </div>
+      {items.map((item) => {
+        const Icon = item.icon;
+        return (
+          <div
+            key={item.testId}
+            className="rounded-[var(--radius-card)] border border-border bg-surface p-3.5 space-y-1"
+          >
+            <div className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+              <Icon className={`h-3.5 w-3.5 ${item.iconColor}`} />
+              <span>{item.label}</span>
+            </div>
+            <p
+              data-testid={item.testId}
+              className="text-lg font-bold text-text-primary tabular-nums"
+            >
+              {item.value}
+            </p>
+          </div>
+        );
+      })}
     </div>
   );
 };

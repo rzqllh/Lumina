@@ -13,20 +13,20 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button';
 
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] cursor-pointer';
+      'inline-flex items-center justify-center font-medium rounded-[var(--radius-input)] transition-all duration-[var(--transition-normal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] cursor-pointer';
 
     const variantStyles = {
-      default: 'bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90',
+      default: 'bg-primary text-primary-foreground hover:bg-primary/90',
       outline:
-        'border border-[var(--border)] bg-transparent hover:bg-[var(--surface-muted)] text-[var(--text-primary)]',
-      ghost: 'bg-transparent hover:bg-[var(--surface-muted)] text-[var(--text-primary)]',
-      danger: 'bg-[var(--status-danger)] text-white hover:opacity-90',
+        'border border-border bg-transparent hover:bg-surface-muted text-text-primary',
+      ghost: 'bg-transparent hover:bg-surface-muted text-text-primary',
+      danger: 'bg-status-danger text-white hover:bg-status-danger/90',
     };
 
     const sizeStyles = {
-      sm: 'h-8 px-3 text-xs',
-      md: 'h-10 px-4 text-sm',
-      lg: 'h-12 px-6 text-base',
+      sm: 'h-8 px-3 text-xs gap-1.5',
+      md: 'h-10 px-4 text-sm gap-2',
+      lg: 'h-12 px-6 text-base gap-2',
       icon: 'h-10 w-10 p-0',
     };
 

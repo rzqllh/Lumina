@@ -116,9 +116,10 @@ describe('ProjectsListRoute (PROJ-REQ-001 / PROJ-REQ-008)', () => {
     renderProjectsList();
 
     expect(await screen.findByTestId('projects-empty-state')).toBeInTheDocument();
-    expect(screen.getByText('No projects in workspace yet')).toBeInTheDocument();
+    expect(screen.getByText('No projects yet')).toBeInTheDocument();
 
-    const createBtn = screen.getByTestId('empty-create-project-btn');
+    // The Create Project CTA is in the header, not the empty state
+    const createBtn = screen.getByTestId('create-project-btn');
     fireEvent.click(createBtn);
 
     await waitFor(() => {

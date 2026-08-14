@@ -2,47 +2,72 @@ import React from 'react';
 import { NavLink } from 'react-router';
 import { Sparkles, Calendar, FolderKanban, Users, Settings } from 'lucide-react';
 
-export const BottomNav: React.FC = () => {
-  const tabs = [
-    { to: '/', label: 'Overview', icon: Sparkles },
-    { to: '/projects', label: 'Projects', icon: FolderKanban },
-    { to: '/calendar', label: 'Schedule', icon: Calendar },
-    { to: '/clients', label: 'Clients', icon: Users },
-    { to: '/settings', label: 'Settings', icon: Settings },
-  ];
+const tabs = [
+  { to: '/', label: 'Overview', icon: Sparkles, end: true },
+  { to: '/projects', label: 'Projects', icon: FolderKanban, end: false },
+  { to: '/calendar', label: 'Schedule', icon: Calendar, end: false },
+  { to: '/clients', label: 'Clients', icon: Users, end: false },
+  { to: '/settings', label: 'Settings', icon: Settings, end: false },
+] as const;
 
+export const BottomNav: React.FC = () => {
   return (
     <nav
-      aria-label="Main Navigation"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-surface/95 backdrop-blur-md pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-xs"
+      aria-label="Main navigation"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-surface/95 backdrop-blur-md"
+      style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}
     >
-      <div className="grid h-16 grid-cols-5 items-stretch">
+      <div className="grid h-14 grid-cols-5">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
             <NavLink
               key={tab.to}
               to={tab.to}
-              end={tab.to === '/'}
+              end={tab.end}
+              aria-label={tab.label}
               className={({ isActive }) =>
-                `group relative flex flex-col items-center justify-center gap-1 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset ${
+                [
+                  'relative flex flex-col items-center justify-center gap-0.5 transition-colors duration-[var(--transition-normal)]',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset',
                   isActive
-                    ? 'text-primary font-semibold'
-                    : 'text-text-muted hover:text-text-primary'
-                }`
+                    ? 'text-primary'
+                    : 'text-text-secondary hover:text-text-primary',
+                ].join(' ')
               }
             >
               {({ isActive }) => (
                 <>
-                  {/* Subtle top indicator bar for active destination */}
-                  {isActive && (
-                    <span
+                  {/* Active top-bar indicator — non-color-only signal */}
+                  <span
+                    aria-hidden="true"
+                    className={[
+                      'absolute top-0 left-1/2 -translate-x-1/2 h-[2px] rounded-full bg-primary transition-all duration-[var(--transition-normal)]',
+                      isActive ? 'w-6 opacity-100' : 'w-0 opacity-0',
+                    ].join(' ')}
+                  />
+                  {/* Subtle active tint behind icon — second non-color indicator */}
+                  <span
+                    aria-hidden="true"
+                    className={[
+                      'flex h-7 w-7 items-center justify-center rounded-md transition-colors duration-[var(--transition-normal)]',
+                      isActive ? 'bg-primary/8' : '',
+                    ].join(' ')}
+                  >
+                    <Icon
+                      className="h-[18px] w-[18px]"
+                      strokeWidth={isActive ? 2.25 : 1.75}
                       aria-hidden="true"
-                      className="absolute top-0 h-0.5 w-8 rounded-full bg-primary"
                     />
-                  )}
-                  <Icon className={`h-5 w-5 transition-transform group-active:scale-95 ${isActive ? 'text-primary' : 'text-text-muted group-hover:text-text-primary'}`} />
-                  <span className="text-[11px] tracking-tight leading-none">{tab.label}</span>
+                  </span>
+                  <span
+                    className={[
+                      'text-[11px] leading-none',
+                      isActive ? 'font-semibold' : 'font-medium',
+                    ].join(' ')}
+                  >
+                    {tab.label}
+                  </span>
                 </>
               )}
             </NavLink>

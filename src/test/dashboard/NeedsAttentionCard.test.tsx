@@ -13,7 +13,7 @@ describe('NeedsAttentionCard (DASH-REQ-001)', () => {
     );
 
     expect(screen.getByTestId('attention-empty-state')).toBeInTheDocument();
-    expect(screen.getByText('All caught up!')).toBeInTheDocument();
+    expect(screen.getByText('All caught up')).toBeInTheDocument();
   });
 
   it('renders attention items with overdue invoices and deliverable warnings', () => {

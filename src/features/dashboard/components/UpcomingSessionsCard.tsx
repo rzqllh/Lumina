@@ -17,7 +17,7 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
 
   if (isLoading) {
     return (
-      <div className="h-44 animate-pulse rounded-2xl border border-border bg-surface-muted/50" />
+      <div className="h-40 animate-pulse rounded-[var(--radius-card)] border border-border bg-surface-muted/50" />
     );
   }
 
@@ -38,17 +38,17 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
   return (
     <div
       data-testid="upcoming-sessions-panel"
-      className="rounded-2xl border border-border bg-surface p-5 shadow-xs space-y-4"
+      className="rounded-[var(--radius-card)] border border-border bg-surface p-5"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-status-info">
             <Camera className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-text-primary">Upcoming Shoots</h3>
-            <p className="text-xs text-text-secondary">{sessions.length} scheduled on horizon</p>
+            <h3 className="text-sm font-semibold text-text-primary">Upcoming Shoots</h3>
+            <p className="text-xs text-text-secondary">{sessions.length} on horizon</p>
           </div>
         </div>
 
@@ -56,7 +56,7 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
           type="button"
           data-testid="view-calendar-btn"
           onClick={() => navigate('/calendar')}
-          className="min-h-[36px] px-2 text-xs font-semibold text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+          className="text-xs font-semibold text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg px-2 py-1"
         >
           Calendar →
         </button>
@@ -66,19 +66,19 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
       {sessions.length === 0 && (
         <div
           data-testid="upcoming-sessions-empty-state"
-          className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface-muted/30 p-6 text-center"
+          className="mt-5 text-center py-4"
         >
-          <Calendar className="h-8 w-8 text-text-secondary mb-1.5" />
-          <h4 className="text-xs font-bold text-text-primary">No upcoming sessions</h4>
-          <p className="mt-0.5 max-w-xs text-xs text-text-secondary">
-            Sessions and shoot dates will appear here once scheduled inside projects.
+          <Calendar className="h-7 w-7 text-text-muted mx-auto mb-2" />
+          <p className="text-xs font-medium text-text-primary">No upcoming sessions</p>
+          <p className="mt-0.5 text-xs text-text-secondary">
+            Sessions will appear here once scheduled inside projects.
           </p>
         </div>
       )}
 
-      {/* Sessions List */}
+      {/* Sessions List — divider rows */}
       {sessions.length > 0 && (
-        <div data-testid="upcoming-sessions-list" className="space-y-2.5">
+        <div data-testid="upcoming-sessions-list" className="mt-4 divide-y divide-border-subtle">
           {sessions.slice(0, 5).map((s) => (
             <div
               key={s.id}
@@ -92,37 +92,35 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
                   navigate(`/projects/${s.project_id}`);
                 }
               }}
-              className="group flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-3.5 transition-all hover:border-primary/40 hover:bg-surface-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
+              className="group flex items-center justify-between gap-3 py-3 transition-colors hover:bg-surface-muted/30 -mx-2 px-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
             >
               <div className="space-y-1 min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-bold text-text-primary truncate">{s.title}</span>
+                  <span className="text-xs font-semibold text-text-primary truncate">{s.title}</span>
                   <SessionTypeBadge type={s.type} customLabel={s.custom_type_label} />
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-text-secondary">
-                  <span className="flex items-center gap-1 font-semibold text-text-primary">
-                    <Calendar className="h-3.5 w-3.5 text-text-muted" />
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-text-secondary">
+                  <span className="flex items-center gap-1 font-medium text-text-primary">
+                    <Calendar className="h-3 w-3 text-text-muted" />
                     {formatDate(s.date)}
                   </span>
                   {s.start_time && (
-                    <span className="flex items-center gap-1 text-primary font-semibold">
-                      <Clock className="h-3.5 w-3.5" />
+                    <span className="flex items-center gap-1 text-primary font-medium">
+                      <Clock className="h-3 w-3" />
                       {s.start_time.slice(0, 5)}
                     </span>
                   )}
                   {s.location && (
-                    <span className="flex items-center gap-1 text-text-secondary truncate max-w-[140px]">
-                      <MapPin className="h-3.5 w-3.5 text-text-muted" />
+                    <span className="flex items-center gap-1 text-text-secondary truncate max-w-[130px]">
+                      <MapPin className="h-3 w-3 text-text-muted" />
                       {s.location}
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="flex items-center text-text-secondary group-hover:text-primary transition-colors">
-                <ArrowRight className="h-4 w-4" />
-              </div>
+              <ArrowRight className="h-3.5 w-3.5 text-text-muted group-hover:text-primary transition-colors shrink-0" />
             </div>
           ))}
         </div>

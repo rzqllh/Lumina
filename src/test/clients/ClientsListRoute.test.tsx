@@ -114,9 +114,10 @@ describe('ClientsListRoute (CLIENT-REQ-001 / CLIENT-REQ-008)', () => {
     renderClientsList();
 
     expect(await screen.findByTestId('clients-empty-state')).toBeInTheDocument();
-    expect(screen.getByText('No clients in workspace yet')).toBeInTheDocument();
+    expect(screen.getByText('No clients yet')).toBeInTheDocument();
 
-    const addBtn = screen.getByTestId('empty-add-client-btn');
+    // The Add Client CTA is in the header, not the empty state
+    const addBtn = screen.getByTestId('add-client-btn');
     fireEvent.click(addBtn);
 
     await waitFor(() => {

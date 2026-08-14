@@ -84,7 +84,7 @@ describe('CalendarRoute (DASH-REQ-005)', () => {
 
     renderCalendar();
 
-    expect(await screen.findByText('Production Calendar')).toBeInTheDocument();
+    expect(await screen.findByText('Schedule')).toBeInTheDocument();
     expect(await screen.findByTestId('calendar-month-view')).toBeInTheDocument();
     expect(screen.getByTestId('calendar-filter-bar')).toBeInTheDocument();
   });

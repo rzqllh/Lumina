@@ -24,11 +24,11 @@ export function DashboardRoute() {
       {/* Greeting & Quick Action Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary sm:text-2xl">
+          <h1 className="text-xl font-semibold tracking-tight text-text-primary sm:text-2xl">
             Welcome back, {userName}
           </h1>
-          <p className="mt-0.5 text-xs text-text-muted">
-            {currentWorkspace?.name || 'Personal Production Console'} • Today's operational status
+          <p className="mt-0.5 text-xs text-text-secondary">
+            {currentWorkspace?.name || 'Personal Workspace'}
           </p>
         </div>
 

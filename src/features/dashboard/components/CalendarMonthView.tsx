@@ -52,23 +52,28 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
 
   return (
     <div data-testid="calendar-month-view" className="space-y-4">
-      {/* Calendar Grid Container */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-xs">
+      {/* Calendar Grid Container — gap-px pattern for lighter dividers */}
+      <div className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-border">
         {/* Days Header */}
-        <div className="grid grid-cols-7 border-b border-border bg-surface-muted/60 text-center text-xs font-bold text-text-secondary py-2.5">
+        <div className="grid grid-cols-7 gap-px bg-border">
           {daysOfWeek.map((day) => (
-            <div key={day}>{day}</div>
+            <div
+              key={day}
+              className="bg-surface-muted py-2 text-center text-[11px] font-semibold text-text-secondary"
+            >
+              {day}
+            </div>
           ))}
         </div>
 
-        {/* Days Grid */}
-        <div className="grid grid-cols-7 divide-x divide-y divide-border">
+        {/* Days Grid — gap-px creates 1px lines from the bg-border parent */}
+        <div className="grid grid-cols-7 gap-px bg-border">
           {calendarCells.map((day, index) => {
             if (day === null) {
               return (
                 <div
                   key={`empty-${index}`}
-                  className="min-h-[85px] sm:min-h-[105px] bg-surface-muted/30 p-2"
+                  className="min-h-[80px] sm:min-h-[100px] bg-surface-muted/50 p-1.5"
                 />
               );
             }
@@ -93,56 +98,59 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
                     setSelectedDateStr(dateStr);
                   }
                 }}
-                className={`min-h-[85px] sm:min-h-[105px] p-1.5 sm:p-2 transition-colors cursor-pointer hover:bg-surface-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset ${
-                  isToday ? 'bg-primary/5 font-bold' : 'bg-surface'
-                }`}
+                className={[
+                  'min-h-[80px] sm:min-h-[100px] p-1.5 sm:p-2 transition-colors cursor-pointer',
+                  'hover:bg-surface-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset',
+                  isToday ? 'bg-primary/[0.04]' : 'bg-surface',
+                ].join(' ')}
               >
-                {/* Day Header */}
+                {/* Day Number */}
                 <div className="flex items-center justify-between mb-1">
                   <span
-                    className={`flex h-6 w-6 items-center justify-center rounded-full text-xs ${
+                    className={[
+                      'flex h-6 w-6 items-center justify-center rounded-full text-[11px]',
                       isToday
-                        ? 'bg-primary text-primary-foreground font-bold shadow-2xs'
-                        : 'text-text-primary font-medium'
-                    }`}
+                        ? 'bg-primary text-primary-foreground font-bold'
+                        : 'text-text-primary font-medium',
+                    ].join(' ')}
                   >
                     {day}
                   </span>
                   {dayEvents.length > 0 && (
-                    <span className="text-xs font-bold text-text-secondary">
+                    <span className="text-[10px] font-semibold text-text-muted">
                       {dayEvents.length}
                     </span>
                   )}
                 </div>
 
                 {/* Event Chips */}
-                <div className="space-y-1">
+                <div className="space-y-0.5">
                   {dayEvents.slice(0, 2).map((event) => {
-                    const getDotColor = () => {
+                    const chipColor = (() => {
                       switch (event.type) {
                         case 'session':
-                          return 'text-indigo-800 bg-indigo-50 border-indigo-200';
+                          return 'text-indigo-800 bg-indigo-50';
                         case 'deliverable':
-                          return 'text-emerald-800 bg-emerald-50 border-emerald-200';
+                          return 'text-emerald-800 bg-emerald-50';
                         case 'payment':
-                          return 'text-amber-800 bg-amber-50 border-amber-200';
+                          return 'text-amber-800 bg-amber-50';
                         default:
-                          return 'text-purple-800 bg-purple-50 border-purple-200';
+                          return 'text-purple-800 bg-purple-50';
                       }
-                    };
+                    })();
 
                     return (
                       <div
                         key={event.id}
                         title={`${event.title} (${event.projectTitle})`}
-                        className={`truncate rounded px-1.5 py-0.5 text-[10px] font-semibold border ${getDotColor()}`}
+                        className={`truncate rounded px-1 py-px text-[10px] font-semibold ${chipColor}`}
                       >
                         {event.title}
                       </div>
                     );
                   })}
                   {dayEvents.length > 2 && (
-                    <div className="text-[10px] font-bold text-text-secondary pl-1">
+                    <div className="text-[10px] font-semibold text-text-muted pl-1">
                       +{dayEvents.length - 2} more
                     </div>
                   )}

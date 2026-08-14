@@ -17,24 +17,24 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
 
   if (isLoading) {
     return (
-      <div className="h-44 animate-pulse rounded-2xl border border-border bg-surface-muted/50" />
+      <div className="h-40 animate-pulse rounded-[var(--radius-card)] border border-border bg-surface-muted/50" />
     );
   }
 
   return (
     <div
       data-testid="active-projects-panel"
-      className="rounded-2xl border border-border bg-surface p-5 shadow-xs space-y-4"
+      className="rounded-[var(--radius-card)] border border-border bg-surface p-5"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/8 text-primary">
             <Briefcase className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-text-primary">Active Projects</h3>
-            <p className="text-xs text-text-secondary">{projects.length} in production pipeline</p>
+            <h3 className="text-sm font-semibold text-text-primary">Active Projects</h3>
+            <p className="text-xs text-text-secondary">{projects.length} in pipeline</p>
           </div>
         </div>
 
@@ -42,7 +42,7 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
           type="button"
           data-testid="view-all-projects-btn"
           onClick={() => navigate('/projects')}
-          className="min-h-[36px] px-2 text-xs font-semibold text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+          className="text-xs font-semibold text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg px-2 py-1"
         >
           View all →
         </button>
@@ -52,18 +52,18 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
       {projects.length === 0 && (
         <div
           data-testid="active-projects-empty-state"
-          className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface-muted/30 p-6 text-center"
+          className="mt-5 text-center py-6"
         >
-          <Briefcase className="h-8 w-8 text-text-secondary mb-1.5" />
-          <h4 className="text-xs font-bold text-text-primary">No active projects</h4>
-          <p className="mt-0.5 max-w-xs text-xs text-text-secondary">
-            Create a new client project to start tracking production milestones.
+          <Briefcase className="h-7 w-7 text-text-muted mx-auto mb-2" />
+          <p className="text-xs font-medium text-text-primary">No active projects</p>
+          <p className="mt-0.5 text-xs text-text-secondary">
+            Create a project to start tracking production milestones.
           </p>
           <button
             type="button"
             data-testid="empty-create-project-btn"
             onClick={() => navigate('/projects/new')}
-            className="mt-3 inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="mt-4 inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-[var(--radius-input)] bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98]"
           >
             <Plus className="h-4 w-4" />
             <span>Create Project</span>
@@ -73,7 +73,7 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
 
       {/* Projects List */}
       {projects.length > 0 && (
-        <div data-testid="active-projects-list" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div data-testid="active-projects-list" className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
           {projects.slice(0, 6).map((p) => (
             <div
               key={p.id}
@@ -87,31 +87,30 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
                   navigate(`/projects/${p.id}`);
                 }
               }}
-              className="group flex flex-col justify-between rounded-xl border border-border bg-surface p-4 shadow-2xs transition-all hover:border-primary/40 hover:bg-surface-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer space-y-3"
+              className="group flex flex-col justify-between rounded-[var(--radius-input)] border border-border-subtle p-3.5 transition-colors hover:border-border-interactive hover:bg-surface-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer space-y-2.5"
             >
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
                   <ProjectStatusBadge status={p.status} />
                   {p.project_number && (
-                    <span className="text-xs font-semibold text-text-secondary">
+                    <span className="text-xs font-medium text-text-muted tabular-nums">
                       {p.project_number}
                     </span>
                   )}
                 </div>
 
-                <h4 className="text-xs font-bold text-text-primary group-hover:text-primary transition-colors truncate">
+                <h4 className="text-xs font-semibold text-text-primary group-hover:text-primary transition-colors truncate">
                   {p.title}
                 </h4>
 
                 <div className="flex items-center gap-1.5 text-xs text-text-secondary">
-                  <User className="h-3.5 w-3.5 text-text-muted shrink-0" />
-                  <span className="truncate">{p.client?.display_name || 'Unassigned Client'}</span>
+                  <User className="h-3 w-3 text-text-muted shrink-0" />
+                  <span className="truncate">{p.client?.display_name || 'Unassigned'}</span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between border-t border-border-subtle pt-2.5 text-xs font-medium text-text-secondary group-hover:text-primary">
-                <span>Open Project Console</span>
-                <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform text-primary" />
+              <div className="flex items-center justify-end text-xs text-text-muted group-hover:text-primary transition-colors">
+                <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
               </div>
             </div>
           ))}

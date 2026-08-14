@@ -7,7 +7,7 @@ export const AppShell: React.FC = () => {
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       <Header />
-      <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 pb-24 md:pb-10">
+      <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-10">
         <Outlet />
       </main>
       <BottomNav />

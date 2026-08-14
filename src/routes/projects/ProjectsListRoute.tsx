@@ -28,13 +28,13 @@ export function ProjectsListRoute() {
   }, [projects, searchQuery]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Page Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-text-primary">Projects Pipeline</h1>
+          <h1 className="text-xl font-semibold tracking-tight text-text-primary sm:text-2xl">Projects</h1>
           <p className="text-xs text-text-secondary mt-0.5">
-            Active creator gigs, client engagements, and foundational project records.
+            Manage client engagements and production records.
           </p>
         </div>
 
@@ -42,7 +42,7 @@ export function ProjectsListRoute() {
           type="button"
           data-testid="create-project-btn"
           onClick={() => navigate('/projects/new')}
-          className="inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-xs transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
+          className="inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-input)] bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground transition-colors duration-[var(--transition-normal)] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98]"
         >
           <Plus className="h-4 w-4" />
           <span>Create Project</span>
@@ -56,15 +56,15 @@ export function ProjectsListRoute() {
           <input
             type="text"
             aria-label="Search projects by title, client, or number"
-            placeholder="Search projects by title, client, or number..."
+            placeholder="Search projects…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full min-h-[44px] rounded-xl border border-border bg-surface pl-10 pr-4 py-2 text-xs text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary"
+            className="w-full min-h-[44px] rounded-[var(--radius-input)] border border-border bg-surface pl-10 pr-4 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary transition-colors"
           />
         </div>
 
         {/* Status Filters */}
-        <div className="flex items-center gap-1 rounded-xl border border-border bg-surface p-1 self-start sm:self-auto overflow-x-auto">
+        <div className="flex items-center gap-0.5 rounded-[var(--radius-input)] border border-border bg-surface p-1 self-start sm:self-auto overflow-x-auto">
           {[
             { id: 'all', label: 'All' },
             { id: 'active', label: 'Active' },
@@ -76,9 +76,9 @@ export function ProjectsListRoute() {
               type="button"
               data-testid={`filter-${tab.id}-projects`}
               onClick={() => setStatusFilter(tab.id)}
-              className={`min-h-[40px] cursor-pointer rounded-lg px-3.5 py-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+              className={`min-h-[36px] cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                 statusFilter === tab.id
-                  ? 'bg-surface-muted text-text-primary shadow-2xs font-semibold'
+                  ? 'bg-surface-muted text-text-primary font-semibold'
                   : 'text-text-secondary hover:text-text-primary'
               }`}
             >
@@ -92,12 +92,12 @@ export function ProjectsListRoute() {
       {isLoading ? (
         <div
           data-testid="projects-loading-skeleton"
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+          className="grid grid-cols-1 gap-3 sm:grid-cols-2"
         >
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-36 animate-pulse rounded-2xl border border-border bg-surface-muted/60"
+              className="h-32 animate-pulse rounded-[var(--radius-card)] border border-border bg-surface-muted/50"
             />
           ))}
         </div>
@@ -105,15 +105,15 @@ export function ProjectsListRoute() {
         <div
           role="alert"
           data-testid="projects-error-state"
-          className="flex flex-col items-center justify-center rounded-2xl border border-status-danger/25 bg-surface p-8 text-center shadow-xs"
+          className="flex flex-col items-center justify-center rounded-[var(--radius-card)] border border-status-danger/25 bg-surface p-8 text-center"
         >
-          <AlertCircle className="h-8 w-8 text-status-danger mb-2" />
-          <h3 className="text-sm font-bold text-text-primary">Failed to load projects</h3>
+          <AlertCircle className="h-7 w-7 text-status-danger mb-2" />
+          <h3 className="text-sm font-semibold text-text-primary">Failed to load projects</h3>
           <p className="mt-1 text-xs text-text-secondary max-w-sm">{error.message}</p>
           <button
             type="button"
             onClick={() => refetch()}
-            className="mt-4 cursor-pointer rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90"
+            className="mt-4 cursor-pointer rounded-[var(--radius-input)] bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
           >
             Retry
           </button>
@@ -121,33 +121,20 @@ export function ProjectsListRoute() {
       ) : filteredProjects.length === 0 ? (
         <div
           data-testid="projects-empty-state"
-          className="flex min-h-[30vh] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface/50 p-8 text-center"
+          className="flex min-h-[30vh] flex-col items-center justify-center py-12 text-center"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface-muted text-text-muted mb-3">
-            <FolderKanban className="h-6 w-6" />
-          </div>
-          <h3 className="text-base font-bold text-text-primary">
-            {searchQuery ? 'No matching projects found' : 'No projects in workspace yet'}
+          <FolderKanban className="h-8 w-8 text-text-muted mb-3" />
+          <h3 className="text-sm font-semibold text-text-primary">
+            {searchQuery ? 'No matching projects' : 'No projects yet'}
           </h3>
-          <p className="mt-1 max-w-xs text-xs text-text-muted">
+          <p className="mt-1 max-w-xs text-xs text-text-secondary">
             {searchQuery
-              ? 'Try changing your search keywords or clearing the status filter.'
-              : 'Create your first project record linked to a client to get started.'}
+              ? 'Try different search terms or clear the filter.'
+              : 'Create your first project to get started.'}
           </p>
-          {!searchQuery && (
-            <button
-              type="button"
-              data-testid="empty-create-project-btn"
-              onClick={() => navigate('/projects/new')}
-              className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Create Project</span>
-            </button>
-          )}
         </div>
       ) : (
-        <div data-testid="projects-grid" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div data-testid="projects-grid" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {filteredProjects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}

@@ -27,82 +27,81 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
 
   if (isLoading) {
     return (
-      <div className="h-44 animate-pulse rounded-2xl border border-border bg-surface-muted/50" />
+      <div className="h-40 animate-pulse rounded-[var(--radius-card)] border border-border bg-surface-muted/50" />
     );
   }
 
   const getItemIcon = (type: AttentionItem['type']) => {
     switch (type) {
       case 'overdue_payment':
-        return <Receipt className="h-4 w-4 text-rose-700" />;
+        return <Receipt className="h-4 w-4 text-status-danger" />;
       case 'overdue_deliverable':
-        return <FileBox className="h-4 w-4 text-rose-700" />;
+        return <FileBox className="h-4 w-4 text-status-danger" />;
       case 'revision_requested':
-        return <Sparkles className="h-4 w-4 text-amber-700" />;
+        return <Sparkles className="h-4 w-4 text-status-warning" />;
       case 'overdue_task':
       default:
-        return <CheckSquare className="h-4 w-4 text-rose-700" />;
+        return <CheckSquare className="h-4 w-4 text-status-danger" />;
     }
   };
+
+  const allClear = items.length === 0;
 
   return (
     <div
       data-testid="needs-attention-panel"
-      className="rounded-2xl border border-border bg-surface p-5 shadow-xs space-y-4"
+      className="rounded-[var(--radius-card)] border border-border bg-surface p-5"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <div
             className={`flex h-7 w-7 items-center justify-center rounded-lg ${
-              items.length > 0
-                ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+              allClear
+                ? 'bg-emerald-50 text-status-success'
+                : 'bg-rose-50 text-status-danger'
             }`}
           >
-            {items.length > 0 ? (
-              <AlertTriangle className="h-4 w-4" />
-            ) : (
+            {allClear ? (
               <CheckCircle2 className="h-4 w-4" />
+            ) : (
+              <AlertTriangle className="h-4 w-4" />
             )}
           </div>
           <div>
-            <h3 className="text-sm font-bold text-text-primary">Needs Attention</h3>
+            <h3 className="text-sm font-semibold text-text-primary">Needs Attention</h3>
             <p className="text-xs text-text-secondary">
-              {items.length > 0
-                ? `${items.length} urgent action ${items.length === 1 ? 'item' : 'items'} require your review`
-                : 'Everything is on schedule and up to date'}
+              {allClear
+                ? 'Everything on schedule'
+                : `${items.length} ${items.length === 1 ? 'item requires' : 'items require'} action`}
             </p>
           </div>
         </div>
 
-        {items.length > 0 && (
+        {!allClear && (
           <span
             data-testid="attention-badge-count"
-            className="rounded-full bg-rose-50 border border-rose-200 px-2 py-0.5 text-xs font-bold text-rose-800"
+            className="rounded-full bg-rose-50 px-2 py-0.5 text-xs font-bold text-status-danger"
           >
             {items.length}
           </span>
         )}
       </div>
 
-      {/* Empty State: All Clear */}
-      {items.length === 0 && (
-        <div
-          data-testid="attention-empty-state"
-          className="flex flex-col items-center justify-center rounded-xl border border-dashed border-emerald-300 bg-emerald-50/40 p-6 text-center"
-        >
-          <CheckCircle2 className="h-8 w-8 text-emerald-700 mb-1.5" />
-          <h4 className="text-xs font-bold text-text-primary">All caught up!</h4>
-          <p className="mt-0.5 max-w-xs text-xs text-text-secondary">
-            No overdue deliverables, unpaid invoices, or unhandled client revision requests.
+      {/* Empty State — simple, no dashed container */}
+      {allClear && (
+        <div data-testid="attention-empty-state" className="mt-5 text-center py-4">
+          <CheckCircle2 className="h-7 w-7 text-status-success mx-auto mb-2" />
+          <p className="text-xs font-medium text-text-primary">All caught up</p>
+          <p className="mt-0.5 text-xs text-text-secondary">
+            No overdue deliverables, unpaid invoices, or revision requests.
           </p>
         </div>
       )}
 
-      {/* Attention Items List */}
-      {items.length > 0 && (
-        <div data-testid="attention-items-list" className="space-y-2">
+      {/* Attention Items — divider rows, not card-in-card */}
+      {!allClear && (
+        <div data-testid="attention-items-list" className="mt-4 divide-y divide-border-subtle">
           {items.map((item) => (
             <div
               key={item.id}
@@ -116,36 +115,36 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
                   navigate(`/projects/${item.projectId}`);
                 }
               }}
-              className="group flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-3 transition-all hover:border-primary/40 hover:bg-surface-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
+              className="group flex items-center justify-between gap-3 py-3 transition-colors hover:bg-surface-muted/30 -mx-2 px-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
             >
               <div className="flex items-start gap-3 min-w-0 flex-1">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-muted border border-border mt-0.5">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-surface-muted mt-0.5">
                   {getItemIcon(item.type)}
                 </div>
                 <div className="min-w-0 flex-1 space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-text-primary truncate">
+                    <span className="text-xs font-semibold text-text-primary truncate">
                       {item.title}
                     </span>
                     {item.amount !== undefined && (
-                      <span className="text-xs font-bold text-rose-800">
+                      <span className="text-xs font-bold text-status-danger tabular-nums">
                         {formatMoney(item.amount, currency)}
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-text-secondary">
-                    <span className="truncate max-w-[140px] font-medium text-text-primary">
+                  <div className="flex items-center gap-1.5 text-xs text-text-secondary">
+                    <span className="truncate max-w-[140px] font-medium">
                       {item.projectTitle}
                     </span>
-                    <span>•</span>
-                    <span className="text-rose-700 font-semibold truncate">{item.subtitle}</span>
+                    <span className="text-text-muted">·</span>
+                    <span className="text-status-danger font-medium truncate">
+                      {item.subtitle}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center text-text-secondary group-hover:text-primary transition-colors">
-                <ArrowRight className="h-4 w-4" />
-              </div>
+              <ArrowRight className="h-3.5 w-3.5 text-text-muted group-hover:text-primary transition-colors shrink-0" />
             </div>
           ))}
         </div>

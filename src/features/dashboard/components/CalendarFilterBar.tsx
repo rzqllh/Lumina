@@ -23,40 +23,15 @@ export const CalendarFilterBar: React.FC<CalendarFilterBarProps> = ({
     label: string;
     icon: React.ComponentType<{ className?: string }>;
     count: number;
-    badgeStyle: string;
   }[] = [
-    {
-      id: 'all',
-      label: 'All Events',
-      icon: Layers,
-      count: counts.all,
-      badgeStyle: 'bg-surface-muted text-text-primary border border-border',
-    },
-    {
-      id: 'sessions',
-      label: 'Shoots & Calls',
-      icon: Camera,
-      count: counts.sessions,
-      badgeStyle: 'bg-indigo-50 text-indigo-800 border border-indigo-200',
-    },
-    {
-      id: 'deadlines',
-      label: 'Deliverables',
-      icon: FileBox,
-      count: counts.deadlines,
-      badgeStyle: 'bg-emerald-50 text-emerald-800 border border-emerald-200',
-    },
-    {
-      id: 'payments',
-      label: 'Payment Schedules',
-      icon: Receipt,
-      count: counts.payments,
-      badgeStyle: 'bg-amber-50 text-amber-800 border border-amber-200',
-    },
+    { id: 'all', label: 'All', icon: Layers, count: counts.all },
+    { id: 'sessions', label: 'Shoots', icon: Camera, count: counts.sessions },
+    { id: 'deadlines', label: 'Deliverables', icon: FileBox, count: counts.deadlines },
+    { id: 'payments', label: 'Payments', icon: Receipt, count: counts.payments },
   ];
 
   return (
-    <div data-testid="calendar-filter-bar" className="flex flex-wrap items-center gap-2">
+    <div data-testid="calendar-filter-bar" className="flex flex-wrap items-center gap-1.5">
       {filters.map((f) => {
         const Icon = f.icon;
         const isActive = currentFilter === f.id;
@@ -66,18 +41,23 @@ export const CalendarFilterBar: React.FC<CalendarFilterBarProps> = ({
             type="button"
             data-testid={`filter-${f.id}`}
             onClick={() => onFilterChange(f.id)}
-            className={`inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+            className={[
+              'inline-flex min-h-[36px] cursor-pointer items-center gap-1.5 rounded-[var(--radius-input)] px-3 py-1.5 text-xs font-medium transition-colors duration-[var(--transition-normal)]',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
               isActive
-                ? 'bg-primary text-primary-foreground shadow-2xs'
-                : 'border border-border bg-surface text-text-secondary hover:bg-surface-muted hover:text-text-primary'
-            }`}
+                ? 'bg-surface-muted text-text-primary font-semibold border border-border'
+                : 'text-text-secondary hover:bg-surface-muted/60 hover:text-text-primary',
+            ].join(' ')}
           >
-            <Icon className="h-4 w-4" />
+            <Icon className="h-3.5 w-3.5" />
             <span>{f.label}</span>
             <span
-              className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
-                isActive ? 'bg-primary-foreground/20 text-primary-foreground' : f.badgeStyle
-              }`}
+              className={[
+                'rounded-full px-1.5 py-px text-[10px] font-semibold tabular-nums',
+                isActive
+                  ? 'bg-primary/10 text-primary'
+                  : 'bg-surface-muted text-text-muted',
+              ].join(' ')}
             >
               {f.count}
             </span>
