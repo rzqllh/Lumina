@@ -46,13 +46,13 @@ export const QuickActionBar: React.FC = () => {
             type="button"
             data-testid={action.testId}
             onClick={() => navigate(action.path)}
-            className={`inline-flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold shadow-2xs transition-all active:scale-98 ${
+            className={`inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold shadow-2xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-98 ${
               action.primary
                 ? 'bg-primary text-primary-foreground hover:opacity-90'
-                : 'border border-border bg-surface text-text-primary hover:bg-surface-muted'
+                : 'border border-border bg-surface text-text-primary hover:bg-surface-muted hover:border-border-interactive'
             }`}
           >
-            <Icon className="h-3.5 w-3.5" />
+            <Icon className="h-4 w-4" />
             <span>{action.label}</span>
           </button>
         );

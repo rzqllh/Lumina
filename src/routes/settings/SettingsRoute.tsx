@@ -64,10 +64,10 @@ export function SettingsRoute() {
         {settingSections.map((section, idx) => (
           <div key={idx} className="space-y-3">
             <div>
-              <h2 className="text-xs font-bold uppercase tracking-wider text-text-muted">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-text-secondary">
                 {section.title}
               </h2>
-              <p className="text-xs text-text-muted">{section.description}</p>
+              <p className="text-xs text-text-secondary mt-0.5">{section.description}</p>
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -78,6 +78,7 @@ export function SettingsRoute() {
                     key={itemIdx}
                     role={item.active ? 'button' : undefined}
                     tabIndex={item.active ? 0 : undefined}
+                    aria-disabled={!item.active}
                     data-testid={`settings-card-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
                     onClick={() => item.active && navigate(item.to)}
                     onKeyDown={(e) => {
@@ -88,8 +89,8 @@ export function SettingsRoute() {
                     }}
                     className={`flex items-start justify-between rounded-2xl border p-5 transition-all ${
                       item.active
-                        ? 'border-border bg-surface shadow-xs hover:border-primary/40 hover:bg-surface-muted/30 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-                        : 'border-border-subtle bg-surface/50 opacity-60'
+                        ? 'border-border bg-surface shadow-xs hover:border-primary/40 hover:bg-surface-muted/40 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+                        : 'border-border-subtle bg-surface-muted/40 cursor-not-allowed opacity-80'
                     }`}
                   >
                     <div className="flex items-start gap-3.5">
@@ -97,14 +98,21 @@ export function SettingsRoute() {
                         className={`flex h-10 w-10 items-center justify-center rounded-xl border shrink-0 ${
                           item.active
                             ? 'bg-purple-50 text-primary border-purple-200'
-                            : 'bg-surface-muted text-text-muted border-border'
+                            : 'bg-surface text-text-muted border-border'
                         }`}
                       >
                         <Icon className="h-5 w-5" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-bold text-text-primary">{item.title}</h3>
-                        <p className="mt-1 text-xs text-text-secondary">{item.description}</p>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm font-bold text-text-primary">{item.title}</h3>
+                          {!item.active && (
+                            <span className="rounded-md bg-surface px-1.5 py-0.5 text-[10px] font-semibold text-text-secondary border border-border">
+                              Planned
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-text-secondary">{item.description}</p>
                       </div>
                     </div>
 

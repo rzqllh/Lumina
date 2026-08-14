@@ -15,14 +15,14 @@ export const ClientTypeBadge: React.FC<ClientTypeBadgeProps> = ({
   const getBadgeStyle = () => {
     switch (type) {
       case 'couple':
-        return 'bg-purple-50 text-purple-700 border-purple-200';
+        return 'bg-purple-50 text-purple-800 border-purple-200';
       case 'organization':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return 'bg-blue-50 text-blue-800 border-blue-200';
       case 'individual':
-        return 'bg-zinc-100 text-zinc-700 border-zinc-200';
+        return 'bg-zinc-100 text-zinc-800 border-zinc-300';
       case 'custom':
       default:
-        return 'bg-amber-50 text-amber-700 border-amber-200';
+        return 'bg-amber-50 text-amber-800 border-amber-200';
     }
   };
 

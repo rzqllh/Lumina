@@ -38,8 +38,8 @@ export const WorkspaceMetricsGrid: React.FC<WorkspaceMetricsGridProps> = ({
     <div data-testid="workspace-metrics-grid" className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       {/* Active Projects */}
       <div className="rounded-2xl border border-border bg-surface p-4 shadow-2xs space-y-1">
-        <div className="flex items-center gap-1.5 text-xs text-text-muted">
-          <Briefcase className="h-3.5 w-3.5 text-primary" />
+        <div className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+          <Briefcase className="h-4 w-4 text-primary" />
           <span>Active Projects</span>
         </div>
         <p data-testid="metric-active-projects" className="text-xl font-bold text-text-primary">
@@ -49,33 +49,33 @@ export const WorkspaceMetricsGrid: React.FC<WorkspaceMetricsGridProps> = ({
 
       {/* Unpaid Receivables */}
       <div className="rounded-2xl border border-border bg-surface p-4 shadow-2xs space-y-1">
-        <div className="flex items-center gap-1.5 text-xs text-text-muted">
-          <Receipt className="h-3.5 w-3.5 text-amber-600" />
+        <div className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+          <Receipt className="h-4 w-4 text-amber-700" />
           <span>Receivables</span>
         </div>
-        <p data-testid="metric-unpaid-receivables" className="text-xl font-bold text-amber-700">
+        <p data-testid="metric-unpaid-receivables" className="text-xl font-bold text-amber-800">
           {formatMoney(unpaidReceivablesTotal, currency)}
         </p>
       </div>
 
       {/* Received Revenue */}
       <div className="rounded-2xl border border-border bg-surface p-4 shadow-2xs space-y-1">
-        <div className="flex items-center gap-1.5 text-xs text-text-muted">
-          <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
+        <div className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+          <TrendingUp className="h-4 w-4 text-emerald-700" />
           <span>Received Revenue</span>
         </div>
-        <p data-testid="metric-received-revenue" className="text-xl font-bold text-emerald-700">
+        <p data-testid="metric-received-revenue" className="text-xl font-bold text-emerald-800">
           {formatMoney(receivedRevenueTotal, currency)}
         </p>
       </div>
 
       {/* Shoots This Month */}
       <div className="rounded-2xl border border-border bg-surface p-4 shadow-2xs space-y-1">
-        <div className="flex items-center gap-1.5 text-xs text-text-muted">
-          <Camera className="h-3.5 w-3.5 text-indigo-600" />
+        <div className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+          <Camera className="h-4 w-4 text-indigo-700" />
           <span>Shoots This Month</span>
         </div>
-        <p data-testid="metric-monthly-shoots" className="text-xl font-bold text-indigo-700">
+        <p data-testid="metric-monthly-shoots" className="text-xl font-bold text-indigo-800">
           {sessionsScheduledThisMonth}
         </p>
       </div>

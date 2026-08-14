@@ -125,19 +125,19 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
   return (
     <section
       aria-labelledby="project-tasks-heading"
-      className="space-y-4 pt-4 border-t border-neutral-800/80"
+      className="space-y-4 pt-4 border-t border-border"
     >
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
             <CheckSquare className="w-4 h-4" />
           </div>
           <div>
-            <h3 id="project-tasks-heading" className="text-base font-bold text-neutral-100">
+            <h3 id="project-tasks-heading" className="text-base font-bold text-text-primary">
               Action Items & Tasks
             </h3>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-text-secondary">
               Checklist of operational tasks across workflow stages.
             </p>
           </div>
@@ -145,7 +145,7 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
 
         <div className="flex items-center gap-3 self-start sm:self-auto">
           {totalTasks > 0 && (
-            <span className="text-xs font-medium text-neutral-400">
+            <span className="text-xs font-semibold text-text-secondary">
               {doneTasks} of {totalTasks} done
             </span>
           )}
@@ -154,7 +154,7 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
             <button
               type="button"
               onClick={() => setIsCreateOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-neutral-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors shadow-sm shrink-0"
+              className="inline-flex min-h-[36px] items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-primary-foreground bg-primary hover:opacity-90 rounded-lg transition-colors shadow-xs shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <Plus className="w-4 h-4" />
               Add Task
@@ -170,10 +170,10 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
           <button
             type="button"
             onClick={() => handleStageSelect(null)}
-            className={`px-2.5 py-1 text-xs font-medium rounded-lg whitespace-nowrap transition-colors ${
+            className={`min-h-[36px] px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
               !activeStageId
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                : 'bg-neutral-900 text-neutral-400 border border-neutral-800 hover:text-neutral-200'
+                ? 'bg-primary/10 text-primary border border-primary/30 font-bold'
+                : 'bg-surface text-text-secondary border border-border hover:text-text-primary'
             }`}
           >
             All Tasks ({tasks.length})
@@ -187,10 +187,10 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
                 key={s.id}
                 type="button"
                 onClick={() => handleStageSelect(isSelected ? null : s.id)}
-                className={`px-2.5 py-1 text-xs font-medium rounded-lg whitespace-nowrap transition-colors ${
+                className={`min-h-[36px] px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                   isSelected
-                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                    : 'bg-neutral-900 text-neutral-400 border border-neutral-800 hover:text-neutral-200'
+                    ? 'bg-primary/10 text-primary border border-primary/30 font-bold'
+                    : 'bg-surface text-text-secondary border border-border hover:text-text-primary'
                 }`}
               >
                 {s.label} ({stageTaskCount})
@@ -204,10 +204,10 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
               onClick={() =>
                 handleStageSelect(activeStageId === 'unassigned' ? null : 'unassigned')
               }
-              className={`px-2.5 py-1 text-xs font-medium rounded-lg whitespace-nowrap transition-colors ${
+              className={`min-h-[36px] px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                 activeStageId === 'unassigned'
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                  : 'bg-neutral-900 text-neutral-400 border border-neutral-800 hover:text-neutral-200'
+                  ? 'bg-primary/10 text-primary border border-primary/30 font-bold'
+                  : 'bg-surface text-text-secondary border border-border hover:text-text-primary'
               }`}
             >
               Unassigned ({tasks.filter((t) => !t.stage_id).length})
@@ -217,11 +217,12 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
 
         {/* Status Filter Toggle */}
         <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-auto">
-          <span className="text-[11px] text-neutral-500 font-medium">Show:</span>
+          <span className="text-xs text-text-secondary font-semibold">Show:</span>
           <select
             value={statusFilter}
+            aria-label="Filter tasks by status"
             onChange={(e) => setStatusFilter(e.target.value as 'all' | 'open' | 'done')}
-            className="px-2.5 py-1 bg-neutral-900 border border-neutral-800 rounded-md text-xs text-neutral-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+            className="min-h-[36px] px-3 py-1.5 bg-surface border border-border rounded-lg text-xs font-medium text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="all">All</option>
             <option value="open">Open Only</option>
@@ -232,26 +233,26 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
 
       {/* Loading & Error States */}
       {isLoading && (
-        <div className="flex items-center justify-center py-8 text-neutral-400 bg-neutral-900/30 border border-neutral-800 rounded-xl">
+        <div className="flex items-center justify-center py-8 text-text-secondary bg-surface-muted/30 border border-border rounded-xl">
           <Loader2 className="w-5 h-5 animate-spin mr-2" />
           Loading tasks...
         </div>
       )}
 
       {error && (
-        <div className="p-3.5 bg-red-950/40 border border-red-800/60 rounded-xl text-xs text-red-300">
+        <div className="p-3.5 bg-status-danger/8 border border-status-danger/25 rounded-xl text-xs text-status-danger">
           Failed to load project tasks. Please try refreshing.
         </div>
       )}
 
       {/* Empty State */}
       {!isLoading && !error && filteredTasks.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-10 px-4 bg-neutral-900/30 border border-neutral-800 border-dashed rounded-xl text-center">
-          <CheckSquare className="w-8 h-8 text-neutral-600 mb-2" />
-          <h4 className="text-sm font-semibold text-neutral-200 mb-1">
+        <div className="flex flex-col items-center justify-center py-10 px-4 bg-surface-muted/30 border border-border border-dashed rounded-xl text-center">
+          <CheckSquare className="w-8 h-8 text-text-secondary mb-2" />
+          <h4 className="text-sm font-semibold text-text-primary mb-1">
             {tasks.length === 0 ? 'No action items yet' : 'No tasks match current filter'}
           </h4>
-          <p className="text-xs text-neutral-400 max-w-sm mb-4">
+          <p className="text-xs text-text-secondary max-w-sm mb-4">
             {tasks.length === 0
               ? 'Track pre-production checklists, gear prep, editing batches, and client tasks.'
               : 'Try clearing your stage or status filters.'}
@@ -260,7 +261,7 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
             <button
               type="button"
               onClick={() => setIsCreateOpen(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-neutral-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors shadow-sm"
+              className="inline-flex min-h-[40px] items-center gap-1.5 px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:opacity-90 rounded-lg transition-colors shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <Plus className="w-4 h-4" />
               Add First Task

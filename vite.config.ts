@@ -16,8 +16,8 @@ export default defineConfig({
         name: 'Lumina — Production OS for Photographers',
         short_name: 'Lumina',
         description: 'Project management operating system for photographers and videographers',
-        theme_color: '#f8f7fb',
-        background_color: '#f8f7fb',
+        theme_color: '#ecebf0',
+        background_color: '#ecebf0',
         display: 'standalone',
         orientation: 'portrait',
         icons: [

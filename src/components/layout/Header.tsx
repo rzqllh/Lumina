@@ -34,22 +34,23 @@ export const Header: React.FC = () => {
 
         {/* Desktop Navigation Links & Sign Out */}
         <div className="flex items-center gap-2">
-          <nav className="hidden md:flex items-center gap-1">
+          <nav aria-label="Desktop Navigation" className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => {
               const Icon = link.icon;
               return (
                 <NavLink
                   key={link.to}
                   to={link.to}
+                  end={link.to === '/'}
                   className={({ isActive }) =>
-                    `flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                    `flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                       isActive
-                        ? 'bg-surface-muted text-text-primary'
-                        : 'text-text-secondary hover:bg-surface-muted/60 hover:text-text-primary'
+                        ? 'bg-surface-muted text-text-primary font-semibold'
+                        : 'text-text-secondary hover:bg-surface-muted/70 hover:text-text-primary'
                     }`
                   }
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-4 w-4" />
                   {link.label}
                 </NavLink>
               );
@@ -60,11 +61,11 @@ export const Header: React.FC = () => {
             type="button"
             data-testid="header-signout-button"
             onClick={() => signOut()}
-            aria-label="Sign out"
+            aria-label="Sign out of Lumina"
             title="Sign out of Lumina"
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-colors hover:bg-surface-muted hover:text-status-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface text-text-secondary transition-colors hover:bg-surface-muted hover:text-status-danger hover:border-status-danger/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-95"
           >
-            <LogOut className="h-3.5 w-3.5" />
+            <LogOut className="h-4 w-4" />
           </button>
         </div>
       </div>

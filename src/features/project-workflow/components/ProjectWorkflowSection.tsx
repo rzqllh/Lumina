@@ -99,14 +99,14 @@ export const ProjectWorkflowSection: React.FC<ProjectWorkflowSectionProps> = ({
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
             <Workflow className="w-4 h-4" />
           </div>
           <div>
-            <h3 id="project-workflow-heading" className="text-base font-bold text-neutral-100">
+            <h3 id="project-workflow-heading" className="text-base font-bold text-text-primary">
               Production Workflow
             </h3>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-text-secondary">
               Project production stages and current progress.
             </p>
           </div>
@@ -117,9 +117,9 @@ export const ProjectWorkflowSection: React.FC<ProjectWorkflowSectionProps> = ({
             <button
               type="button"
               onClick={() => setIsApplyModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-neutral-200 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 hover:border-neutral-700 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-text-primary bg-surface hover:bg-surface-muted border border-border rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
               {stages.length > 0 ? 'Apply Template' : 'Apply Workflow'}
             </button>
 
@@ -127,7 +127,7 @@ export const ProjectWorkflowSection: React.FC<ProjectWorkflowSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setIsManagerModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-neutral-300 hover:text-neutral-100 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 hover:border-neutral-700 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary bg-surface hover:bg-surface-muted border border-border rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
                 Customize
@@ -139,26 +139,26 @@ export const ProjectWorkflowSection: React.FC<ProjectWorkflowSectionProps> = ({
 
       {/* Loading & Error States */}
       {isLoading && (
-        <div className="flex items-center justify-center py-10 text-neutral-400 bg-neutral-900/40 border border-neutral-800 rounded-xl">
+        <div className="flex items-center justify-center py-10 text-text-secondary bg-surface-muted/40 border border-border rounded-xl">
           <Loader2 className="w-5 h-5 animate-spin mr-2" />
           Loading workflow stages...
         </div>
       )}
 
       {error && (
-        <div className="p-4 bg-red-950/40 border border-red-800/60 rounded-xl text-xs text-red-300">
+        <div className="p-4 bg-status-danger/8 border border-status-danger/25 rounded-xl text-xs text-status-danger">
           Failed to load project workflow stages. Please try refreshing.
         </div>
       )}
 
       {/* Empty State */}
       {!isLoading && !error && stages.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-10 px-4 bg-neutral-900/30 border border-neutral-800 border-dashed rounded-xl text-center">
-          <Workflow className="w-8 h-8 text-neutral-600 mb-2" />
-          <h4 className="text-sm font-semibold text-neutral-200 mb-1">
+        <div className="flex flex-col items-center justify-center py-10 px-4 bg-surface-muted/30 border border-border border-dashed rounded-xl text-center">
+          <Workflow className="w-8 h-8 text-text-secondary mb-2" />
+          <h4 className="text-sm font-semibold text-text-primary mb-1">
             No workflow stages added yet
           </h4>
-          <p className="text-xs text-neutral-400 max-w-sm mb-4">
+          <p className="text-xs text-text-secondary max-w-sm mb-4">
             Apply a preset workflow template from your catalog or add custom stages to track
             production.
           </p>
@@ -167,7 +167,7 @@ export const ProjectWorkflowSection: React.FC<ProjectWorkflowSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setIsApplyModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-neutral-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors shadow-sm"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:opacity-90 rounded-lg transition-colors shadow-xs"
               >
                 <Sparkles className="w-4 h-4" />
                 Apply Workflow Template
@@ -175,7 +175,7 @@ export const ProjectWorkflowSection: React.FC<ProjectWorkflowSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setIsManagerModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-neutral-200 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-text-primary bg-surface hover:bg-surface-muted border border-border rounded-lg transition-colors"
               >
                 Add Custom Stage
               </button>

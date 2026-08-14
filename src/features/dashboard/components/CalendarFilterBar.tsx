@@ -27,31 +27,31 @@ export const CalendarFilterBar: React.FC<CalendarFilterBarProps> = ({
   }[] = [
     {
       id: 'all',
-      label: 'All Production Events',
+      label: 'All Events',
       icon: Layers,
       count: counts.all,
-      badgeStyle: 'bg-surface-muted text-text-secondary',
+      badgeStyle: 'bg-surface-muted text-text-primary border border-border',
     },
     {
       id: 'sessions',
       label: 'Shoots & Calls',
       icon: Camera,
       count: counts.sessions,
-      badgeStyle: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+      badgeStyle: 'bg-indigo-50 text-indigo-800 border border-indigo-200',
     },
     {
       id: 'deadlines',
       label: 'Deliverables',
       icon: FileBox,
       count: counts.deadlines,
-      badgeStyle: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+      badgeStyle: 'bg-emerald-50 text-emerald-800 border border-emerald-200',
     },
     {
       id: 'payments',
       label: 'Payment Schedules',
       icon: Receipt,
       count: counts.payments,
-      badgeStyle: 'bg-amber-50 text-amber-700 border border-amber-200',
+      badgeStyle: 'bg-amber-50 text-amber-800 border border-amber-200',
     },
   ];
 
@@ -66,17 +66,17 @@ export const CalendarFilterBar: React.FC<CalendarFilterBarProps> = ({
             type="button"
             data-testid={`filter-${f.id}`}
             onClick={() => onFilterChange(f.id)}
-            className={`inline-flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all ${
+            className={`inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
               isActive
                 ? 'bg-primary text-primary-foreground shadow-2xs'
-                : 'border border-border bg-surface text-text-secondary hover:bg-surface-muted'
+                : 'border border-border bg-surface text-text-secondary hover:bg-surface-muted hover:text-text-primary'
             }`}
           >
-            <Icon className="h-3.5 w-3.5" />
+            <Icon className="h-4 w-4" />
             <span>{f.label}</span>
             <span
-              className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
-                isActive ? 'bg-white/20 text-white' : f.badgeStyle
+              className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
+                isActive ? 'bg-primary-foreground/20 text-primary-foreground' : f.badgeStyle
               }`}
             >
               {f.count}

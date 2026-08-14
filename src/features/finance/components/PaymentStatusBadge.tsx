@@ -31,23 +31,23 @@ export const PaymentStatusBadge: React.FC<PaymentStatusBadgeProps> = ({
       case 'paid':
         return {
           label: 'Paid',
-          style: 'bg-emerald-50 text-emerald-700 border-emerald-200 font-bold',
+          style: 'bg-emerald-50 text-emerald-800 border-emerald-200 font-bold',
         };
       case 'overdue':
         return {
           label: 'Overdue',
-          style: 'bg-rose-50 text-rose-700 border-rose-200 font-bold',
+          style: 'bg-rose-50 text-rose-800 border-rose-200 font-bold',
         };
       case 'due_today':
         return {
           label: 'Due Today',
-          style: 'bg-amber-50 text-amber-700 border-amber-200 font-semibold animate-pulse',
+          style: 'bg-amber-50 text-amber-800 border-amber-200 font-semibold animate-pulse',
         };
       case 'upcoming':
       default:
         return {
           label: 'Upcoming',
-          style: 'bg-zinc-100 text-zinc-600 border-zinc-200',
+          style: 'bg-zinc-100 text-zinc-800 border-zinc-300',
         };
     }
   };

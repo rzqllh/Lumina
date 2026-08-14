@@ -12,24 +12,39 @@ export const BottomNav: React.FC = () => {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--border)] bg-[var(--background)]/90 backdrop-blur-lg pb-safe">
-      <div className="grid h-14 grid-cols-5 items-center">
+    <nav
+      aria-label="Main Navigation"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-surface/95 backdrop-blur-md pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-xs"
+    >
+      <div className="grid h-16 grid-cols-5 items-stretch">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
             <NavLink
               key={tab.to}
               to={tab.to}
+              end={tab.to === '/'}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-1 py-1 text-[10px] font-medium transition-colors ${
+                `group relative flex flex-col items-center justify-center gap-1 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset ${
                   isActive
-                    ? 'text-[var(--text-primary)]'
-                    : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                    ? 'text-primary font-semibold'
+                    : 'text-text-muted hover:text-text-primary'
                 }`
               }
             >
-              <Icon className="h-4 w-4" />
-              <span>{tab.label}</span>
+              {({ isActive }) => (
+                <>
+                  {/* Subtle top indicator bar for active destination */}
+                  {isActive && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute top-0 h-0.5 w-8 rounded-full bg-primary"
+                    />
+                  )}
+                  <Icon className={`h-5 w-5 transition-transform group-active:scale-95 ${isActive ? 'text-primary' : 'text-text-muted group-hover:text-text-primary'}`} />
+                  <span className="text-[11px] tracking-tight leading-none">{tab.label}</span>
+                </>
+              )}
             </NavLink>
           );
         })}

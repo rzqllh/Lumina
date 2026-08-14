@@ -5,9 +5,9 @@ import { BottomNav } from './BottomNav';
 
 export const AppShell: React.FC = () => {
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-[var(--background)] text-[var(--foreground)]">
+    <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       <Header />
-      <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 mb-16 md:mb-0">
+      <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 pb-24 md:pb-10">
         <Outlet />
       </main>
       <BottomNav />

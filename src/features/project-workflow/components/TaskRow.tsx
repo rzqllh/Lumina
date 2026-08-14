@@ -40,8 +40,8 @@ export const TaskRow: React.FC<TaskRowProps> = ({
 
   return (
     <div
-      className={`group flex items-start gap-3 p-3.5 bg-neutral-900/70 hover:bg-neutral-900 border border-neutral-800/80 hover:border-neutral-700/80 rounded-xl transition-all ${
-        isDone ? 'opacity-70' : ''
+      className={`group flex items-start gap-3 p-3.5 bg-surface hover:bg-surface-muted/40 border border-border rounded-xl transition-all ${
+        isDone ? 'opacity-75' : ''
       }`}
     >
       {/* Checkbox Touch Target */}
@@ -54,14 +54,14 @@ export const TaskRow: React.FC<TaskRowProps> = ({
         aria-label={`Mark task ${task.title} as ${isDone ? 'open' : 'done'}`}
         className={`w-6 h-6 rounded-lg flex items-center justify-center border transition-all mt-0.5 shrink-0 ${
           isDone
-            ? 'bg-emerald-500 border-emerald-500 text-neutral-950 shadow-sm'
-            : 'bg-neutral-950 border-neutral-700 hover:border-amber-400 text-transparent'
+            ? 'bg-emerald-600 border-emerald-600 text-white shadow-2xs'
+            : 'bg-surface border-border hover:border-primary text-transparent'
         } ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         {isToggling ? (
-          <Loader2 className="w-3.5 h-3.5 animate-spin text-neutral-400" />
+          <Loader2 className="w-3.5 h-3.5 animate-spin text-text-secondary" />
         ) : (
-          <Check className={`w-4 h-4 stroke-[3] ${isDone ? 'text-neutral-950' : 'hidden'}`} />
+          <Check className={`w-4 h-4 stroke-[3] ${isDone ? 'text-white' : 'hidden'}`} />
         )}
       </button>
 
@@ -70,7 +70,7 @@ export const TaskRow: React.FC<TaskRowProps> = ({
         <div className="flex flex-wrap items-center gap-2 mb-1">
           <span
             className={`text-sm font-semibold leading-snug break-words ${
-              isDone ? 'line-through text-neutral-400 font-normal' : 'text-neutral-100'
+              isDone ? 'line-through text-text-muted font-normal' : 'text-text-primary'
             }`}
           >
             {task.title}
@@ -78,7 +78,7 @@ export const TaskRow: React.FC<TaskRowProps> = ({
 
           {/* Stage Pill */}
           {task.stage && (
-            <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold text-neutral-300 bg-neutral-950 border border-neutral-800 rounded-md shrink-0">
+            <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-bold text-text-secondary bg-surface-muted border border-border rounded-md shrink-0">
               {task.stage.label}
             </span>
           )}
@@ -86,17 +86,17 @@ export const TaskRow: React.FC<TaskRowProps> = ({
           {/* Due Date Badge */}
           {dueInfo && (
             <span
-              className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-md shrink-0 border ${
+              className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-md shrink-0 border ${
                 dueInfo.isOverdue
-                  ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                  ? 'bg-rose-50 text-rose-800 border-rose-200'
                   : dueInfo.isDueToday
-                    ? 'bg-amber-500/10 text-amber-300 border-amber-500/20'
-                    : 'bg-neutral-950 text-neutral-400 border-neutral-800'
+                    ? 'bg-amber-50 text-amber-800 border-amber-200'
+                    : 'bg-surface-muted text-text-secondary border-border'
               }`}
             >
               <Calendar className="w-3 h-3" />
-              {dueInfo.isOverdue && <span className="font-bold">Overdue: </span>}
-              {dueInfo.isDueToday && <span className="font-bold">Due today: </span>}
+              {dueInfo.isOverdue && <span>Overdue: </span>}
+              {dueInfo.isDueToday && <span>Due today: </span>}
               {dueInfo.text}
             </span>
           )}
@@ -104,8 +104,8 @@ export const TaskRow: React.FC<TaskRowProps> = ({
 
         {/* Notes preview */}
         {task.notes && (
-          <div className="flex items-start gap-1 text-xs text-neutral-400 mt-1">
-            <FileText className="w-3.5 h-3.5 text-neutral-500 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-1 text-xs text-text-secondary mt-1">
+            <FileText className="w-3.5 h-3.5 text-text-muted shrink-0 mt-0.5" />
             <p className="line-clamp-2 leading-relaxed">{task.notes}</p>
           </div>
         )}
@@ -118,7 +118,7 @@ export const TaskRow: React.FC<TaskRowProps> = ({
             type="button"
             onClick={onEdit}
             aria-label={`Edit task ${task.title}`}
-            className="p-1.5 text-neutral-400 hover:text-amber-400 hover:bg-neutral-800 rounded-lg transition-colors"
+            className="p-1.5 text-text-secondary hover:text-primary hover:bg-surface-muted rounded-lg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <Edit2 className="w-3.5 h-3.5" />
           </button>
@@ -126,7 +126,7 @@ export const TaskRow: React.FC<TaskRowProps> = ({
             type="button"
             onClick={onDelete}
             aria-label={`Delete task ${task.title}`}
-            className="p-1.5 text-neutral-400 hover:text-red-400 hover:bg-neutral-800 rounded-lg transition-colors"
+            className="p-1.5 text-text-secondary hover:text-status-danger hover:bg-surface-muted rounded-lg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>

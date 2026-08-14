@@ -34,7 +34,7 @@ export const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
               {client.display_name}
             </h3>
             {client.is_archived && (
-              <span className="mt-1 inline-flex items-center rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-600 border border-zinc-200">
+              <span className="mt-1 inline-flex items-center rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-bold text-zinc-700 border border-zinc-300">
                 Archived
               </span>
             )}
@@ -47,20 +47,20 @@ export const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
           {client.email && (
             <div className="flex items-center gap-2">
               <Mail className="h-3.5 w-3.5 text-text-muted shrink-0" />
-              <span className="truncate">{client.email}</span>
+              <span className="truncate font-medium text-text-primary">{client.email}</span>
             </div>
           )}
           {client.phone && (
             <div className="flex items-center gap-2">
               <Phone className="h-3.5 w-3.5 text-text-muted shrink-0" />
-              <span>{client.phone}</span>
+              <span className="font-medium text-text-secondary">{client.phone}</span>
             </div>
           )}
         </div>
       </div>
 
       {/* Footer: Contacts Count */}
-      <div className="mt-4 flex items-center justify-between border-t border-border-subtle pt-3 text-xs text-text-muted">
+      <div className="mt-4 flex items-center justify-between border-t border-border-subtle pt-3 text-xs text-text-secondary">
         <div className="flex items-center gap-1.5 font-medium">
           <Users className="h-3.5 w-3.5 text-text-muted" />
           <span>

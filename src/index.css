@@ -1,39 +1,69 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-elevated: var(--surface-elevated);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-interactive: var(--border-interactive);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-danger: var(--status-danger);
+  --color-status-info: var(--status-info);
+
+  --color-ring: var(--ring);
+}
+
 @layer base {
   :root {
-    /* App background: very-light neutral with subtle lavender-grey cast (DESIGN.md §2.2) */
-    --background: #f8f7fb;
+    /* App background: distinct neutral studio canvas with subtle violet-slate tint (No pure white #fff, no pitch black #000) */
+    --background: #ecebf0;
     --foreground: #18181b;
 
-    /* Surfaces: clean white cards, subtle muted lavender-grey utility containers */
-    --surface: #ffffff;
-    --surface-muted: #f4f3f8;
-    --surface-elevated: #ffffff;
+    /* Surfaces: distinct porcelain off-white cards clearly elevated against the darker canvas (No pure white #fff) */
+    --surface: #faf9fc;
+    --surface-muted: #e2e1ea;
+    --surface-elevated: #fbfaff;
 
-    /* Typography: crisp dark slate text hierarchy */
+    /* Typography: crisp dark slate text hierarchy meeting WCAG 2.2 AA (>= 4.5:1) on both surface and background */
     --text-primary: #18181b;
-    --text-secondary: #52525b;
-    --text-muted: #71717a;
+    --text-secondary: #494852;
+    --text-muted: #565561;
 
-    /* Borders: thin low-contrast zinc and soft lavender */
-    --border: #e4e4e7;
-    --border-subtle: #f0eef6;
+    /* Borders: clearly visible card edges and interactive boundaries (>= 3:1 non-text contrast) */
+    --border: #d2d0dc;
+    --border-subtle: #e2e0eb;
+    --border-interactive: #7b798b;
 
-    /* Primary actions: Purple family (DESIGN.md §2.3) */
-    --primary: #7c3aed;
-    --primary-foreground: #ffffff;
+    /* Primary actions: Deep vibrant violet */
+    --primary: #6d28d9;
+    --primary-foreground: #fcfbff;
 
-    --accent: #8b5cf6;
-    --accent-foreground: #ffffff;
+    --accent: #7c3aed;
+    --accent-foreground: #fcfbff;
 
-    /* Statuses: Red reserved for overdue/danger/error; Green success; Amber warning */
-    --status-success: #16a34a;
-    --status-warning: #d97706;
-    --status-danger: #ef4444;
-    --status-info: #3b82f6;
+    /* Statuses: Tuned for >= 4.5:1 text contrast on light surfaces */
+    --status-success: #15803d;
+    --status-warning: #a14708;
+    --status-danger: #c22020;
+    --status-info: #1d4ed8;
 
-    --ring: #7c3aed;
+    --ring: #6d28d9;
     --radius: 0.5rem;
   }
 }
@@ -46,7 +76,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Global accessible focus-visible treatment */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
+
   *,
   ::before,
   ::after {

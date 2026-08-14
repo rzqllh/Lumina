@@ -22,15 +22,15 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
       case 'session':
         return {
           label: 'Shoot / Session',
-          style: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+          style: 'bg-indigo-50 text-indigo-800 border-indigo-200',
         };
       case 'deliverable':
-        return { label: 'Deliverable', style: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
+        return { label: 'Deliverable', style: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
       case 'revision':
-        return { label: 'Revision Due', style: 'bg-purple-50 text-purple-700 border-purple-200' };
+        return { label: 'Revision Due', style: 'bg-purple-50 text-purple-800 border-purple-200' };
       case 'payment':
       default:
-        return { label: 'Payment Due', style: 'bg-amber-50 text-amber-700 border-amber-200' };
+        return { label: 'Payment Due', style: 'bg-amber-50 text-amber-800 border-amber-200' };
     }
   };
 
@@ -65,9 +65,9 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
           data-testid="calendar-agenda-empty"
           className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface p-12 text-center"
         >
-          <Calendar className="h-10 w-10 text-text-muted mb-2" />
+          <Calendar className="h-10 w-10 text-text-secondary mb-2" />
           <h4 className="text-sm font-bold text-text-primary">No events in this category</h4>
-          <p className="mt-1 max-w-sm text-xs text-text-muted">
+          <p className="mt-1 max-w-sm text-xs text-text-secondary">
             There are no scheduled shoots, delivery deadlines, or payment milestones matching your
             active filter.
           </p>
@@ -83,12 +83,12 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
               <div className="flex items-center gap-2">
                 <span
                   className={`text-xs font-bold uppercase tracking-wider ${
-                    isToday ? 'text-primary' : 'text-text-muted'
+                    isToday ? 'text-primary' : 'text-text-secondary'
                   }`}
                 >
                   {formatHeadingDate(dateStr)}
                 </span>
-                <div className="h-px flex-1 bg-border-subtle" />
+                <div className="h-px flex-1 bg-border" />
               </div>
 
               {/* Date Events */}
@@ -98,15 +98,23 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
                   return (
                     <div
                       key={event.id}
+                      role="button"
+                      tabIndex={0}
                       data-testid={`agenda-event-${event.id}`}
                       onClick={() => navigate(`/projects/${event.projectId}`)}
-                      className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface p-3.5 shadow-2xs hover:border-border-subtle hover:bg-surface-muted/30 transition-all cursor-pointer"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          navigate(`/projects/${event.projectId}`);
+                        }
+                      }}
+                      className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface p-3.5 shadow-2xs hover:border-primary/40 hover:bg-surface-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-all cursor-pointer"
                     >
                       {/* Left Info */}
                       <div className="space-y-1 min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <span
-                            className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${badge.style}`}
+                            className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold ${badge.style}`}
                           >
                             {badge.label}
                           </span>
@@ -120,14 +128,14 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
                             {event.projectTitle}
                           </span>
                           {event.time && (
-                            <span className="flex items-center gap-1 text-primary font-medium">
-                              <Clock className="h-3 w-3" />
+                            <span className="flex items-center gap-1 text-primary font-semibold">
+                              <Clock className="h-3.5 w-3.5" />
                               {event.time}
                             </span>
                           )}
                           {event.location && (
-                            <span className="flex items-center gap-1 text-text-muted truncate max-w-xs">
-                              <MapPin className="h-3 w-3" />
+                            <span className="flex items-center gap-1 text-text-secondary truncate max-w-xs">
+                              <MapPin className="h-3.5 w-3.5 text-text-muted" />
                               {event.location}
                             </span>
                           )}

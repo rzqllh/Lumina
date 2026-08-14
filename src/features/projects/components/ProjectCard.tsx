@@ -33,8 +33,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
               {project.title}
             </h3>
             {project.project_number && (
-              <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-text-muted">
-                <Hash className="h-3 w-3" />
+              <span className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-text-secondary">
+                <Hash className="h-3.5 w-3.5 text-text-muted" />
                 {project.project_number}
               </span>
             )}
@@ -43,13 +43,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         </div>
 
         {/* Client association info */}
-        <div className="mt-4 flex items-center gap-2 rounded-xl border border-border-subtle bg-surface-muted/40 p-2.5 text-xs text-text-secondary">
+        <div className="mt-4 flex items-center gap-2 rounded-xl border border-border-subtle bg-surface-muted/60 p-2.5 text-xs text-text-secondary">
           <User className="h-3.5 w-3.5 text-text-muted shrink-0" />
           <span className="font-semibold text-text-primary truncate">
             {project.client?.display_name || 'Unassigned Client'}
           </span>
           {project.client?.client_type && (
-            <span className="ml-auto rounded-md bg-surface px-1.5 py-0.5 text-[10px] font-medium capitalize text-text-muted border border-border">
+            <span className="ml-auto rounded-md bg-surface px-1.5 py-0.5 text-[10px] font-semibold capitalize text-text-secondary border border-border">
               {project.client.client_type}
             </span>
           )}
@@ -57,7 +57,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       </div>
 
       {/* Footer */}
-      <div className="mt-4 flex items-center justify-between border-t border-border-subtle pt-3 text-xs text-text-muted">
+      <div className="mt-4 flex items-center justify-between border-t border-border-subtle pt-3 text-xs text-text-secondary">
         <div className="flex items-center gap-1.5 font-medium">
           <FolderKanban className="h-3.5 w-3.5 text-text-muted" />
           <span>Project Foundation</span>

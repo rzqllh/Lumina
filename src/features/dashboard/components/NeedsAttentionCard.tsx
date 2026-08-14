@@ -34,14 +34,14 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
   const getItemIcon = (type: AttentionItem['type']) => {
     switch (type) {
       case 'overdue_payment':
-        return <Receipt className="h-4 w-4 text-rose-600" />;
+        return <Receipt className="h-4 w-4 text-rose-700" />;
       case 'overdue_deliverable':
-        return <FileBox className="h-4 w-4 text-rose-600" />;
+        return <FileBox className="h-4 w-4 text-rose-700" />;
       case 'revision_requested':
-        return <Sparkles className="h-4 w-4 text-amber-600" />;
+        return <Sparkles className="h-4 w-4 text-amber-700" />;
       case 'overdue_task':
       default:
-        return <CheckSquare className="h-4 w-4 text-rose-600" />;
+        return <CheckSquare className="h-4 w-4 text-rose-700" />;
     }
   };
 
@@ -56,8 +56,8 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
           <div
             className={`flex h-7 w-7 items-center justify-center rounded-lg ${
               items.length > 0
-                ? 'bg-rose-50 text-rose-600 border border-rose-200'
-                : 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
             }`}
           >
             {items.length > 0 ? (
@@ -68,7 +68,7 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
           </div>
           <div>
             <h3 className="text-sm font-bold text-text-primary">Needs Attention</h3>
-            <p className="text-[11px] text-text-muted">
+            <p className="text-xs text-text-secondary">
               {items.length > 0
                 ? `${items.length} urgent action ${items.length === 1 ? 'item' : 'items'} require your review`
                 : 'Everything is on schedule and up to date'}
@@ -79,7 +79,7 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
         {items.length > 0 && (
           <span
             data-testid="attention-badge-count"
-            className="rounded-full bg-rose-50 border border-rose-200 px-2 py-0.5 text-xs font-bold text-rose-700"
+            className="rounded-full bg-rose-50 border border-rose-200 px-2 py-0.5 text-xs font-bold text-rose-800"
           >
             {items.length}
           </span>
@@ -90,11 +90,11 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
       {items.length === 0 && (
         <div
           data-testid="attention-empty-state"
-          className="flex flex-col items-center justify-center rounded-xl border border-dashed border-emerald-200/60 bg-emerald-50/30 p-6 text-center"
+          className="flex flex-col items-center justify-center rounded-xl border border-dashed border-emerald-300 bg-emerald-50/40 p-6 text-center"
         >
-          <CheckCircle2 className="h-8 w-8 text-emerald-600 mb-1.5" />
+          <CheckCircle2 className="h-8 w-8 text-emerald-700 mb-1.5" />
           <h4 className="text-xs font-bold text-text-primary">All caught up!</h4>
-          <p className="mt-0.5 max-w-xs text-[11px] text-text-muted">
+          <p className="mt-0.5 max-w-xs text-xs text-text-secondary">
             No overdue deliverables, unpaid invoices, or unhandled client revision requests.
           </p>
         </div>
@@ -106,12 +106,20 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
           {items.map((item) => (
             <div
               key={item.id}
+              role="button"
+              tabIndex={0}
               data-testid={`attention-item-${item.id}`}
               onClick={() => navigate(`/projects/${item.projectId}`)}
-              className="group flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-3 transition-all hover:border-border-subtle hover:bg-surface-muted/30 cursor-pointer"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  navigate(`/projects/${item.projectId}`);
+                }
+              }}
+              className="group flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-3 transition-all hover:border-primary/40 hover:bg-surface-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
             >
               <div className="flex items-start gap-3 min-w-0 flex-1">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-muted border border-border-subtle mt-0.5">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-muted border border-border mt-0.5">
                   {getItemIcon(item.type)}
                 </div>
                 <div className="min-w-0 flex-1 space-y-0.5">
@@ -120,22 +128,22 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
                       {item.title}
                     </span>
                     {item.amount !== undefined && (
-                      <span className="text-xs font-bold text-rose-700">
+                      <span className="text-xs font-bold text-rose-800">
                         {formatMoney(item.amount, currency)}
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-text-muted">
-                    <span className="truncate max-w-[120px] font-medium text-text-secondary">
+                  <div className="flex items-center gap-2 text-xs text-text-secondary">
+                    <span className="truncate max-w-[140px] font-medium text-text-primary">
                       {item.projectTitle}
                     </span>
                     <span>•</span>
-                    <span className="text-rose-600 font-medium truncate">{item.subtitle}</span>
+                    <span className="text-rose-700 font-semibold truncate">{item.subtitle}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center text-text-muted group-hover:text-primary transition-colors">
+              <div className="flex items-center text-text-secondary group-hover:text-primary transition-colors">
                 <ArrowRight className="h-4 w-4" />
               </div>
             </div>

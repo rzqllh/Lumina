@@ -25,37 +25,36 @@ export const StageCard: React.FC<StageCardProps> = ({
     switch (stage.status) {
       case 'active':
         return {
-          container:
-            'bg-amber-500/10 border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/30',
-          badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-          badgeIcon: <Play className="w-3 h-3 fill-amber-400 text-amber-400" />,
+          container: 'bg-amber-50/40 border-amber-300 shadow-2xs ring-1 ring-amber-300/60',
+          badge: 'bg-amber-50 text-amber-800 border-amber-200',
+          badgeIcon: <Play className="w-3 h-3 fill-amber-700 text-amber-700" />,
           label: 'Active',
-          numBg: 'bg-amber-500 text-neutral-950 font-bold',
+          numBg: 'bg-amber-600 text-white font-bold',
         };
       case 'completed':
         return {
-          container: 'bg-emerald-950/20 border-emerald-800/40 opacity-90',
-          badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-          badgeIcon: <CheckCircle2 className="w-3 h-3" />,
+          container: 'bg-emerald-50/30 border-emerald-200 opacity-95',
+          badge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+          badgeIcon: <CheckCircle2 className="w-3 h-3 text-emerald-700" />,
           label: 'Completed',
-          numBg: 'bg-emerald-500/20 text-emerald-300 font-semibold',
+          numBg: 'bg-emerald-600 text-white font-semibold',
         };
       case 'skipped':
         return {
-          container: 'bg-neutral-900/40 border-neutral-800/60 opacity-60',
-          badge: 'bg-neutral-800 text-neutral-400 border-neutral-700',
-          badgeIcon: <FastForward className="w-3 h-3" />,
+          container: 'bg-surface-muted/40 border-border opacity-70',
+          badge: 'bg-surface-muted text-text-secondary border-border',
+          badgeIcon: <FastForward className="w-3 h-3 text-text-muted" />,
           label: 'Skipped',
-          numBg: 'bg-neutral-800 text-neutral-500',
+          numBg: 'bg-surface-muted text-text-secondary border border-border',
         };
       case 'not_started':
       default:
         return {
-          container: 'bg-neutral-900/80 border-neutral-800 hover:border-neutral-700',
-          badge: 'bg-neutral-800/80 text-neutral-400 border-neutral-700',
-          badgeIcon: <Circle className="w-3 h-3" />,
+          container: 'bg-surface border-border hover:border-primary/40',
+          badge: 'bg-surface-muted text-text-secondary border-border',
+          badgeIcon: <Circle className="w-3 h-3 text-text-muted" />,
           label: 'Not Started',
-          numBg: 'bg-neutral-800 text-neutral-400',
+          numBg: 'bg-surface-muted text-text-secondary border border-border',
         };
     }
   };
@@ -64,10 +63,11 @@ export const StageCard: React.FC<StageCardProps> = ({
 
   return (
     <div
+      data-testid={`stage-card-${stage.id}`}
       onClick={onSelectStage}
       className={`relative flex flex-col justify-between p-4 rounded-xl border transition-all duration-200 cursor-pointer ${
         style.container
-      } ${isSelected ? 'ring-2 ring-amber-400/80' : ''}`}
+      } ${isSelected ? 'ring-2 ring-primary' : ''}`}
     >
       <div>
         {/* Top bar: Stage Number + Status Badge */}
@@ -79,7 +79,7 @@ export const StageCard: React.FC<StageCardProps> = ({
               {index + 1}
             </span>
             <span
-              className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold tracking-wide border rounded-full uppercase ${style.badge}`}
+              className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold tracking-wide border rounded-full uppercase ${style.badge}`}
             >
               {style.badgeIcon}
               <span>{style.label}</span>
@@ -89,7 +89,7 @@ export const StageCard: React.FC<StageCardProps> = ({
           {stage.source_template_id && (
             <span
               title="Applied from template"
-              className="text-[10px] text-neutral-500 flex items-center gap-1"
+              className="text-[10px] text-text-muted flex items-center gap-1"
             >
               <Sparkles className="w-2.5 h-2.5" />
             </span>
@@ -99,7 +99,7 @@ export const StageCard: React.FC<StageCardProps> = ({
         {/* Stage Label */}
         <h4
           className={`text-sm font-bold tracking-tight mb-3 line-clamp-2 ${
-            stage.status === 'skipped' ? 'line-through text-neutral-500' : 'text-neutral-100'
+            stage.status === 'skipped' ? 'line-through text-text-muted' : 'text-text-primary'
           }`}
         >
           {stage.label}
@@ -110,7 +110,7 @@ export const StageCard: React.FC<StageCardProps> = ({
       {!disabled && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex items-center gap-1.5 pt-2 border-t border-neutral-800/60"
+          className="flex items-center gap-1.5 pt-2 border-t border-border-subtle"
         >
           {stage.status === 'not_started' && (
             <>
@@ -118,7 +118,7 @@ export const StageCard: React.FC<StageCardProps> = ({
                 type="button"
                 disabled={isUpdating}
                 onClick={() => onStatusChange('active')}
-                className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1 text-xs font-semibold text-amber-950 bg-amber-400 hover:bg-amber-300 rounded-md transition-colors shadow-sm disabled:opacity-50"
+                className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 rounded-md transition-colors shadow-xs disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <Play className="w-3 h-3 fill-current" />
                 Start
@@ -127,7 +127,7 @@ export const StageCard: React.FC<StageCardProps> = ({
                 type="button"
                 disabled={isUpdating}
                 onClick={() => onStatusChange('skipped')}
-                className="px-2 py-1 text-xs font-medium text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-md transition-colors disabled:opacity-50"
+                className="px-2.5 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-muted rounded-md transition-colors disabled:opacity-50 cursor-pointer"
               >
                 Skip
               </button>
@@ -140,16 +140,16 @@ export const StageCard: React.FC<StageCardProps> = ({
                 type="button"
                 disabled={isUpdating}
                 onClick={() => onStatusChange('completed')}
-                className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1 text-xs font-semibold text-emerald-950 bg-emerald-400 hover:bg-emerald-300 rounded-md transition-colors shadow-sm disabled:opacity-50"
+                className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-md transition-colors shadow-xs disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
-                <CheckCircle2 className="w-3 h-3" />
+                <CheckCircle2 className="w-3.5 h-3.5" />
                 Complete
               </button>
               <button
                 type="button"
                 disabled={isUpdating}
                 onClick={() => onStatusChange('skipped')}
-                className="px-2 py-1 text-xs font-medium text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-md transition-colors disabled:opacity-50"
+                className="px-2.5 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-muted rounded-md transition-colors disabled:opacity-50 cursor-pointer"
               >
                 Skip
               </button>
@@ -161,7 +161,7 @@ export const StageCard: React.FC<StageCardProps> = ({
               type="button"
               disabled={isUpdating}
               onClick={() => onStatusChange('active')}
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-neutral-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-md transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-amber-800 hover:bg-amber-50 border border-amber-200 rounded-md transition-colors disabled:opacity-50 cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
               Reopen
@@ -173,7 +173,7 @@ export const StageCard: React.FC<StageCardProps> = ({
               type="button"
               disabled={isUpdating}
               onClick={() => onStatusChange('not_started')}
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-md transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-muted rounded-md transition-colors disabled:opacity-50 cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
               Restore

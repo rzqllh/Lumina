@@ -44,7 +44,7 @@ export function ClientsListRoute() {
           type="button"
           data-testid="add-client-btn"
           onClick={() => navigate('/clients/new')}
-          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-xs transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
+          className="inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-xs transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
         >
           <Plus className="h-4 w-4" />
           <span>New Client</span>
@@ -57,10 +57,11 @@ export function ClientsListRoute() {
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
           <input
             type="text"
+            aria-label="Search clients by name, email, or phone"
             placeholder="Search clients by name, email, or phone..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-border bg-surface pl-10 pr-4 py-2 text-xs text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="w-full min-h-[44px] rounded-xl border border-border bg-surface pl-10 pr-4 py-2 text-xs text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary"
           />
         </div>
 
@@ -70,10 +71,10 @@ export function ClientsListRoute() {
             type="button"
             data-testid="filter-active-clients"
             onClick={() => setIncludeArchived(false)}
-            className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`min-h-[40px] cursor-pointer rounded-lg px-3.5 py-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
               !includeArchived
-                ? 'bg-surface-muted text-text-primary shadow-2xs'
-                : 'text-text-muted hover:text-text-primary'
+                ? 'bg-surface-muted text-text-primary shadow-2xs font-semibold'
+                : 'text-text-secondary hover:text-text-primary'
             }`}
           >
             Active
@@ -82,10 +83,10 @@ export function ClientsListRoute() {
             type="button"
             data-testid="filter-archived-clients"
             onClick={() => setIncludeArchived(true)}
-            className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`min-h-[40px] cursor-pointer rounded-lg px-3.5 py-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
               includeArchived
-                ? 'bg-surface-muted text-text-primary shadow-2xs'
-                : 'text-text-muted hover:text-text-primary'
+                ? 'bg-surface-muted text-text-primary shadow-2xs font-semibold'
+                : 'text-text-secondary hover:text-text-primary'
             }`}
           >
             All & Archived

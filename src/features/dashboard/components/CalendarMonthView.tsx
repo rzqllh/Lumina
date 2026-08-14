@@ -55,20 +55,20 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
       {/* Calendar Grid Container */}
       <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-xs">
         {/* Days Header */}
-        <div className="grid grid-cols-7 border-b border-border bg-surface-muted/40 text-center text-xs font-bold text-text-muted py-2.5">
+        <div className="grid grid-cols-7 border-b border-border bg-surface-muted/60 text-center text-xs font-bold text-text-secondary py-2.5">
           {daysOfWeek.map((day) => (
             <div key={day}>{day}</div>
           ))}
         </div>
 
         {/* Days Grid */}
-        <div className="grid grid-cols-7 divide-x divide-y divide-border/60">
+        <div className="grid grid-cols-7 divide-x divide-y divide-border">
           {calendarCells.map((day, index) => {
             if (day === null) {
               return (
                 <div
                   key={`empty-${index}`}
-                  className="min-h-[85px] sm:min-h-[105px] bg-surface-muted/20 p-2"
+                  className="min-h-[85px] sm:min-h-[105px] bg-surface-muted/30 p-2"
                 />
               );
             }
@@ -83,9 +83,17 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
             return (
               <div
                 key={dateStr}
+                role="button"
+                tabIndex={0}
                 data-testid={`calendar-day-${dateStr}`}
                 onClick={() => setSelectedDateStr(dateStr)}
-                className={`min-h-[85px] sm:min-h-[105px] p-1.5 sm:p-2 transition-colors cursor-pointer hover:bg-surface-muted/50 ${
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedDateStr(dateStr);
+                  }
+                }}
+                className={`min-h-[85px] sm:min-h-[105px] p-1.5 sm:p-2 transition-colors cursor-pointer hover:bg-surface-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset ${
                   isToday ? 'bg-primary/5 font-bold' : 'bg-surface'
                 }`}
               >
@@ -95,13 +103,13 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
                     className={`flex h-6 w-6 items-center justify-center rounded-full text-xs ${
                       isToday
                         ? 'bg-primary text-primary-foreground font-bold shadow-2xs'
-                        : 'text-text-secondary'
+                        : 'text-text-primary font-medium'
                     }`}
                   >
                     {day}
                   </span>
                   {dayEvents.length > 0 && (
-                    <span className="text-[10px] font-bold text-text-muted">
+                    <span className="text-xs font-bold text-text-secondary">
                       {dayEvents.length}
                     </span>
                   )}
@@ -113,13 +121,13 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
                     const getDotColor = () => {
                       switch (event.type) {
                         case 'session':
-                          return 'bg-indigo-500 text-indigo-700 bg-indigo-50 border-indigo-200';
+                          return 'text-indigo-800 bg-indigo-50 border-indigo-200';
                         case 'deliverable':
-                          return 'bg-emerald-500 text-emerald-700 bg-emerald-50 border-emerald-200';
+                          return 'text-emerald-800 bg-emerald-50 border-emerald-200';
                         case 'payment':
-                          return 'bg-amber-500 text-amber-700 bg-amber-50 border-amber-200';
+                          return 'text-amber-800 bg-amber-50 border-amber-200';
                         default:
-                          return 'bg-purple-500 text-purple-700 bg-purple-50 border-purple-200';
+                          return 'text-purple-800 bg-purple-50 border-purple-200';
                       }
                     };
 
@@ -127,14 +135,14 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
                       <div
                         key={event.id}
                         title={`${event.title} (${event.projectTitle})`}
-                        className={`truncate rounded px-1.5 py-0.5 text-[10px] font-medium border ${getDotColor()}`}
+                        className={`truncate rounded px-1.5 py-0.5 text-[10px] font-semibold border ${getDotColor()}`}
                       >
                         {event.title}
                       </div>
                     );
                   })}
                   {dayEvents.length > 2 && (
-                    <div className="text-[9px] font-semibold text-text-muted pl-1">
+                    <div className="text-[10px] font-bold text-text-secondary pl-1">
                       +{dayEvents.length - 2} more
                     </div>
                   )}
