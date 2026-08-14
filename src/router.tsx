@@ -9,6 +9,10 @@ import { ClientsListRoute } from '@/routes/clients/ClientsListRoute';
 import { ClientNewRoute } from '@/routes/clients/ClientNewRoute';
 import { ClientDetailRoute } from '@/routes/clients/ClientDetailRoute';
 import { ClientEditRoute } from '@/routes/clients/ClientEditRoute';
+import { ProjectsListRoute } from '@/routes/projects/ProjectsListRoute';
+import { ProjectNewRoute } from '@/routes/projects/ProjectNewRoute';
+import { ProjectDetailRoute } from '@/routes/projects/ProjectDetailRoute';
+import { ProjectEditRoute } from '@/routes/projects/ProjectEditRoute';
 
 export const router = createBrowserRouter([
   // Public-only Authentication Routes
@@ -43,14 +47,22 @@ export const router = createBrowserRouter([
           />
         ),
       },
+      // Real Projects & Engagements Module
       {
         path: 'projects',
-        element: (
-          <PlaceholderRoute
-            title="Projects Pipeline"
-            description="Active gigs, workflow progress, deliverables, and payment tracking."
-          />
-        ),
+        element: <ProjectsListRoute />,
+      },
+      {
+        path: 'projects/new',
+        element: <ProjectNewRoute />,
+      },
+      {
+        path: 'projects/:projectId',
+        element: <ProjectDetailRoute />,
+      },
+      {
+        path: 'projects/:projectId/edit',
+        element: <ProjectEditRoute />,
       },
       {
         path: 'calendar',
