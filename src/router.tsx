@@ -13,6 +13,13 @@ import { ProjectsListRoute } from '@/routes/projects/ProjectsListRoute';
 import { ProjectNewRoute } from '@/routes/projects/ProjectNewRoute';
 import { ProjectDetailRoute } from '@/routes/projects/ProjectDetailRoute';
 import { ProjectEditRoute } from '@/routes/projects/ProjectEditRoute';
+import { ServicesListRoute } from '@/routes/catalog/ServicesListRoute';
+import { ServiceNewRoute } from '@/routes/catalog/ServiceNewRoute';
+import { ServiceEditRoute } from '@/routes/catalog/ServiceEditRoute';
+import { PackagesListRoute } from '@/routes/catalog/PackagesListRoute';
+import { PackageNewRoute } from '@/routes/catalog/PackageNewRoute';
+import { PackageEditRoute } from '@/routes/catalog/PackageEditRoute';
+import { SettingsRoute } from '@/routes/settings/SettingsRoute';
 
 export const router = createBrowserRouter([
   // Public-only Authentication Routes
@@ -90,14 +97,35 @@ export const router = createBrowserRouter([
         path: 'clients/:clientId/edit',
         element: <ClientEditRoute />,
       },
+      // Real Services & Packages Catalog Module
+      {
+        path: 'services',
+        element: <ServicesListRoute />,
+      },
+      {
+        path: 'services/new',
+        element: <ServiceNewRoute />,
+      },
+      {
+        path: 'services/:serviceId/edit',
+        element: <ServiceEditRoute />,
+      },
+      {
+        path: 'packages',
+        element: <PackagesListRoute />,
+      },
+      {
+        path: 'packages/new',
+        element: <PackageNewRoute />,
+      },
+      {
+        path: 'packages/:packageId/edit',
+        element: <PackageEditRoute />,
+      },
+      // Workspace Settings Hub
       {
         path: 'settings',
-        element: (
-          <PlaceholderRoute
-            title="Workspace Settings"
-            description="Catalog services, packages, workflow templates, brief templates, and Google integrations."
-          />
-        ),
+        element: <SettingsRoute />,
       },
     ],
   },
