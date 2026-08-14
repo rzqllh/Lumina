@@ -9,6 +9,7 @@ Lumina is currently defined as a **single-user-first personal operating system f
 AI coding agents perform better when durable product truth, technical decisions, feature-local specs, and verification criteria are kept distinct instead of being repeated across giant prompts.
 
 This structure borrows from:
+
 - GitHub Spec Kit's spec → plan → tasks workflow
 - Kiro's requirements → design → tasks feature specs
 - Codex `AGENTS.md`
@@ -20,22 +21,22 @@ This structure borrows from:
 
 ## Canonical truth map
 
-| Question | Canonical file |
-|---|---|
-| Why does Lumina exist? Who is it for? | `docs/product/PRD.md` |
-| What is in MVP / later / out of scope? | `docs/product/FEATURE_INVENTORY.md` |
-| What does each domain term mean? | `docs/product/DOMAIN_MODEL.md` |
-| What are the canonical business flows? | `docs/product/WORKFLOWS.md` |
-| How should the product look and behave? | `docs/design/DESIGN.md` |
-| How is the system built? | `docs/engineering/ARCHITECTURE.md` |
-| What does the database look like? | `docs/engineering/DATABASE_SCHEMA.md` |
-| What are server/API boundaries? | `docs/engineering/API_CONTRACTS.md` |
-| How are security and privacy handled? | `docs/engineering/SECURITY.md` |
-| How do external integrations behave? | `docs/engineering/INTEGRATIONS.md` |
-| What must be tested? | `docs/engineering/TESTING.md` |
-| Why was an important technical decision made? | `docs/decisions/*.md` |
-| What exactly are we building for one feature? | `docs/specs/<feature>/` |
-| How should coding agents operate in this repo? | `AGENTS.md` |
+| Question                                       | Canonical file                        |
+| ---------------------------------------------- | ------------------------------------- |
+| Why does Lumina exist? Who is it for?          | `docs/product/PRD.md`                 |
+| What is in MVP / later / out of scope?         | `docs/product/FEATURE_INVENTORY.md`   |
+| What does each domain term mean?               | `docs/product/DOMAIN_MODEL.md`        |
+| What are the canonical business flows?         | `docs/product/WORKFLOWS.md`           |
+| How should the product look and behave?        | `docs/design/DESIGN.md`               |
+| How is the system built?                       | `docs/engineering/ARCHITECTURE.md`    |
+| What does the database look like?              | `docs/engineering/DATABASE_SCHEMA.md` |
+| What are server/API boundaries?                | `docs/engineering/API_CONTRACTS.md`   |
+| How are security and privacy handled?          | `docs/engineering/SECURITY.md`        |
+| How do external integrations behave?           | `docs/engineering/INTEGRATIONS.md`    |
+| What must be tested?                           | `docs/engineering/TESTING.md`         |
+| Why was an important technical decision made?  | `docs/decisions/*.md`                 |
+| What exactly are we building for one feature?  | `docs/specs/<feature>/`               |
+| How should coding agents operate in this repo? | `AGENTS.md`                           |
 
 ## Documentation rule
 
@@ -46,7 +47,9 @@ Example: `DATABASE_SCHEMA.md` may reference the project lifecycle from `WORKFLOW
 ## Durable vs feature-local documents
 
 ### Durable
+
 These evolve with the product:
+
 - PRD
 - Feature inventory
 - Domain model
@@ -61,7 +64,9 @@ These evolve with the product:
 - AGENTS.md
 
 ### Feature-local
+
 Create for meaningful work:
+
 - `requirements.md`
 - `design.md`
 - `tasks.md`
@@ -80,8 +85,8 @@ As of 2026-08-14:
 - Domain & workflows: locked in `DOMAIN_MODEL.md` and `WORKFLOWS.md`
 - Technical architecture, schema, security & integrations: locked in `docs/engineering/`
 - Architectural Decision Records: ADRs 0001–0007 accepted in `docs/decisions/`
-- Implementation: intentionally not started
-- Next step: repository scaffold (Pass C) followed by first feature specification
+- Repository Foundation / Scaffold: locked and verified (Pass C)
+- Next step: First feature specification (`docs/specs/01-auth-workspace/`) and execution
 
 ## Execution order
 
@@ -90,7 +95,7 @@ As of 2026-08-14:
 3. [x] Lock `DESIGN.md`.
 4. [x] Finalize `ARCHITECTURE.md`, `DATABASE_SCHEMA.md`, `SECURITY.md`, `INTEGRATIONS.md` (Pass B).
 5. [x] Author and accept initial ADRs 0001–0007 (Pass B).
-6. [ ] Repository Foundation / Scaffold (Pass C).
+6. [x] Repository Foundation / Scaffold (Pass C).
 7. [ ] Feature specifications (`docs/specs/<feature>/`) and implementation.
 
 ## Research references
