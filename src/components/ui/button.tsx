@@ -17,8 +17,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variantStyles = {
       default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-      outline:
-        'border border-border bg-transparent hover:bg-surface-muted text-text-primary',
+      outline: 'border border-border bg-transparent hover:bg-surface-muted text-text-primary',
       ghost: 'bg-transparent hover:bg-surface-muted text-text-primary',
       danger: 'bg-status-danger text-white hover:bg-status-danger/90',
     };

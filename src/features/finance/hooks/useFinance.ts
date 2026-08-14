@@ -7,6 +7,7 @@ import {
 } from '../api/financeApi';
 import { useProjectServices } from '@/features/project-pricing';
 import { useProjectDeliverables } from '@/features/deliverables';
+import { calculateFinancialSummary } from '../utils/financialCalculations';
 import type { ProjectFinancialSummary } from '../types';
 
 export const financeKeys = {
@@ -79,44 +80,13 @@ export function useProjectFinancialSummary(
     projectId
   );
 
-  const contractValue = services.reduce(
-    (acc, s) => acc + (s.unit_price || 0) * (s.quantity || 1),
-    0
-  );
-
-  const totalPaid = payments
-    .filter((p) => p.status === 'paid')
-    .reduce((acc, p) => acc + (p.amount || 0), 0);
-
-  const remainingBalance = Math.max(0, contractValue - totalPaid);
-
-  const genericExpensesTotal = expenses.reduce((acc, e) => acc + (e.amount || 0), 0);
-  const collaboratorFeesTotal = engagements.reduce((acc, c) => acc + (c.agreed_fee || 0), 0);
-  const totalExpenses = genericExpensesTotal + collaboratorFeesTotal;
-
-  const netProfit = contractValue - totalExpenses;
-  const profitMarginPercent = contractValue > 0 ? Math.round((netProfit / contractValue) * 100) : 0;
-
-  const isFullyPaid =
-    contractValue > 0 ? totalPaid >= contractValue : payments.length > 0 && remainingBalance === 0;
-
-  const allDeliverablesApproved =
-    deliverables.length === 0 || deliverables.every((d) => d.status === 'approved');
-
-  const canNormalClose = isFullyPaid && allDeliverablesApproved;
-
-  const summary: ProjectFinancialSummary = {
-    contractValue,
-    totalPaid,
-    remainingBalance,
-    totalExpenses,
-    genericExpensesTotal,
-    collaboratorFeesTotal,
-    netProfit,
-    profitMarginPercent,
-    isFullyPaid,
-    canNormalClose,
-  };
+  const summary = calculateFinancialSummary({
+    services,
+    payments,
+    expenses,
+    collaboratorEngagements: engagements,
+    deliverables,
+  });
 
   const isLoading =
     isServicesLoading ||

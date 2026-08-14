@@ -30,9 +30,7 @@ export const BottomNav: React.FC = () => {
                 [
                   'relative flex flex-col items-center justify-center gap-0.5 transition-colors duration-[var(--transition-normal)]',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset',
-                  isActive
-                    ? 'text-primary'
-                    : 'text-text-secondary hover:text-text-primary',
+                  isActive ? 'text-primary' : 'text-text-secondary hover:text-text-primary',
                 ].join(' ')
               }
             >

@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { X, Users } from 'lucide-react';
+import { X, Users, Plus } from 'lucide-react';
 import {
   collaboratorEngagementFormSchema,
   type CollaboratorEngagementFormValues,
+  type CollaboratorFormValues,
 } from '../schemas/financeSchemas';
 import { useWorkspaceCollaborators } from '../hooks';
+import { useCreateCollaborator } from '../hooks/useFinanceMutations';
+import { CollaboratorFormModal } from './CollaboratorFormModal';
 import type { CollaboratorEngagement } from '../types';
 
 interface CollaboratorEngagementModalProps {
@@ -29,14 +32,18 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
   isSubmitting = false,
 }) => {
   const isEditing = Boolean(initialData);
+  const [isCreateCollabOpen, setIsCreateCollabOpen] = useState(false);
+
   const { data: collaborators = [], isLoading: isLoadingCollaborators } =
     useWorkspaceCollaborators(workspaceId);
+  const createCollabMutation = useCreateCollaborator(workspaceId);
 
   const {
     register,
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<CollaboratorEngagementFormValues>({
     resolver: zodResolver(collaboratorEngagementFormSchema),
@@ -120,12 +127,25 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
         >
           {/* Collaborator Selection */}
           <div>
-            <label
-              htmlFor="collaborator-select"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
-            >
-              Collaborator / Crew Member <span className="text-status-danger">*</span>
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label
+                htmlFor="collaborator-select"
+                className="block text-xs font-bold uppercase tracking-wider text-text-secondary"
+              >
+                Collaborator / Crew Member <span className="text-status-danger">*</span>
+              </label>
+              {!isEditing && (
+                <button
+                  type="button"
+                  data-testid="inline-add-collaborator-btn"
+                  onClick={() => setIsCreateCollabOpen(true)}
+                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline cursor-pointer"
+                >
+                  <Plus className="h-3 w-3" />
+                  <span>New Crew Member</span>
+                </button>
+              )}
+            </div>
             {collaborators.length > 0 ? (
               <select
                 id="collaborator-select"
@@ -140,11 +160,22 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
                 ))}
               </select>
             ) : (
-              <p className="text-xs text-text-muted italic">
-                {isLoadingCollaborators
-                  ? 'Loading crew catalog...'
-                  : 'No collaborators in workspace catalog yet.'}
-              </p>
+              <div className="flex items-center justify-between rounded-xl border border-dashed border-border p-3 text-xs text-text-muted">
+                <span>
+                  {isLoadingCollaborators
+                    ? 'Loading crew catalog...'
+                    : 'No collaborators in workspace catalog yet.'}
+                </span>
+                <button
+                  type="button"
+                  data-testid="empty-inline-add-collaborator-btn"
+                  onClick={() => setIsCreateCollabOpen(true)}
+                  className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2 py-1 text-[11px] font-bold text-primary hover:bg-primary/20 cursor-pointer"
+                >
+                  <Plus className="h-3 w-3" />
+                  <span>Create First</span>
+                </button>
+              </div>
             )}
             {errors.collaborator_id && (
               <p className="mt-1 text-xs text-status-danger">{errors.collaborator_id.message}</p>
@@ -276,6 +307,20 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
             </button>
           </div>
         </form>
+
+        {/* Inline Create Collaborator Modal */}
+        <CollaboratorFormModal
+          isOpen={isCreateCollabOpen}
+          onClose={() => setIsCreateCollabOpen(false)}
+          onSubmit={async (values: CollaboratorFormValues) => {
+            const newCollab = await createCollabMutation.mutateAsync(values);
+            if (newCollab?.id) {
+              setValue('collaborator_id', newCollab.id);
+            }
+            setIsCreateCollabOpen(false);
+          }}
+          isSubmitting={createCollabMutation.isPending}
+        />
       </div>
     </div>
   );

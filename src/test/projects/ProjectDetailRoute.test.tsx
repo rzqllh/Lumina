@@ -146,4 +146,31 @@ describe('ProjectDetailRoute (PROJ-REQ-004 / WORKFLOW-REQ-002)', () => {
 
     expect(screen.getByTestId('edit-project-page')).toBeInTheDocument();
   });
+
+  it('filters visible sections when a navigation tab is selected', async () => {
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'projects') {
+        return createMockQueryBuilder(mockProjectList[0]) as never;
+      }
+      return createMockQueryBuilder([]) as never;
+    });
+
+    renderProjectDetail();
+
+    // Click "Workflow & Tasks" tab
+    const workflowTab = await screen.findByTestId('tab-workflow');
+    fireEvent.click(workflowTab);
+
+    // Workflow is visible
+    expect(screen.getByText('Production Workflow')).toBeInTheDocument();
+    // Pricing is hidden
+    expect(screen.queryByText('Commercial Pricing & Services')).not.toBeInTheDocument();
+
+    // Click "Pricing & Finance" tab
+    const financeTab = screen.getByTestId('tab-finance');
+    fireEvent.click(financeTab);
+
+    expect(screen.getByTestId('financial-summary-card')).toBeInTheDocument();
+    expect(screen.queryByText('Production Workflow')).not.toBeInTheDocument();
+  });
 });

@@ -6,6 +6,9 @@ import {
   createExpense,
   updateExpense,
   deleteExpense,
+  createCollaborator,
+  updateCollaborator,
+  deleteCollaborator,
   createCollaboratorEngagement,
   updateCollaboratorEngagement,
   deleteCollaboratorEngagement,
@@ -19,6 +22,8 @@ import type {
   UpdatePaymentInput,
   CreateExpenseInput,
   UpdateExpenseInput,
+  CreateCollaboratorInput,
+  UpdateCollaboratorInput,
   CreateCollaboratorEngagementInput,
   UpdateCollaboratorEngagementInput,
 } from '../types';
@@ -108,6 +113,55 @@ export function useDeleteExpense(workspaceId: string, projectId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: financeKeys.expenses(workspaceId, projectId),
+      });
+    },
+  });
+}
+
+export function useCreateCollaborator(workspaceId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: Omit<CreateCollaboratorInput, 'workspace_id'>) =>
+      createCollaborator({
+        ...input,
+        workspace_id: workspaceId,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: financeKeys.collaborators(workspaceId),
+      });
+    },
+  });
+}
+
+export function useUpdateCollaborator(workspaceId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      collaboratorId,
+      input,
+    }: {
+      collaboratorId: string;
+      input: UpdateCollaboratorInput;
+    }) => updateCollaborator(workspaceId, collaboratorId, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: financeKeys.collaborators(workspaceId),
+      });
+    },
+  });
+}
+
+export function useDeleteCollaborator(workspaceId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (collaboratorId: string) => deleteCollaborator(workspaceId, collaboratorId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: financeKeys.collaborators(workspaceId),
       });
     },
   });

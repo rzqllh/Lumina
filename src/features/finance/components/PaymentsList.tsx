@@ -279,7 +279,9 @@ export const PaymentsList: React.FC<PaymentsListProps> = ({
                     </span>
                   )}
                   {p.notes && (
-                    <span className="text-text-secondary italic truncate max-w-xs">"{p.notes}"</span>
+                    <span className="text-text-secondary italic truncate max-w-xs">
+                      "{p.notes}"
+                    </span>
                   )}
                 </div>
               </div>

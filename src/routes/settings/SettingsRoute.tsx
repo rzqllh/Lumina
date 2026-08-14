@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { Sparkles, Package, Workflow, Calendar, ChevronRight } from 'lucide-react';
+import { Sparkles, Package, Workflow, Users, Calendar, ChevronRight } from 'lucide-react';
 
 export function SettingsRoute() {
   const navigate = useNavigate();
@@ -29,8 +29,16 @@ export function SettingsRoute() {
           to: '/workflows',
           active: true,
         },
+        {
+          title: 'Crew & Collaborators',
+          description: 'Roodex of second shooters, editors, and assistants.',
+          icon: Users,
+          to: '/collaborators',
+          active: true,
+        },
       ],
     },
+
     {
       title: 'Integrations',
       items: [
@@ -112,9 +120,7 @@ export function SettingsRoute() {
                       </div>
                     </div>
 
-                    {isLink && (
-                      <ChevronRight className="h-4 w-4 text-text-muted shrink-0" />
-                    )}
+                    {isLink && <ChevronRight className="h-4 w-4 text-text-muted shrink-0" />}
                   </div>
                 );
               })}

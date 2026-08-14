@@ -82,9 +82,7 @@ export const TodayAgendaCard: React.FC<TodayAgendaCardProps> = ({
       {items.length === 0 && (
         <div data-testid="today-empty-state" className="mt-5 text-center py-4">
           <Calendar className="h-7 w-7 text-text-muted mx-auto mb-2" />
-          <p className="text-xs font-medium text-text-primary">
-            Nothing scheduled for today
-          </p>
+          <p className="text-xs font-medium text-text-primary">Nothing scheduled for today</p>
           <p className="mt-0.5 text-xs text-text-secondary">
             Enjoy your focus time for editing or pre-production planning.
           </p>
@@ -126,9 +124,7 @@ export const TodayAgendaCard: React.FC<TodayAgendaCardProps> = ({
                   </div>
 
                   <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-text-secondary">
-                    <span className="truncate max-w-[140px] font-medium">
-                      {item.projectTitle}
-                    </span>
+                    <span className="truncate max-w-[140px] font-medium">{item.projectTitle}</span>
                     {item.timeOrStatus && (
                       <span className="flex items-center gap-1 text-primary font-medium">
                         <Clock className="h-3 w-3" />

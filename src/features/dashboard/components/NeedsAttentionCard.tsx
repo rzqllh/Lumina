@@ -57,9 +57,7 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
         <div className="flex items-center gap-2.5">
           <div
             className={`flex h-7 w-7 items-center justify-center rounded-lg ${
-              allClear
-                ? 'bg-emerald-50 text-status-success'
-                : 'bg-rose-50 text-status-danger'
+              allClear ? 'bg-emerald-50 text-status-success' : 'bg-rose-50 text-status-danger'
             }`}
           >
             {allClear ? (
@@ -133,13 +131,9 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
                     )}
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-text-secondary">
-                    <span className="truncate max-w-[140px] font-medium">
-                      {item.projectTitle}
-                    </span>
+                    <span className="truncate max-w-[140px] font-medium">{item.projectTitle}</span>
                     <span className="text-text-muted">·</span>
-                    <span className="text-status-danger font-medium truncate">
-                      {item.subtitle}
-                    </span>
+                    <span className="text-status-danger font-medium truncate">{item.subtitle}</span>
                   </div>
                 </div>
               </div>

@@ -22,7 +22,9 @@ import { PackageNewRoute } from '@/routes/catalog/PackageNewRoute';
 import { PackageEditRoute } from '@/routes/catalog/PackageEditRoute';
 import { WorkflowTemplatesRoute } from '@/routes/catalog/WorkflowTemplatesRoute';
 import { SettingsRoute } from '@/routes/settings/SettingsRoute';
+import { CollaboratorsRoute } from '@/routes/settings/CollaboratorsRoute';
 import { PublicBriefIntakeRoute } from '@/routes/briefs/PublicBriefIntakeRoute';
+
 import { PublicProjectStatusRoute } from '@/routes/portal/PublicProjectStatusRoute';
 
 export const router = createBrowserRouter([
@@ -122,6 +124,15 @@ export const router = createBrowserRouter([
       {
         path: 'workflows',
         element: <WorkflowTemplatesRoute />,
+      },
+      // Real Crew & Collaborators Catalog Module (STAB-P1-001)
+      {
+        path: 'collaborators',
+        element: <CollaboratorsRoute />,
+      },
+      {
+        path: 'settings/collaborators',
+        element: <CollaboratorsRoute />,
       },
       // Workspace Settings Hub
       {

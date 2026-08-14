@@ -50,10 +50,7 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
 
       {/* Empty State */}
       {projects.length === 0 && (
-        <div
-          data-testid="active-projects-empty-state"
-          className="mt-5 text-center py-6"
-        >
+        <div data-testid="active-projects-empty-state" className="mt-5 text-center py-6">
           <Briefcase className="h-7 w-7 text-text-muted mx-auto mb-2" />
           <p className="text-xs font-medium text-text-primary">No active projects</p>
           <p className="mt-0.5 text-xs text-text-secondary">
@@ -73,7 +70,10 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
 
       {/* Projects List */}
       {projects.length > 0 && (
-        <div data-testid="active-projects-list" className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div
+          data-testid="active-projects-list"
+          className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3"
+        >
           {projects.slice(0, 6).map((p) => (
             <div
               key={p.id}

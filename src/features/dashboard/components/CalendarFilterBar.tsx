@@ -54,9 +54,7 @@ export const CalendarFilterBar: React.FC<CalendarFilterBarProps> = ({
             <span
               className={[
                 'rounded-full px-1.5 py-px text-[10px] font-semibold tabular-nums',
-                isActive
-                  ? 'bg-primary/10 text-primary'
-                  : 'bg-surface-muted text-text-muted',
+                isActive ? 'bg-primary/10 text-primary' : 'bg-surface-muted text-text-muted',
               ].join(' ')}
             >
               {f.count}

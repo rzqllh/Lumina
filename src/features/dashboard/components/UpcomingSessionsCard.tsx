@@ -64,10 +64,7 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
 
       {/* Empty State */}
       {sessions.length === 0 && (
-        <div
-          data-testid="upcoming-sessions-empty-state"
-          className="mt-5 text-center py-4"
-        >
+        <div data-testid="upcoming-sessions-empty-state" className="mt-5 text-center py-4">
           <Calendar className="h-7 w-7 text-text-muted mx-auto mb-2" />
           <p className="text-xs font-medium text-text-primary">No upcoming sessions</p>
           <p className="mt-0.5 text-xs text-text-secondary">
@@ -96,7 +93,9 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
             >
               <div className="space-y-1 min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-semibold text-text-primary truncate">{s.title}</span>
+                  <span className="text-xs font-semibold text-text-primary truncate">
+                    {s.title}
+                  </span>
                   <SessionTypeBadge type={s.type} customLabel={s.custom_type_label} />
                 </div>
 

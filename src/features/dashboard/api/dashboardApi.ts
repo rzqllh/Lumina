@@ -4,7 +4,9 @@ import type { Project } from '@/features/projects';
 import type { Session } from '@/features/sessions';
 import type { Deliverable } from '@/features/deliverables';
 import type { Payment } from '@/features/finance';
+import { calculateFinancialSummary } from '@/features/finance';
 import type { Task } from '@/features/project-workflow';
+import type { ProjectService } from '@/features/project-pricing';
 
 export async function fetchWorkspaceDashboardData(workspaceId: string): Promise<{
   activeProjects: (Project & { client?: { display_name?: string } })[];
@@ -44,8 +46,8 @@ export async function fetchWorkspaceDashboardData(workspaceId: string): Promise<
     };
   }
 
-  // 2. Fetch payments, sessions, deliverables, tasks in parallel
-  const [paymentsRes, sessionsRes, deliverablesRes, tasksRes] = await Promise.all([
+  // 2. Fetch payments, sessions, deliverables, tasks, and project services in parallel
+  const [paymentsRes, sessionsRes, deliverablesRes, tasksRes, servicesRes] = await Promise.all([
     supabase
       .from('payments')
       .select('*, project:projects(title)')
@@ -63,11 +65,16 @@ export async function fetchWorkspaceDashboardData(workspaceId: string): Promise<
       .eq('workspace_id', workspaceId)
       .in('project_id', activeProjectIds),
     supabase
-      .from('project_tasks')
+      .from('tasks')
       .select('*, project:projects(title)')
       .eq('workspace_id', workspaceId)
       .in('project_id', activeProjectIds)
       .eq('status', 'open'),
+    supabase
+      .from('project_services')
+      .select('*')
+      .eq('workspace_id', workspaceId)
+      .in('project_id', activeProjectIds),
   ]);
 
   const payments = (paymentsRes.data || []) as (Payment & { project?: { title?: string } })[];
@@ -76,6 +83,7 @@ export async function fetchWorkspaceDashboardData(workspaceId: string): Promise<
     project?: { title?: string };
   })[];
   const tasks = (tasksRes.data || []) as (Task & { project?: { title?: string } })[];
+  const services = (servicesRes.data || []) as ProjectService[];
 
   // 3. Compute Needs Attention Items
   const attentionItems: AttentionItem[] = [];
@@ -200,14 +208,22 @@ export async function fetchWorkspaceDashboardData(workspaceId: string): Promise<
   // 5. Compute Upcoming Sessions (Next 14 Days)
   const upcomingSessions = sessions.filter((s) => s.date >= todayStr && s.status === 'scheduled');
 
-  // 6. Compute Metrics
-  const unpaidReceivablesTotal = payments
-    .filter((p) => p.status === 'pending')
-    .reduce((acc, p) => acc + (p.amount || 0), 0);
+  // 6. Compute Metrics using canonical finance calculations
+  let unpaidReceivablesTotal = 0;
+  let receivedRevenueTotal = 0;
 
-  const receivedRevenueTotal = payments
-    .filter((p) => p.status === 'paid')
-    .reduce((acc, p) => acc + (p.amount || 0), 0);
+  for (const project of activeProjects) {
+    const projServices = services.filter((s) => s.project_id === project.id);
+    const projPayments = payments.filter((p) => p.project_id === project.id);
+
+    const projFinance = calculateFinancialSummary({
+      services: projServices,
+      payments: projPayments,
+    });
+
+    unpaidReceivablesTotal += projFinance.remainingBalance;
+    receivedRevenueTotal += projFinance.totalPaid;
+  }
 
   const currentMonthPrefix = todayStr.slice(0, 7); // YYYY-MM
   const sessionsScheduledThisMonth = sessions.filter(

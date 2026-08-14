@@ -86,6 +86,23 @@ export interface Collaborator {
   updated_at: string;
 }
 
+export interface CreateCollaboratorInput {
+  workspace_id: string;
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+  specialty?: string | null;
+  notes?: string | null;
+}
+
+export interface UpdateCollaboratorInput {
+  name?: string;
+  phone?: string | null;
+  email?: string | null;
+  specialty?: string | null;
+  notes?: string | null;
+}
+
 export interface CollaboratorEngagement {
   id: string;
   workspace_id: string;

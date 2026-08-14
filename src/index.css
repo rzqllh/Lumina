@@ -43,7 +43,7 @@
     /* ── Typography (WCAG 2.2 AA on both surface and background) ── */
     --text-primary: #1a1a1e;
     --text-secondary: #46454f;
-    --text-muted: #5c5b66;        /* 5.2:1 on --surface, 4.5:1+ on --background */
+    --text-muted: #5c5b66; /* 5.2:1 on --surface, 4.5:1+ on --background */
 
     /* ── Borders ────────────────────────────────────────────── */
     --border: #d2d0dc;
@@ -67,18 +67,18 @@
     --ring: #6d28d9;
 
     /* ── Spacing scale ──────────────────────────────────────── */
-    --space-xs: 0.25rem;    /* 4px  */
-    --space-sm: 0.5rem;     /* 8px  */
-    --space-md: 0.75rem;    /* 12px */
-    --space-lg: 1rem;       /* 16px */
-    --space-xl: 1.5rem;     /* 24px */
-    --space-2xl: 2rem;      /* 32px */
+    --space-xs: 0.25rem; /* 4px  */
+    --space-sm: 0.5rem; /* 8px  */
+    --space-md: 0.75rem; /* 12px */
+    --space-lg: 1rem; /* 16px */
+    --space-xl: 1.5rem; /* 24px */
+    --space-2xl: 2rem; /* 32px */
 
     /* ── Radii ──────────────────────────────────────────────── */
-    --radius-badge: 0.375rem;  /* 6px  */
-    --radius-input: 0.625rem;  /* 10px */
-    --radius-card: 0.75rem;    /* 12px */
-    --radius-lg: 1rem;         /* 16px */
+    --radius-badge: 0.375rem; /* 6px  */
+    --radius-input: 0.625rem; /* 10px */
+    --radius-card: 0.75rem; /* 12px */
+    --radius-lg: 1rem; /* 16px */
 
     /* ── Shadows (tinted, not pure black) ────────────────────── */
     --shadow-card: 0 1px 2px 0 rgba(60, 56, 80, 0.06);
@@ -111,7 +111,6 @@ html {
 
 /* ── Reduced motion ─────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   ::before,
   ::after {

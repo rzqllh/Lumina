@@ -1,6 +1,19 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { ArrowLeft, Edit2, User, Hash, Coins, Calendar, AlertCircle } from 'lucide-react';
+import {
+  ArrowLeft,
+  Edit2,
+  User,
+  Hash,
+  Coins,
+  Calendar,
+  AlertCircle,
+  Layers,
+  Clock,
+  DollarSign,
+  FileText,
+} from 'lucide-react';
+
 import { useProject, ProjectStatusBadge } from '@/features/projects';
 import { ProjectPricingSection } from '@/features/project-pricing';
 import {
@@ -14,10 +27,13 @@ import { ProjectFinancialsSection, ProjectClosureControl } from '@/features/fina
 import { ProjectBriefSection } from '@/features/briefs';
 import { ProjectFilesSection } from '@/features/files';
 
+type SectionTab = 'all' | 'workflow' | 'sessions' | 'finance' | 'files';
+
 export function ProjectDetailRoute() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const [selectedStageId, setSelectedStageId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<SectionTab>('all');
 
   const { data: project, isLoading, error, refetch } = useProject(projectId);
   const { data: stages = [] } = useProjectStages(project?.workspace_id || '', project?.id || '');
@@ -64,6 +80,11 @@ export function ProjectDetailRoute() {
   }
 
   const isForceClosed = project.status === 'force_closed';
+
+  const showWorkflow = activeTab === 'all' || activeTab === 'workflow';
+  const showSessions = activeTab === 'all' || activeTab === 'sessions';
+  const showFinance = activeTab === 'all' || activeTab === 'finance';
+  const showFiles = activeTab === 'all' || activeTab === 'files';
 
   return (
     <div className="space-y-6">
@@ -167,71 +188,153 @@ export function ProjectDetailRoute() {
         </div>
       </div>
 
-      {/* Commercial Pricing & Services (Feature #5) */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-        <ProjectPricingSection projectId={project.id} />
+      {/* Section Navigation Tabs for Progressive Disclosure */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar border-b border-border">
+        <button
+          type="button"
+          data-testid="tab-all-sections"
+          onClick={() => setActiveTab('all')}
+          className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
+            activeTab === 'all'
+              ? 'bg-primary text-primary-foreground shadow-xs'
+              : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary'
+          }`}
+        >
+          <span>All Overview</span>
+        </button>
+        <button
+          type="button"
+          data-testid="tab-workflow"
+          onClick={() => setActiveTab('workflow')}
+          className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
+            activeTab === 'workflow'
+              ? 'bg-primary text-primary-foreground shadow-xs'
+              : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary'
+          }`}
+        >
+          <Layers className="h-3.5 w-3.5" />
+          <span>Workflow & Tasks</span>
+        </button>
+        <button
+          type="button"
+          data-testid="tab-sessions"
+          onClick={() => setActiveTab('sessions')}
+          className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
+            activeTab === 'sessions'
+              ? 'bg-primary text-primary-foreground shadow-xs'
+              : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary'
+          }`}
+        >
+          <Clock className="h-3.5 w-3.5" />
+          <span>Sessions & Deliverables</span>
+        </button>
+        <button
+          type="button"
+          data-testid="tab-finance"
+          onClick={() => setActiveTab('finance')}
+          className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
+            activeTab === 'finance'
+              ? 'bg-primary text-primary-foreground shadow-xs'
+              : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary'
+          }`}
+        >
+          <DollarSign className="h-3.5 w-3.5" />
+          <span>Pricing & Finance</span>
+        </button>
+        <button
+          type="button"
+          data-testid="tab-files"
+          onClick={() => setActiveTab('files')}
+          className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
+            activeTab === 'files'
+              ? 'bg-primary text-primary-foreground shadow-xs'
+              : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary'
+          }`}
+        >
+          <FileText className="h-3.5 w-3.5" />
+          <span>Brief & Files</span>
+        </button>
       </div>
 
-      {/* Financial Health, Payments, Expenses & Crew (Feature #9) */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-        <ProjectFinancialsSection
-          workspaceId={project.workspace_id}
-          projectId={project.id}
-          currency={project.currency}
-          isForceClosed={isForceClosed}
-        />
-      </div>
+      {/* Primary Operational Flow: Production Workflow & Stages (Feature #6) */}
+      {showWorkflow && (
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+          <ProjectWorkflowSection
+            workspaceId={project.workspace_id}
+            projectId={project.id}
+            isForceClosed={isForceClosed}
+            selectedStageId={selectedStageId}
+            onSelectStage={setSelectedStageId}
+          />
+          <ProjectTasksSection
+            workspaceId={project.workspace_id}
+            projectId={project.id}
+            stages={stages}
+            isForceClosed={isForceClosed}
+            selectedStageId={selectedStageId}
+            onSelectStage={setSelectedStageId}
+          />
+        </div>
+      )}
 
       {/* Production Sessions (Feature #7) */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-        <ProjectSessionsSection
-          workspaceId={project.workspace_id}
-          projectId={project.id}
-          isForceClosed={isForceClosed}
-        />
-      </div>
+      {showSessions && (
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+          <ProjectSessionsSection
+            workspaceId={project.workspace_id}
+            projectId={project.id}
+            isForceClosed={isForceClosed}
+          />
+        </div>
+      )}
 
       {/* Promised Deliverables & Revisions (Feature #8) */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-        <ProjectDeliverablesSection
-          workspaceId={project.workspace_id}
-          projectId={project.id}
-          isForceClosed={isForceClosed}
-        />
-      </div>
+      {showSessions && (
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+          <ProjectDeliverablesSection
+            workspaceId={project.workspace_id}
+            projectId={project.id}
+            isForceClosed={isForceClosed}
+          />
+        </div>
+      )}
+
+      {/* Commercial Pricing & Services (Feature #5) */}
+      {showFinance && (
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+          <ProjectPricingSection projectId={project.id} />
+        </div>
+      )}
+
+      {/* Financial Health, Payments, Expenses & Crew (Feature #9) */}
+      {showFinance && (
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+          <ProjectFinancialsSection
+            workspaceId={project.workspace_id}
+            projectId={project.id}
+            currency={project.currency}
+            isForceClosed={isForceClosed}
+          />
+        </div>
+      )}
 
       {/* Creative Brief & Client Intake (Feature #11) */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-        <ProjectBriefSection workspaceId={project.workspace_id} projectId={project.id} />
-      </div>
+      {showFiles && (
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+          <ProjectBriefSection workspaceId={project.workspace_id} projectId={project.id} />
+        </div>
+      )}
 
       {/* External Files, Google Drive & Client Portal (Feature #12) */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-        <ProjectFilesSection
-          workspaceId={project.workspace_id}
-          projectId={project.id}
-          isForceClosed={isForceClosed}
-        />
-      </div>
-
-      {/* Production Workflow & Stages (Feature #6) */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-        <ProjectWorkflowSection
-          workspaceId={project.workspace_id}
-          projectId={project.id}
-          isForceClosed={isForceClosed}
-          selectedStageId={selectedStageId}
-          onSelectStage={setSelectedStageId}
-        />
-        <ProjectTasksSection
-          workspaceId={project.workspace_id}
-          projectId={project.id}
-          stages={stages}
-          isForceClosed={isForceClosed}
-          selectedStageId={selectedStageId}
-          onSelectStage={setSelectedStageId}
-        />
-      </div>
+      {showFiles && (
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+          <ProjectFilesSection
+            workspaceId={project.workspace_id}
+            projectId={project.id}
+            isForceClosed={isForceClosed}
+          />
+        </div>
+      )}
     </div>
   );
 }

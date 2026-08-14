@@ -7,10 +7,13 @@ import type {
   CreateExpenseInput,
   UpdateExpenseInput,
   Collaborator,
+  CreateCollaboratorInput,
+  UpdateCollaboratorInput,
   CollaboratorEngagement,
   CreateCollaboratorEngagementInput,
   UpdateCollaboratorEngagementInput,
 } from '../types';
+
 import type { Project } from '@/features/projects';
 
 // ── Payments ─────────────────────────────────────────────────────────────────
@@ -192,6 +195,61 @@ export async function fetchWorkspaceCollaborators(workspaceId: string): Promise<
 
   if (error) throw error;
   return (data || []) as Collaborator[];
+}
+
+export async function createCollaborator(input: CreateCollaboratorInput): Promise<Collaborator> {
+  const { data, error } = await supabase
+    .from('collaborators')
+    .insert({
+      workspace_id: input.workspace_id,
+      name: input.name,
+      phone: input.phone || null,
+      email: input.email || null,
+      specialty: input.specialty || null,
+      notes: input.notes || null,
+    })
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data as Collaborator;
+}
+
+export async function updateCollaborator(
+  workspaceId: string,
+  collaboratorId: string,
+  input: UpdateCollaboratorInput
+): Promise<Collaborator> {
+  const { data, error } = await supabase
+    .from('collaborators')
+    .update({
+      name: input.name,
+      phone: input.phone || null,
+      email: input.email || null,
+      specialty: input.specialty || null,
+      notes: input.notes || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('workspace_id', workspaceId)
+    .eq('id', collaboratorId)
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data as Collaborator;
+}
+
+export async function deleteCollaborator(
+  workspaceId: string,
+  collaboratorId: string
+): Promise<void> {
+  const { error } = await supabase
+    .from('collaborators')
+    .delete()
+    .eq('workspace_id', workspaceId)
+    .eq('id', collaboratorId);
+
+  if (error) throw error;
 }
 
 export async function fetchProjectCollaboratorEngagements(

@@ -32,7 +32,9 @@ export function ProjectsListRoute() {
       {/* Page Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-text-primary sm:text-2xl">Projects</h1>
+          <h1 className="text-xl font-semibold tracking-tight text-text-primary sm:text-2xl">
+            Projects
+          </h1>
           <p className="text-xs text-text-secondary mt-0.5">
             Manage client engagements and production records.
           </p>

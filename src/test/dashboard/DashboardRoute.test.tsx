@@ -78,9 +78,40 @@ describe('DashboardRoute (DASH-REQ-001 / DASH-REQ-002 / DASH-REQ-003 / DASH-REQ-
   }
 
   it('renders dashboard with greetings, metrics, attention panel, today agenda, and active projects', async () => {
+    const queriedTables: string[] = [];
+
     vi.mocked(supabase.from).mockImplementation((table: string) => {
+      queriedTables.push(table);
       if (table === 'projects') {
         return createMockQueryBuilder(mockActiveProjects) as never;
+      }
+      if (table === 'project_services') {
+        return createMockQueryBuilder([
+          {
+            id: 'ps-1',
+            project_id: 'proj-1',
+            unit_price: 10000000,
+            quantity: 1,
+            subtotal: 10000000,
+            adjustment_amount: 0,
+          },
+        ]) as never;
+      }
+      if (table === 'payments') {
+        return createMockQueryBuilder([
+          { id: 'pay-1', project_id: 'proj-1', amount: 2000000, status: 'paid' },
+        ]) as never;
+      }
+      if (table === 'tasks') {
+        return createMockQueryBuilder([
+          {
+            id: 'task-1',
+            project_id: 'proj-1',
+            title: 'Color grading pass',
+            status: 'open',
+            due_date: new Date().toISOString().split('T')[0],
+          },
+        ]) as never;
       }
       return createMockQueryBuilder([]) as never;
     });
@@ -94,6 +125,11 @@ describe('DashboardRoute (DASH-REQ-001 / DASH-REQ-002 / DASH-REQ-003 / DASH-REQ-
     expect(await screen.findByTestId('active-projects-panel')).toBeInTheDocument();
     expect(await screen.findByTestId('upcoming-sessions-panel')).toBeInTheDocument();
     expect(screen.getByText('Sarah & Dave Wedding')).toBeInTheDocument();
+
+    // Verify canonical table 'tasks' is queried (and NOT 'project_tasks')
+    expect(queriedTables).toContain('tasks');
+    expect(queriedTables).not.toContain('project_tasks');
+    expect(queriedTables).toContain('project_services');
   });
 
   it('navigates to create project when New Project shortcut is clicked', async () => {

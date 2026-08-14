@@ -54,6 +54,16 @@ export const collaboratorEngagementFormSchema = z.object({
 
 export type CollaboratorEngagementFormValues = z.infer<typeof collaboratorEngagementFormSchema>;
 
+export const collaboratorFormSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters').max(100),
+  phone: z.string().max(50).optional().or(z.literal('')),
+  email: z.string().email('Please enter a valid email address').optional().or(z.literal('')),
+  specialty: z.string().max(100).optional().or(z.literal('')),
+  notes: z.string().optional(),
+});
+
+export type CollaboratorFormValues = z.infer<typeof collaboratorFormSchema>;
+
 export const forceCloseFormSchema = z.object({
   reason: z
     .string()
