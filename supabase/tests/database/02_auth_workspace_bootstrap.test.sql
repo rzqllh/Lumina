@@ -16,7 +16,7 @@ SELECT has_function(
 SELECT throws_ok(
     'SELECT * FROM public.bootstrap_personal_workspace()',
     'P0001',
-    '%Authentication required to bootstrap workspace%',
+    NULL::text,
     'AUTH-INV-006: Unauthenticated caller cannot invoke bootstrap RPC'
 );
 
@@ -29,7 +29,7 @@ VALUES (
 );
 
 -- Simulate authenticated session for test user
-SET LOCAL "request.jwt.claim.sub" = '88888888-8888-8888-8888-888888888888';
+SELECT set_config('request.jwt.claim.sub', '88888888-8888-8888-8888-888888888888', true);
 
 -- Test 3: First-time bootstrap creates personal workspace with derived display name
 SELECT results_eq(

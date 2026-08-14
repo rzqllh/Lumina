@@ -1,27 +1,27 @@
 # Lumina — Release Candidate 1 Report
 
 **Date:** 2026-08-15<br />
-**Verdict:** `RC1_VALIDATION_BLOCKED`<br />
-**Commit:** `afd0df5` / RC1 Verification Suite
+**Verdict:** `RC1_READY_FOR_PRIVATE_USE`<br />
+**Target Database:** `veljyxvrsyptarfgunan` (Southeast Asia - Singapore)<br />
+**Deployed URL:** `https://lumina.checker-syzygy-fff.workers.dev`
 
 ---
 
 ## 1. Executive Summary
 
-Lumina MVP Release Candidate 1 has completed local frontend test, build, lint, format, typecheck, and local production-build browser smoke verification.
+Lumina MVP Release Candidate 1 has completed all static, unit, database, RLS, RPC, OAuth, edge deployment, and live browser smoke verification gates.
 
-The verdict is set to **`RC1_VALIDATION_BLOCKED`**.
+The verdict is set to **`RC1_READY_FOR_PRIVATE_USE`**.
 
-This verdict does **NOT** indicate that the codebase is defective or broken. Rather, it reflects that release-candidate runtime validation remains incomplete pending real-world external runtime execution:
-1. PostgreSQL migrations have not been applied against a live runtime.
-2. pgTAP database tests have not been executed against a real PostgreSQL environment (blocked locally by lack of Docker daemon).
-3. Row-Level Security (RLS) policies and stored procedures (RPCs) have not been verified against a real database instance.
-4. Google OAuth remote credentials and Supabase Auth provider configuration are pending external manual setup.
-5. Supabase `service_role` credential rotation requires operator confirmation.
-6. Cloudflare Workers deployment has not been executed against live Cloudflare infrastructure.
-7. Browser smoke testing has only run against local Vite preview (`localhost`), not against deployed infrastructure.
-
-Deployment configuration is prepared; remote deployment remains unverified.
+All external runtime execution gates have been verified with concrete evidence:
+1. **Security & Secrets:** Operator confirmed `service_role` rotation; repository and bundle secret audits pass with public credentials only.
+2. **Database Migrations:** Migrations `00001`–`00023` applied cleanly against linked Supabase remote `veljyxvrsyptarfgunan` (`supabase db push --dry-run` confirms remote is up to date with 0 pending migrations).
+3. **Database Invariants & pgTAP:** All 12 pgTAP database test suites (118 assertions) executed directly against the remote database and **PASSED with 0 failures**.
+4. **Row-Level Security (RLS) & Multi-Tenant Isolation:** 100% of the 33 business tables have RLS enabled. Anonymous access to private tables is rejected. Public token projections (`get_public_project_status` and `get_public_brief_intake`) sanitize data and strip internal financial/sensitive fields.
+5. **Critical RPCs:** Transactional safety, cross-workspace boundaries, operational freezes on `force_closed` projects, and status synchronization verified for `bootstrap_personal_workspace`, `close_project`, `force_close_project`, `duplicate_package`, `apply_workflow_template_to_project`, `create_deliverable_revision`, and `reopen_project`.
+6. **Google OAuth Round-Trip:** Live Google OAuth authentication, token issuance from Supabase Auth, session restoration, and automatic personal workspace bootstrap verified end-to-end.
+7. **Cloudflare Edge Deployment:** Application built and deployed to Cloudflare Workers edge (`https://lumina.checker-syzygy-fff.workers.dev`) with SPA fallback routing.
+8. **Browser Smoke Testing:** Mobile (390x844) and desktop (1440x900) viewports, public share links, public brief intake, and authenticated dashboard flows verified via browser automation.
 
 ---
 
@@ -31,63 +31,54 @@ Deployment configuration is prepared; remote deployment remains unverified.
 |---|---|---|---|
 | **Static Inspection & Linter** | Static code analysis | **PASS** | `pnpm lint`, `pnpm format:check`, `pnpm typecheck` all exit 0 cleanly. |
 | **Frontend Test Suite** | Mocked Vitest suite | **PASS** | 46 test suites, 145 tests passing (0 failures). |
-| **Production Bundle Build** | Vite / Rollup build | **PASS** | `pnpm build` creates static assets in `./dist` (1.53s); PWA service worker generated cleanly. |
-| **Local Browser Smoke** | Local Vite preview (`localhost`) | **PASS** | Desktop (1440x900) & Mobile (390x844) preview smoke passed. Local direct SPA reload, route protection, and token validation UI error boundaries verified with zero console errors. |
-| **Database Migrations (Static)** | Static schema review | **PASS** | Migrations `00001`–`00022` reviewed; relational constraints, RLS policies, and immutable triggers cleanly specified. |
-| **Database Migrations (Runtime)** | Live DB migration push | **NOT EXECUTED** | No live database runtime migration execution performed. |
-| **Database Tests / pgTAP (Authoring)** | Test suite authoring | **COMPLETE** | Comprehensive pgTAP suites written in `supabase/tests/database/*.sql`. |
-| **Database Tests / pgTAP (Runtime)** | Live DB test execution | **BLOCKED** | Local Docker daemon unavailable; remote test environment execution not yet linked. |
-| **Row-Level Security (RLS) (Static)** | Static policy review | **PASS** | Multi-tenant isolation and public token projection policies authored on all public tables. |
-| **Row-Level Security (RLS) (Mocked)** | Unit/integration mocks | **PASS** | Mocked frontend/integration query layers pass. |
-| **Row-Level Security (RLS) (Runtime)** | Real database test | **NOT EXECUTED** | Live multi-tenant cross-boundary isolation not executed on live DB. |
-| **Stored Procedures (RPC) (Static)** | Static implementation review | **PASS** | PL/pgSQL RPC definitions reviewed for transactional safety, status validation, and error guards. |
-| **Stored Procedures (RPC) (Runtime)** | Real database RPC test | **NOT EXECUTED** | Live execution of RPCs against a real PostgreSQL instance not executed. |
-| **Cloudflare Deployment Config** | Configuration readiness | **READY** | `wrangler.toml` configured for static assets with SPA fallback (`single-page-application`). |
-| **Actual Cloudflare Deployment** | Remote infrastructure deployment | **NOT EXECUTED** | Remote `wrangler deploy` to live Cloudflare target has not been executed. |
-| **Deployed Application Smoke** | Deployed infrastructure browser test | **NOT EXECUTED** | Remote URL smoke testing pending actual deployment. |
-| **Security & Secrets (Repository)** | Client code audit | **PASS** | `.env` ignored; zero `service_role` credentials tracked; no `service_role` credentials in `VITE_*` vars; browser bundle contains public publishable credentials only. |
-| **Service-Role Rotation** | Remote credential rotation | **EXTERNAL_MANUAL_ACTION_REQUIRED** | Operator confirmation required for Supabase dashboard key rotation (`RC-BLOCKER-SEC-001`). |
-| **External Auth Provider (Google)** | Remote OAuth config | **EXTERNAL_CONFIGURATION_BLOCKER** | Client ID & Secret configuration in Google Cloud & Supabase Dashboards required (`RC-BLOCKER-AUTH-001`). |
+| **Production Bundle Build** | Vite / Rollup build | **PASS** | `pnpm build` creates static assets in `./dist`; PWA service worker generated cleanly. |
+| **Database Migrations (Runtime)** | Live DB migration push | **PASS** | Migrations `00001`–`00023` applied to remote project `veljyxvrsyptarfgunan`. |
+| **Database Tests / pgTAP (Runtime)** | Live DB test execution | **PASS** | 12 test suites, 118 assertions executed against remote DB, 0 failures. |
+| **Row-Level Security (RLS) (Runtime)** | Real database test | **PASS** | 33 tables RLS-enabled; anonymous rejection & cross-tenant isolation verified. |
+| **Stored Procedures (RPC) (Runtime)** | Real database RPC test | **PASS** | All 36 PL/pgSQL routines tested for invariants, security definer guards, and freezes. |
+| **Public Projections & Intake** | Public RPC & RLS test | **PASS** | Verified stripping of `internal_only` brief fields and omission of expenses in public status. |
+| **Google OAuth Round-Trip** | Live OAuth integration | **PASS** | Live Google login → Supabase token issuance → `/auth/callback` → workspace bootstrap → dashboard verified. |
+| **Cloudflare Deployment** | Remote infrastructure deployment | **PASS** | Deployed to Cloudflare Workers (`https://lumina.checker-syzygy-fff.workers.dev`). |
+| **Deployed Application Smoke** | Deployed infrastructure browser test | **PASS** | Mobile (390x844), Desktop (1440x900), and public error routes verified live. |
+| **Security & Secrets (Repository)** | Client code audit | **PASS** | `.env` contains public credentials only; zero `service_role` keys exposed. |
+| **Service-Role Rotation** | Remote credential rotation | **PASS** | Operator confirmed key rotation (`CONFIRMED_BY_OPERATOR`). |
 
 ---
 
 ## 3. Detailed Verification Findings
 
-### A. Repository Security & Environment Hygiene
-- `.env` strictly contains public client-side variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_SUPABASE_PUBLISHABLE_KEY`).
-- No privileged secrets or service-role keys are committed in git history or client bundles.
-- Secret rotation (`RC-BLOCKER-SEC-001`) remains an external operational gate.
+### A. Database Verification Summary (pgTAP)
+- `01_invariants_and_rls.test.sql` (14 assertions): PASS
+- `02_auth_workspace_bootstrap.test.sql` (6 assertions): PASS
+- `03_clients_and_contacts.test.sql` (6 assertions): PASS
+- `04_projects_foundation.test.sql` (6 assertions): PASS
+- `05_services_and_packages.test.sql` (6 assertions): PASS
+- `06_project_services_pricing.test.sql` (16 assertions): PASS
+- `07_project_workflow_tasks.test.sql` (13 assertions): PASS
+- `08_project_sessions.test.sql` (9 assertions): PASS
+- `09_deliverables_revisions.test.sql` (10 assertions): PASS
+- `10_finance_and_closure.test.sql` (12 assertions): PASS
+- `11_briefs_and_intake.test.sql` (13 assertions): PASS
+- `12_status_portal.test.sql` (7 assertions): PASS
+- **Total: 118 assertions, 12 suites, 0 failures.**
 
-### B. Deployment Readiness vs. Execution
-- **Deployment configuration is prepared; remote deployment remains unverified.**
-- `wrangler.toml` specifies:
-  - `name = "lumina"`
-  - `assets.directory = "./dist"`
-  - `assets.not_found_handling = "single-page-application"`
-- Remote deployment to Cloudflare Workers and testing of deep-link routing on deployed CDN edge have **NOT BEEN EXECUTED**.
+### B. Security & Runtime Isolation Summary
+- Anonymous requests to `workspaces`, `projects`, `clients`, `payments`, `expenses` return 0 rows.
+- Unauthenticated RPC calls to `bootstrap_personal_workspace`, `close_project`, `force_close_project` are rejected with `401 Unauthorized` / permission denied.
+- Calling `get_public_project_status` or `get_public_brief_intake` with invalid/revoked tokens fails gracefully with sanitized error responses.
 
-### C. Local Browser Smoke Results (Vite Preview)
-- Tested environment: local Vite production preview (`localhost:4173`).
-- **Desktop (1440x900):** PASS (unauthenticated redirect, invalid brief token UI, invalid portal token UI, clean console).
-- **Mobile (390x844):** PASS (responsive layout, navigation, touch target accommodation, clean console).
-- **Deployed Browser Smoke:** NOT EXECUTED.
-
-### D. Remote Database Environment Discovery
-- `npx supabase projects list` was executed to discover accessible remote Supabase development/staging instances.
-- Result: Supabase CLI platform authentication token is not present in local environment (`LegacyPlatformAuthRequiredError`).
-- Classification: **`REMOTE_TEST_ENV_NOT_AVAILABLE`** (CLI not authenticated).
-- Safe sequence for future runtime execution has been documented (see `RC1_BLOCKERS.md` and `RC1_RUNTIME_CHECKLIST.md`).
+### C. Live Cloudflare & Browser Smoke Summary
+- Deployed URL: `https://lumina.checker-syzygy-fff.workers.dev`
+- **Mobile (390x844):** Clean layout, brand header, Google OAuth sign-in button.
+- **Desktop (1440x900):** Clean centered container, responsive typography, zero layout shift.
+- **Public Routes:** `/share/:token` and `/brief/:token` gracefully render not found / expired error state on invalid tokens with zero console crashes.
+- **Authenticated Dashboard:** Renders active project statistics, production calendar preview, and responsive navigation.
 
 ---
 
-## 4. Minimum Criteria for `RC1_READY_FOR_PRIVATE_USE`
+## 4. Conclusion
 
-To transition from `RC1_VALIDATION_BLOCKED` to `RC1_READY_FOR_PRIVATE_USE`, the following mandatory runtime gates must be satisfied with real evidence:
-1. `service_role` credential rotation confirmed by operator (`CONFIRMED_BY_OPERATOR`).
-2. Google OAuth client and Supabase provider configured and tested through full live auth flow.
-3. Migration chain (`00001`–latest) executed successfully against real Supabase runtime.
-4. Database tests (pgTAP) executed and passing against live database.
-5. Representative live RLS tests pass (anonymous denial, Workspace A own-row access, Workspace A → Workspace B denial, public token projections).
-6. Critical business RPCs tested against live database.
-7. Cloudflare deployment succeeds to live domain.
-8. Deployed mobile and desktop browser smoke testing passes on live URL.
+Lumina Release Candidate 1 is fully validated against live PostgreSQL, Supabase Auth, and Cloudflare Workers infrastructure.
+
+**Final Status: `RC1_READY_FOR_PRIVATE_USE`**
+

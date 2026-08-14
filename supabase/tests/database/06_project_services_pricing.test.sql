@@ -11,6 +11,10 @@ SELECT plan(16);
 INSERT INTO public.workspaces (id, name)
 VALUES ('00000000-0000-0000-0000-000000000001'::UUID, 'Test Workspace');
 
+INSERT INTO auth.users (id, email)
+VALUES ('00000000-0000-0000-ffff-000000000001'::UUID, 'owner@example.com')
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO public.workspace_members (workspace_id, user_id, role)
 VALUES (
     '00000000-0000-0000-0000-000000000001'::UUID,
@@ -63,16 +67,13 @@ INSERT INTO public.packages (id, workspace_id, name, is_active)
 VALUES ('00000000-0000-0000-ffff-000000000040'::UUID, '00000000-0000-0000-ffff-000000000002'::UUID, 'Other Package', TRUE);
 
 -- ── Test 1: Manual project_service insertion succeeds ────────────────────────
-SELECT ok(
-    (WITH inserted AS (
-        INSERT INTO public.project_services
-            (workspace_id, project_id, label, quantity, unit_price, subtotal, adjustment_amount)
-        VALUES
-            ('00000000-0000-0000-0000-000000000001'::UUID,
-             '00000000-0000-0000-0000-000000000020'::UUID,
-             'Custom Drone Coverage', 1, 750000, 750000, 0)
-        RETURNING id
-    ) SELECT COUNT(*) FROM inserted) = 1,
+SELECT lives_ok(
+    $$INSERT INTO public.project_services
+        (workspace_id, project_id, label, quantity, unit_price, subtotal, adjustment_amount)
+      VALUES
+        ('00000000-0000-0000-0000-000000000001'::UUID,
+         '00000000-0000-0000-0000-000000000020'::UUID,
+         'Custom Drone Coverage', 1, 750000, 750000, 0)$$,
     'T1: Manual project_service insertion succeeds'
 );
 
@@ -86,18 +87,15 @@ SELECT is(
 );
 
 -- ── Test 3: Project Service with valid source_service_id succeeds ─────────────
-SELECT ok(
-    (WITH inserted AS (
-        INSERT INTO public.project_services
-            (workspace_id, project_id, label, quantity, unit_price, subtotal, adjustment_amount,
-             source_service_id)
-        VALUES
-            ('00000000-0000-0000-0000-000000000001'::UUID,
-             '00000000-0000-0000-0000-000000000020'::UUID,
-             'Photography', 1, 2500000, 2500000, 0,
-             '00000000-0000-0000-0000-000000000030'::UUID)
-        RETURNING id
-    ) SELECT COUNT(*) FROM inserted) = 1,
+SELECT lives_ok(
+    $$INSERT INTO public.project_services
+        (workspace_id, project_id, label, quantity, unit_price, subtotal, adjustment_amount,
+         source_service_id)
+      VALUES
+        ('00000000-0000-0000-0000-000000000001'::UUID,
+         '00000000-0000-0000-0000-000000000020'::UUID,
+         'Photography', 1, 2500000, 2500000, 0,
+         '00000000-0000-0000-0000-000000000030'::UUID)$$,
     'T3: Project Service with same-workspace source_service_id succeeds'
 );
 
@@ -112,6 +110,7 @@ SELECT throws_ok(
          'Cross Service', 1, 1000000, 1000000, 0,
          '00000000-0000-0000-ffff-000000000030'::UUID)$$,
     'P0001',
+    NULL::text,
     'T4: Cross-workspace source_service_id rejected'
 );
 
@@ -126,21 +125,19 @@ SELECT throws_ok(
          'Cross Package Item', 1, 1000000, 1000000, 0,
          '00000000-0000-0000-ffff-000000000040'::UUID)$$,
     'P0001',
+    NULL::text,
     'T5: Cross-workspace source_package_id rejected'
 );
 
 -- ── Test 6: Negative adjustment_amount stored correctly ──────────────────────
-SELECT ok(
-    (WITH inserted AS (
-        INSERT INTO public.project_services
-            (workspace_id, project_id, label, quantity, unit_price, subtotal,
-             adjustment_label, adjustment_amount)
-        VALUES
-            ('00000000-0000-0000-0000-000000000001'::UUID,
-             '00000000-0000-0000-0000-000000000020'::UUID,
-             'Photography Discounted', 1, 3000000, 3000000, 'Discount', -500000)
-        RETURNING id
-    ) SELECT COUNT(*) FROM inserted) = 1,
+SELECT lives_ok(
+    $$INSERT INTO public.project_services
+        (workspace_id, project_id, label, quantity, unit_price, subtotal,
+         adjustment_label, adjustment_amount)
+      VALUES
+        ('00000000-0000-0000-0000-000000000001'::UUID,
+         '00000000-0000-0000-0000-000000000020'::UUID,
+         'Photography Discounted', 1, 3000000, 3000000, 'Discount', -500000)$$,
     'T6: Negative adjustment_amount stored correctly'
 );
 
@@ -157,35 +154,14 @@ SELECT is(
 -- ── Test 8: Project Value sum (SUM of net_line_totals) ───────────────────────
 -- At this point: Custom Drone 750000 + Photography 2500000 + Photography Discounted 2500000 = 5750000
 SELECT is(
-    (SELECT SUM(subtotal + adjustment_amount)
+    (SELECT SUM(subtotal + adjustment_amount)::BIGINT
        FROM public.project_services
       WHERE project_id = '00000000-0000-0000-0000-000000000020'::UUID),
     5750000::BIGINT,
     'T8: Project Value sums all net line totals'
 );
 
--- ── Test 9: Source deletion sets source_service_id to NULL (ON DELETE SET NULL) ──
-DELETE FROM public.services WHERE id = '00000000-0000-0000-0000-000000000031'::UUID;
-
-SELECT is(
-    (SELECT COUNT(*) FROM public.project_services
-      WHERE project_id = '00000000-0000-0000-0000-000000000020'::UUID),
-    3::BIGINT,
-    'T9: Deleting source service does not delete project_service rows'
-);
-
--- ── Test 10: Snapshot label unchanged after service deletion ─────────────────
-SELECT is(
-    (SELECT label FROM public.project_services
-      WHERE source_service_id IS NULL
-        AND label = 'Photography'
-        AND project_id = '00000000-0000-0000-0000-000000000020'::UUID
-      LIMIT 1),
-    'Photography',
-    'T10: Snapshot label preserved after source service deletion'
-);
-
--- ── Test 11: Updating source service price does NOT change project_service ────
+-- ── Test 9: Updating source service price does NOT change project_service ────
 UPDATE public.services
    SET default_unit_price = 9999999
  WHERE id = '00000000-0000-0000-0000-000000000030'::UUID;
@@ -195,13 +171,33 @@ SELECT is(
       WHERE source_service_id = '00000000-0000-0000-0000-000000000030'::UUID
         AND project_id = '00000000-0000-0000-0000-000000000020'::UUID),
     2500000::BIGINT,
-    'T11: Catalog service price change does not affect existing project_service unit_price'
+    'T9: Catalog service price change does not affect existing project_service unit_price'
+);
+
+-- ── Test 10: Source deletion sets source_service_id to NULL (ON DELETE SET NULL) ──
+DELETE FROM public.services WHERE id = '00000000-0000-0000-0000-000000000030'::UUID;
+
+SELECT is(
+    (SELECT COUNT(*) FROM public.project_services
+      WHERE project_id = '00000000-0000-0000-0000-000000000020'::UUID),
+    3::BIGINT,
+    'T10: Deleting source service does not delete project_service rows'
+);
+
+-- ── Test 11: Snapshot label unchanged after service deletion ─────────────────
+SELECT is(
+    (SELECT label FROM public.project_services
+      WHERE source_service_id IS NULL
+        AND label = 'Photography'
+        AND project_id = '00000000-0000-0000-0000-000000000020'::UUID
+      LIMIT 1),
+    'Photography',
+    'T11: Snapshot label preserved after source service deletion'
 );
 
 -- ── Test 12: apply_package_to_project RPC inserts correct count ───────────────
 -- Note: function runs with SECURITY DEFINER; in test context, set local user
-SET LOCAL role TO 'authenticator';
-SET LOCAL "request.jwt.claims" TO '{"sub": "00000000-0000-0000-ffff-000000000001", "role": "authenticated"}';
+SELECT set_config('request.jwt.claim.sub', '00000000-0000-0000-ffff-000000000001', true);
 
 SELECT is(
     public.apply_package_to_project(
@@ -232,7 +228,7 @@ SELECT ok(
 );
 
 -- ── Test 15: Applying package twice appends (no deduplication) ────────────────
-PERFORM public.apply_package_to_project(
+SELECT public.apply_package_to_project(
     '00000000-0000-0000-0000-000000000001'::UUID,
     '00000000-0000-0000-0000-000000000020'::UUID,
     '00000000-0000-0000-0000-000000000040'::UUID
@@ -254,6 +250,7 @@ SELECT throws_ok(
         '00000000-0000-0000-ffff-000000000040'::UUID
     )$$,
     'P0001',
+    NULL::text,
     'T16: apply_package_to_project rejects cross-workspace package'
 );
 

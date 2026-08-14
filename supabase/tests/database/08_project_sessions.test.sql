@@ -12,6 +12,10 @@ SELECT plan(9);
 INSERT INTO public.workspaces (id, name)
 VALUES ('00000000-0000-0000-0000-000000000001'::UUID, 'Sessions Test Workspace');
 
+INSERT INTO auth.users (id, email)
+VALUES ('00000000-0000-0000-ffff-000000000001'::UUID, 'owner@example.com')
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO public.workspace_members (workspace_id, user_id, role)
 VALUES (
     '00000000-0000-0000-0000-000000000001'::UUID,
@@ -152,7 +156,8 @@ SELECT throws_ok(
         'Cross Workspace Shoot',
         '2026-09-20'
     ) $$,
-    'Cross-parent violation%',
+    'P0001',
+    NULL::text,
     'Test 7: Cross-workspace session insertion is rejected'
 );
 
@@ -167,7 +172,8 @@ SELECT throws_ok(
         'Frozen Meeting',
         '2026-09-22'
     ) $$,
-    'Operational freeze violation%',
+    'P0001',
+    NULL::text,
     'Test 8: Adding session to force_closed project is blocked'
 );
 

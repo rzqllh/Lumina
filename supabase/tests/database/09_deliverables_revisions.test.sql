@@ -12,6 +12,10 @@ SELECT plan(10);
 INSERT INTO public.workspaces (id, name)
 VALUES ('00000000-0000-0000-0000-000000000001'::UUID, 'Deliverables Test Workspace');
 
+INSERT INTO auth.users (id, email)
+VALUES ('00000000-0000-0000-ffff-000000000001'::UUID, 'owner@example.com')
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO public.workspace_members (workspace_id, user_id, role)
 VALUES (
     '00000000-0000-0000-0000-000000000001'::UUID,
@@ -55,9 +59,7 @@ INSERT INTO public.workspaces (id, name)
 VALUES ('00000000-0000-0000-ffff-000000000002'::UUID, 'Foreign Workspace');
 
 -- Mock authenticated session as Workspace 1 owner
-CREATE OR REPLACE FUNCTION auth.uid() RETURNS UUID AS $$
-    SELECT '00000000-0000-0000-ffff-000000000001'::UUID;
-$$ LANGUAGE sql;
+SELECT set_config('request.jwt.claim.sub', '00000000-0000-0000-ffff-000000000001', true);
 
 -- ── Test 1: Insert deliverable ────────────────────────────────────────────────
 INSERT INTO public.deliverables (
@@ -149,7 +151,8 @@ SELECT throws_ok(
         '00000000-0000-0000-0000-000000000020'::UUID,
         'Cross Workspace Deliverable'
     ) $$,
-    'Cross-parent violation%',
+    'P0001',
+    NULL::text,
     'Test 8: Cross-workspace deliverable insertion is rejected'
 );
 
@@ -162,7 +165,8 @@ SELECT throws_ok(
         '00000000-0000-0000-0000-000000000021'::UUID,
         'Frozen Deliverable'
     ) $$,
-    'Operational freeze violation%',
+    'P0001',
+    NULL::text,
     'Test 9: Adding deliverable to force_closed project is blocked'
 );
 

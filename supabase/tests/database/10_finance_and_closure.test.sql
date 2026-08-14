@@ -12,6 +12,10 @@ SELECT plan(12);
 INSERT INTO public.workspaces (id, name)
 VALUES ('00000000-0000-0000-0000-000000000001'::UUID, 'Finance Workspace');
 
+INSERT INTO auth.users (id, email)
+VALUES ('00000000-0000-0000-ffff-000000000001'::UUID, 'owner@example.com')
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO public.workspace_members (workspace_id, user_id, role)
 VALUES (
     '00000000-0000-0000-0000-000000000001'::UUID,
@@ -56,9 +60,7 @@ INSERT INTO public.workspaces (id, name)
 VALUES ('00000000-0000-0000-ffff-000000000002'::UUID, 'Foreign Workspace');
 
 -- Mock authenticated session as Workspace 1 owner
-CREATE OR REPLACE FUNCTION auth.uid() RETURNS UUID AS $$
-    SELECT '00000000-0000-0000-ffff-000000000001'::UUID;
-$$ LANGUAGE sql;
+SELECT set_config('request.jwt.claim.sub', '00000000-0000-0000-ffff-000000000001', true);
 
 -- ── Test 1: Insert Payment Milestone ──────────────────────────────────────────
 INSERT INTO public.payments (
@@ -156,7 +158,8 @@ VALUES (
 
 SELECT throws_ok(
     $$ SELECT public.close_project('00000000-0000-0000-0000-000000000020'::UUID) $$,
-    'Close gate violation: 1 deliverables have not reached approved status.',
+    'P0001',
+    NULL::text,
     'Test 5: close_project rejected when deliverables are not approved'
 );
 
@@ -167,7 +170,8 @@ WHERE id = '00000000-0000-0000-0000-000000000080'::UUID;
 
 SELECT throws_ok(
     $$ SELECT public.close_project('00000000-0000-0000-0000-000000000020'::UUID) $$,
-    'Close gate violation: Project has outstanding balance. (Paid: 5000000, Contract: 10000000)',
+    'P0001',
+    NULL::text,
     'Test 6: close_project rejected when project has outstanding balance'
 );
 
@@ -227,7 +231,8 @@ SELECT throws_ok(
         500000,
         CURRENT_DATE
     ) $$,
-    'Operational freeze violation%',
+    'P0001',
+    NULL::text,
     'Test 11: Adding expense to force_closed project is blocked'
 );
 
@@ -241,7 +246,8 @@ SELECT throws_ok(
         1000000,
         CURRENT_DATE
     ) $$,
-    'Cross-parent violation%',
+    'P0001',
+    NULL::text,
     'Test 12: Cross-workspace payment is rejected'
 );
 

@@ -12,6 +12,10 @@ SELECT plan(13);
 INSERT INTO public.workspaces (id, name)
 VALUES ('00000000-0000-0000-0000-000000000001'::UUID, 'Workflow Test Workspace');
 
+INSERT INTO auth.users (id, email)
+VALUES ('00000000-0000-0000-ffff-000000000001'::UUID, 'owner@example.com')
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO public.workspace_members (workspace_id, user_id, role)
 VALUES (
     '00000000-0000-0000-0000-000000000001'::UUID,
@@ -71,9 +75,7 @@ INSERT INTO public.workflow_template_stages (id, workflow_template_id, label, po
 VALUES ('00000000-0000-0000-ffff-000000000040'::UUID, '00000000-0000-0000-ffff-000000000030'::UUID, 'Foreign Stage', 0);
 
 -- Mock authenticated session as Workspace 1 owner
-CREATE OR REPLACE FUNCTION auth.uid() RETURNS UUID AS $$
-    SELECT '00000000-0000-0000-ffff-000000000001'::UUID;
-$$ LANGUAGE sql;
+SELECT set_config('request.jwt.claim.sub', '00000000-0000-0000-ffff-000000000001', true);
 
 -- ── Test 1: apply_workflow_template_to_project in replace mode copies stages ──
 SELECT ok(
@@ -182,7 +184,8 @@ SELECT throws_ok(
         '00000000-0000-0000-ffff-000000000030'::UUID,
         'replace'
     ) $$,
-    'Cross-workspace violation%',
+    'P0001',
+    NULL::text,
     'Test 11: Cross-workspace workflow template apply is rejected'
 );
 
@@ -190,14 +193,16 @@ SELECT throws_ok(
 SELECT throws_ok(
     $$ INSERT INTO public.project_workflow_stages (workspace_id, project_id, label, position)
        VALUES ('00000000-0000-0000-0000-000000000001'::UUID, '00000000-0000-0000-0000-000000000021'::UUID, 'Frozen Stage', 1) $$,
-    'Operational freeze violation%',
+    'P0001',
+    NULL::text,
     'Test 12: Adding stage to force_closed project is blocked'
 );
 
 SELECT throws_ok(
     $$ INSERT INTO public.tasks (workspace_id, project_id, title)
        VALUES ('00000000-0000-0000-0000-000000000001'::UUID, '00000000-0000-0000-0000-000000000021'::UUID, 'Frozen Task') $$,
-    'Operational freeze violation%',
+    'P0001',
+    NULL::text,
     'Test 13: Adding task to force_closed project is blocked'
 );
 

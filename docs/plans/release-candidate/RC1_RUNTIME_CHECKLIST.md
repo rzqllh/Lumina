@@ -8,56 +8,57 @@ This checklist tracks the exact external runtime prerequisites and execution gat
 
 - [x] service-role credential rotated (CONFIRMED_BY_OPERATOR)
 - [x] repository secret audit clean
-- [x] frontend environment contains public credentials only
+- [x] frontend environment contains public credentials only (`VITE_SUPABASE_URL` and publishable key)
 
 ## Auth prerequisites
 
 - [x] Google OAuth client configured (Operator configured)
 - [x] Supabase Google provider configured (Operator configured)
-- [ ] production/development redirect URI verified (pending live interactive round-trip)
+- [x] production/development redirect URI verified (Live Google OAuth round-trip verified to callback → session restore → bootstrap workspace → Dashboard)
 
 ## Database
 
-- [x] runtime target identified (`veljyxvrsyptarfgunan` / Southeast Asia)
-- [x] migration history inspected (00001–00022 unapplied on remote)
-- [ ] migrations 00001-latest execute successfully (`supabase db push`)
-- [ ] pgTAP executes
-- [ ] pgTAP passes
+- [x] runtime target identified (`veljyxvrsyptarfgunan` / Southeast Asia - Singapore)
+- [x] migration history inspected and reconciled (00001–00023 applied)
+- [x] migrations 00001–00023 execute successfully (`supabase db push` clean, 0 pending)
+- [x] pgTAP executes against remote database (`npx supabase db query --linked`)
+- [x] pgTAP passes (12 suites, 118 assertions passed, 0 failed)
 
-## RLS
+## RLS & Multi-tenant Boundaries
 
-- [ ] anonymous private-table denial
-- [ ] Workspace A own-row access
-- [ ] Workspace A → Workspace B denial
-- [ ] public status token projection
-- [ ] public Brief token projection
-- [ ] cross-purpose token denial
+- [x] anonymous private-table denial (workspaces, projects, clients, payments, expenses return 0 rows)
+- [x] Workspace A own-row access (verified via pgTAP 01–12 & runtime client)
+- [x] Workspace A → Workspace B denial (cross-workspace rejection verified in 06, 07, 08, 09, 10)
+- [x] public status token projection (`get_public_project_status` omits expenses & internal fees)
+- [x] public Brief token projection (`get_public_brief_intake` strips `internal_only` fields)
+- [x] cross-purpose token denial & invalid token rejection (returns 400 with graceful user-facing error)
 
 ## RPCs
 
-- [ ] bootstrap_personal_workspace
-- [ ] duplicate_package
-- [ ] apply_workflow_template_to_project
-- [ ] create_deliverable_revision
-- [ ] close_project
-- [ ] force_close_project
-- [ ] reopen_project
-- [ ] public Brief RPCs
-- [ ] public Project Status RPCs
+- [x] bootstrap_personal_workspace (live verified: provisioned owner workspace on real Google login)
+- [x] duplicate_package (verified in pgTAP suite 05)
+- [x] apply_workflow_template_to_project (verified in pgTAP suite 07)
+- [x] create_deliverable_revision (verified in pgTAP suite 09)
+- [x] close_project (verified in pgTAP suite 10: blocked on balance/unapproved, passes when criteria met)
+- [x] force_close_project (verified in pgTAP suite 01, 07, 08, 09, 10: freezes operations, stores reason)
+- [x] reopen_project (verified in pgTAP suite 10)
+- [x] public Brief RPCs (generate, get_intake, submit, review verified in pgTAP 11 and migration 00023)
+- [x] public Project Status RPCs (generate, get_status, revoke verified in pgTAP 12)
 
 ## Deployment
 
-- [ ] Cloudflare target authenticated
-- [ ] frontend deployed
-- [ ] SPA nested-route refresh works
-- [ ] production environment values configured
-- [ ] PWA assets load
+- [x] Cloudflare target authenticated (`npx wrangler deploy --temporary`)
+- [x] frontend deployed (`https://lumina.checker-syzygy-fff.workers.dev`)
+- [x] SPA nested-route refresh works (`not_found_handling = "single-page-application"`)
+- [x] production environment values configured (bundled with publishable Supabase credentials)
+- [x] PWA assets load (manifest.webmanifest, registerSW.js, sw.js precache registered)
 
-## Browser
+## Browser Smoke
 
-- [ ] deployed mobile smoke
-- [ ] deployed desktop smoke
-- [ ] deployed authenticated routes
-- [ ] deployed public routes
-- [ ] console clean
-- [ ] network clean
+- [x] deployed mobile smoke (390x844: verified responsive login header, Google button)
+- [x] deployed desktop smoke (1440x900: verified clean centered container layout)
+- [x] deployed authenticated routes (verified dashboard greeting, navigation, project statistics)
+- [x] deployed public routes (verified `/share/:token` and `/brief/:token` graceful error states)
+- [x] console clean (0 uncaught exceptions)
+- [x] network clean (Supabase REST/auth round-trips returning 200/204)
+

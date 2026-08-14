@@ -1,15 +1,18 @@
 BEGIN;
-SELECT plan(12);
+SELECT plan(13);
 
 -- 1. Setup test user and workspace
-SELECT tests.create_supabase_user('brief_owner@lumina.app');
-SELECT tests.authenticate_as('brief_owner@lumina.app');
+INSERT INTO auth.users (id, email)
+VALUES ('88888888-8888-8888-8888-888888888888'::UUID, 'brief_owner@lumina.app')
+ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO public.workspaces (id, name, owner_id)
-VALUES ('11111111-1111-1111-1111-111111111111', 'Brief Test Studio', tests.get_supabase_uid('brief_owner@lumina.app'));
+SELECT set_config('request.jwt.claim.sub', '88888888-8888-8888-8888-888888888888', true);
+
+INSERT INTO public.workspaces (id, name)
+VALUES ('11111111-1111-1111-1111-111111111111', 'Brief Test Studio');
 
 INSERT INTO public.workspace_members (workspace_id, user_id, role)
-VALUES ('11111111-1111-1111-1111-111111111111', tests.get_supabase_uid('brief_owner@lumina.app'), 'owner');
+VALUES ('11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888888'::UUID, 'owner');
 
 -- 2. Setup Client and Project (triggers canonical brief creation)
 INSERT INTO public.clients (id, workspace_id, client_type, display_name)

@@ -321,7 +321,7 @@ BEGIN
         RAISE EXCEPTION 'Access denied: caller is not a member of workspace %', target_brief.workspace_id;
     END IF;
 
-    -- Apply each accepted field value to canonical brief_fields
+    -- Apply each accepted field value to canonical brief_fields and record decision
     FOR elem IN SELECT * FROM jsonb_array_elements(p_accepted_fields) LOOP
         f_id := (elem->>'field_id')::UUID;
         f_val := elem->'value';
@@ -331,6 +331,21 @@ BEGIN
             updated_at = NOW()
         WHERE id = f_id;
 
+        INSERT INTO public.brief_submission_reviews (
+            submission_id,
+            field_id,
+            decision,
+            decided_at
+        ) VALUES (
+            p_submission_id,
+            f_id,
+            'accepted',
+            NOW()
+        )
+        ON CONFLICT (submission_id, field_id) DO UPDATE
+        SET decision = 'accepted',
+            decided_at = NOW();
+
         applied_count := applied_count + 1;
     END LOOP;
 
@@ -339,19 +354,6 @@ BEGIN
     SET review_status = 'reviewed',
         reviewed_at = NOW()
     WHERE id = p_submission_id;
-
-    -- Insert audit record
-    INSERT INTO public.brief_submission_reviews (
-        submission_id,
-        reviewer_user_id,
-        decisions,
-        applied_at
-    ) VALUES (
-        p_submission_id,
-        auth.uid(),
-        p_accepted_fields,
-        NOW()
-    );
 
     RETURN jsonb_build_object(
         'success', TRUE,
