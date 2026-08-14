@@ -1,114 +1,108 @@
-# Lumina AI Artifact Pack
+# Lumina
 
-This folder is the planning and context layer for Lumina before implementation begins.
+> **A project management operating system built for solo photographers and videographers.**
 
-Lumina is currently defined as a **single-user-first personal operating system for photographers/videographers**. It tracks a paid project from DP received through planning, sessions, production, editing, revisions, delivery, client approval, full payment, and closure.
+Lumina helps visual creators manage client engagements from initial down payment (DP) through shoot sessions, production workflows, revision cycles, client approvals, and final payments.
 
-## Why this structure exists
+---
 
-AI coding agents perform better when durable product truth, technical decisions, feature-local specs, and verification criteria are kept distinct instead of being repeated across giant prompts.
+## Key Features
 
-This structure borrows from:
+- **Mobile-First Progressive Web App (PWA):** Fast, installable on mobile and desktop devices with offline read support.
+- **End-to-End Gig Lifecycle:** Manage project stages from `draft` and `active` through `closed` or recorded `force_closed` states.
+- **Client Collaboration Portals:** Share live project status pages and interactive brief intake questionnaires via secure, tokenized public links.
+- **Financial & Payment Tracking:** Track DP, milestone installments, project expenses, and external collaborator fees with real-time balance calculations.
+- **Workflow & Deliverable Management:** Customizable workflow stages, scheduled shoot sessions, deliverable promises, and strict revision cycle tracking.
+- **External Storage Friendly:** Production RAW footage and exports remain in Google Drive; Lumina keeps lightweight, structured metadata references.
 
-- GitHub Spec Kit's spec → plan → tasks workflow
-- Kiro's requirements → design → tasks feature specs
-- Codex `AGENTS.md`
-- Claude Code `CLAUDE.md`
-- Gemini `GEMINI.md`
-- Markdown Architectural Decision Records (MADR)
-- concise product/technical spec practices from Linear
-- community feedback warning against oversized, duplicated, stale spec files
+---
 
-## Canonical truth map
+## Tech Stack
 
-| Question                                       | Canonical file                        |
-| ---------------------------------------------- | ------------------------------------- |
-| Why does Lumina exist? Who is it for?          | `docs/product/PRD.md`                 |
-| What is in MVP / later / out of scope?         | `docs/product/FEATURE_INVENTORY.md`   |
-| What does each domain term mean?               | `docs/product/DOMAIN_MODEL.md`        |
-| What are the canonical business flows?         | `docs/product/WORKFLOWS.md`           |
-| How should the product look and behave?        | `docs/design/DESIGN.md`               |
-| How is the system built?                       | `docs/engineering/ARCHITECTURE.md`    |
-| What does the database look like?              | `docs/engineering/DATABASE_SCHEMA.md` |
-| What are server/API boundaries?                | `docs/engineering/API_CONTRACTS.md`   |
-| How are security and privacy handled?          | `docs/engineering/SECURITY.md`        |
-| How do external integrations behave?           | `docs/engineering/INTEGRATIONS.md`    |
-| What must be tested?                           | `docs/engineering/TESTING.md`         |
-| Why was an important technical decision made?  | `docs/decisions/*.md`                 |
-| What exactly are we building for one feature?  | `docs/specs/<feature>/`               |
-| How should coding agents operate in this repo? | `AGENTS.md`                           |
+| Layer                  | Technology                                                                                   |
+| ---------------------- | -------------------------------------------------------------------------------------------- |
+| **Frontend Framework** | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)               |
+| **Bundler & Tooling**  | [Vite 6](https://vite.dev/) + [pnpm](https://pnpm.io/)                                       |
+| **Styling & UI**       | [Tailwind CSS v4](https://tailwindcss.com/) + [Radix UI](https://www.radix-ui.com/)          |
+| **State Management**   | [TanStack Query v5](https://tanstack.com/query)                                              |
+| **Forms & Validation** | [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)                    |
+| **PWA & Offline**      | [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) (Workbox)                               |
+| **Database & Auth**    | [Supabase PostgreSQL](https://supabase.com/) with Row Level Security (RLS)                   |
+| **Serverless Runtime** | [Supabase Edge Functions](https://supabase.com/docs/guides/functions) (Deno)                 |
+| **Testing**            | [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/)        |
+| **Hosting**            | [Cloudflare Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/) |
 
-## Documentation rule
+---
 
-**Do not duplicate truth across files. Link to the canonical owner instead.**
+## Getting Started
 
-Example: `DATABASE_SCHEMA.md` may reference the project lifecycle from `WORKFLOWS.md`, but must not redefine it.
+### Prerequisites
 
-## Durable vs feature-local documents
+- [Node.js](https://nodejs.org/) (v22 or higher)
+- [pnpm](https://pnpm.io/) (v10 or higher)
 
-### Durable
+### Installation
 
-These evolve with the product:
+1. Clone the repository:
 
-- PRD
-- Feature inventory
-- Domain model
-- Core workflows
-- Design system/product UX rules
-- Architecture
-- Database schema
-- Security
-- Integrations
-- Testing strategy
-- ADRs
-- AGENTS.md
+   ```bash
+   git clone https://github.com/your-username/lumina.git
+   cd lumina
+   ```
 
-### Feature-local
+2. Install dependencies:
 
-Create for meaningful work:
+   ```bash
+   pnpm install
+   ```
 
-- `requirements.md`
-- `design.md`
-- `tasks.md`
-- `verification.md`
+3. Configure environment variables:
 
-After implementation, these remain useful as history, but current product truth must be reflected in the durable canonical docs.
+   ```bash
+   cp .env.example .env
+   ```
 
-## Current planning status
+   Add your public Supabase project URL and anon key to `.env`.
 
-As of 2026-08-14:
+4. Start the development server:
+   ```bash
+   pnpm dev
+   ```
 
-- Artifact scaffolding: established
-- Product discovery: locked for MVP planning
-- Feature inventory: baseline locked (MVP Core / High-value / Later / Out)
-- Visual baseline: established in `DESIGN.md`
-- Domain & workflows: locked in `DOMAIN_MODEL.md` and `WORKFLOWS.md`
-- Technical architecture, schema, security & integrations: locked in `docs/engineering/`
-- Architectural Decision Records: ADRs 0001–0007 accepted in `docs/decisions/`
-- Repository Foundation / Scaffold: locked and verified (Pass C)
-- Next step: First feature specification (`docs/specs/01-auth-workspace/`) and execution
+---
 
-## Execution order
+## Available Scripts
 
-1. [x] Complete `PRD.md` and `FEATURE_INVENTORY.md`.
-2. [x] Lock `DOMAIN_MODEL.md` and `WORKFLOWS.md` (Pass A).
-3. [x] Lock `DESIGN.md`.
-4. [x] Finalize `ARCHITECTURE.md`, `DATABASE_SCHEMA.md`, `SECURITY.md`, `INTEGRATIONS.md` (Pass B).
-5. [x] Author and accept initial ADRs 0001–0007 (Pass B).
-6. [x] Repository Foundation / Scaffold (Pass C).
-7. [ ] Feature specifications (`docs/specs/<feature>/`) and implementation.
+- `pnpm dev` — Start the local Vite development server
+- `pnpm build` — Build the production SPA and PWA service worker bundle
+- `pnpm preview` — Locally preview the production build
+- `pnpm typecheck` — Run strict TypeScript typechecking
+- `pnpm lint` — Run ESLint across the codebase
+- `pnpm format:check` — Verify code formatting with Prettier
+- `pnpm format` — Format all code files with Prettier
+- `pnpm test` — Run unit and DOM tests in watch mode
+- `pnpm test:run` — Run unit and DOM tests once
 
-## Research references
+---
 
-- GitHub Spec Kit: https://github.com/github/spec-kit
-- Spec Kit docs: https://github.github.com/spec-kit/
-- Kiro Specs: https://kiro.dev/docs/specs/
-- Kiro Feature Specs: https://kiro.dev/docs/specs/feature-specs/
-- OpenAI Codex / AGENTS.md: https://openai.com/index/introducing-codex/
-- Claude Code memory / CLAUDE.md: https://docs.anthropic.com/en/docs/claude-code/memory
-- Gemini Code Assist / GEMINI.md: https://developers.google.com/gemini-code-assist/docs/use-agentic-chat-pair-programmer
-- MADR: https://github.com/adr/madr
-- Linear project specs: https://linear.app/now/how-we-run-projects-at-linear
-- Atlassian PRD guidance: https://www.atlassian.com/agile/product-management/requirements
-- Supabase RLS: https://supabase.com/docs/guides/database/postgres/row-level-security
-- Supabase migrations: https://supabase.com/docs/guides/deployment/database-migrations
+## Database & Local Supabase
+
+Lumina uses Supabase PostgreSQL with 100% Row Level Security (RLS) coverage.
+
+- Migration files are located in `supabase/migrations/`
+- Edge functions are located in `supabase/functions/`
+- pgTAP database tests are located in `supabase/tests/database/`
+
+To start the local database stack (requires Docker):
+
+```bash
+supabase start
+supabase db reset
+supabase test db
+```
+
+---
+
+## License
+
+Private / Proprietary. All rights reserved.
