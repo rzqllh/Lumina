@@ -17,23 +17,25 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
 
   if (isLoading) {
     return (
-      <div className="h-40 animate-pulse rounded-[var(--radius-card)] border border-border bg-surface-muted/50" />
+      <div className="h-44 animate-pulse rounded-2xl border border-border/60 bg-surface-muted/40" />
     );
   }
 
   return (
     <div
       data-testid="active-projects-panel"
-      className="rounded-[var(--radius-card)] border border-border bg-surface p-5"
+      className="rounded-2xl border border-border/80 bg-surface p-5 shadow-2xs"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/8 text-primary">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
             <Briefcase className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-text-primary">Active Projects</h3>
+            <h3 className="text-sm font-semibold text-text-primary tracking-tight">
+              Active Projects
+            </h3>
             <p className="text-xs text-text-secondary">{projects.length} in pipeline</p>
           </div>
         </div>
@@ -42,7 +44,7 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
           type="button"
           data-testid="view-all-projects-btn"
           onClick={() => navigate('/projects')}
-          className="text-xs font-semibold text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg px-2 py-1"
+          className="text-xs font-semibold text-primary hover:text-primary/80 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg px-2 py-1 transition-colors"
         >
           View all →
         </button>
@@ -50,9 +52,12 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
 
       {/* Empty State */}
       {projects.length === 0 && (
-        <div data-testid="active-projects-empty-state" className="mt-5 text-center py-6">
-          <Briefcase className="h-7 w-7 text-text-muted mx-auto mb-2" />
-          <p className="text-xs font-medium text-text-primary">No active projects</p>
+        <div
+          data-testid="active-projects-empty-state"
+          className="mt-4 text-center py-6 rounded-xl bg-surface-muted/20 border border-border-subtle"
+        >
+          <Briefcase className="h-6 w-6 text-text-muted mx-auto mb-2" />
+          <p className="text-xs font-semibold text-text-primary">No active projects</p>
           <p className="mt-0.5 text-xs text-text-secondary">
             Create a project to start tracking production milestones.
           </p>
@@ -60,15 +65,15 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
             type="button"
             data-testid="empty-create-project-btn"
             onClick={() => navigate('/projects/new')}
-            className="mt-4 inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-[var(--radius-input)] bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98]"
+            className="mt-3.5 inline-flex min-h-[38px] cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98] transition-all"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-3.5 w-3.5" />
             <span>Create Project</span>
           </button>
         </div>
       )}
 
-      {/* Projects List */}
+      {/* Projects List — Refined scannable cards */}
       {projects.length > 0 && (
         <div
           data-testid="active-projects-list"
@@ -87,13 +92,13 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
                   navigate(`/projects/${p.id}`);
                 }
               }}
-              className="group flex flex-col justify-between rounded-[var(--radius-input)] border border-border-subtle p-3.5 transition-colors hover:border-border-interactive hover:bg-surface-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer space-y-2.5"
+              className="group flex flex-col justify-between rounded-xl border border-border/70 bg-surface-muted/20 p-3.5 transition-all duration-[var(--transition-fast)] hover:border-border-interactive hover:bg-surface-muted/50 hover:shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer space-y-3"
             >
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <ProjectStatusBadge status={p.status} />
                   {p.project_number && (
-                    <span className="text-xs font-medium text-text-muted tabular-nums">
+                    <span className="text-[11px] font-mono font-medium text-text-muted bg-surface px-1.5 py-0.5 rounded border border-border-subtle tabular-nums">
                       {p.project_number}
                     </span>
                   )}
@@ -109,7 +114,10 @@ export const ActiveProjectsGrid: React.FC<ActiveProjectsGridProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-end text-xs text-text-muted group-hover:text-primary transition-colors">
+              <div className="flex items-center justify-end text-xs text-text-muted group-hover:text-primary transition-colors pt-1 border-t border-border-subtle/50">
+                <span className="text-[11px] font-medium mr-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Open project
+                </span>
                 <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
               </div>
             </div>

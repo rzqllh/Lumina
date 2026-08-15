@@ -6,23 +6,23 @@ export const QuickActionBar: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div data-testid="quick-action-bar" className="flex items-center gap-2">
+    <div data-testid="quick-action-bar" className="flex items-center gap-2.5">
       <button
         type="button"
         data-testid="quick-action-new-project"
         onClick={() => navigate('/projects/new')}
-        className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-[var(--radius-input)] bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground transition-colors duration-[var(--transition-normal)] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]"
+        className="inline-flex min-h-[38px] sm:min-h-[40px] cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs transition-all duration-[var(--transition-fast)] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]"
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="h-3.5 w-3.5" />
         <span>New Project</span>
       </button>
       <button
         type="button"
         data-testid="quick-action-new-client"
         onClick={() => navigate('/clients/new')}
-        className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-[var(--radius-input)] border border-border bg-surface px-4 py-2.5 text-xs font-semibold text-text-primary transition-colors duration-[var(--transition-normal)] hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]"
+        className="inline-flex min-h-[38px] sm:min-h-[40px] cursor-pointer items-center gap-2 rounded-xl border border-border/90 bg-surface px-3.5 py-2 text-xs font-semibold text-text-primary shadow-2xs transition-all duration-[var(--transition-fast)] hover:bg-surface-muted/60 hover:border-border-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]"
       >
-        <UserPlus className="h-4 w-4" />
+        <UserPlus className="h-3.5 w-3.5 text-text-secondary" />
         <span>Add Client</span>
       </button>
     </div>

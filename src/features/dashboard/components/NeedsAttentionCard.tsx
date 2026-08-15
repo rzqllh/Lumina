@@ -27,7 +27,7 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
 
   if (isLoading) {
     return (
-      <div className="h-40 animate-pulse rounded-[var(--radius-card)] border border-border bg-surface-muted/50" />
+      <div className="h-44 animate-pulse rounded-2xl border border-border/60 bg-surface-muted/40" />
     );
   }
 
@@ -50,14 +50,20 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
   return (
     <div
       data-testid="needs-attention-panel"
-      className="rounded-[var(--radius-card)] border border-border bg-surface p-5"
+      className={`rounded-2xl border transition-all duration-[var(--transition-normal)] ${
+        allClear
+          ? 'border-border/80 bg-surface p-5 shadow-2xs'
+          : 'border-rose-500/30 bg-surface p-5 shadow-xs ring-1 ring-rose-500/10'
+      }`}
     >
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           <div
-            className={`flex h-7 w-7 items-center justify-center rounded-lg ${
-              allClear ? 'bg-emerald-50 text-status-success' : 'bg-rose-50 text-status-danger'
+            className={`flex h-8 w-8 items-center justify-center rounded-xl transition-colors ${
+              allClear
+                ? 'bg-emerald-500/10 text-status-success border border-emerald-500/20'
+                : 'bg-rose-500/10 text-status-danger border border-rose-500/20'
             }`}
           >
             {allClear ? (
@@ -67,7 +73,9 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
             )}
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-text-primary">Needs Attention</h3>
+            <h3 className="text-sm font-semibold text-text-primary tracking-tight">
+              Needs Attention
+            </h3>
             <p className="text-xs text-text-secondary">
               {allClear
                 ? 'Everything on schedule'
@@ -79,27 +87,32 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
         {!allClear && (
           <span
             data-testid="attention-badge-count"
-            className="rounded-full bg-rose-50 px-2 py-0.5 text-xs font-bold text-status-danger"
+            className="rounded-full bg-rose-500/10 border border-rose-500/20 px-2.5 py-0.5 text-xs font-bold text-status-danger tabular-nums"
           >
             {items.length}
           </span>
         )}
       </div>
 
-      {/* Empty State — simple, no dashed container */}
+      {/* Empty State — serene and compact */}
       {allClear && (
-        <div data-testid="attention-empty-state" className="mt-5 text-center py-4">
-          <CheckCircle2 className="h-7 w-7 text-status-success mx-auto mb-2" />
-          <p className="text-xs font-medium text-text-primary">All caught up</p>
-          <p className="mt-0.5 text-xs text-text-secondary">
-            No overdue deliverables, unpaid invoices, or revision requests.
-          </p>
+        <div
+          data-testid="attention-empty-state"
+          className="mt-4 flex items-center gap-3 rounded-xl bg-surface-muted/30 border border-border-subtle p-3.5"
+        >
+          <CheckCircle2 className="h-5 w-5 text-status-success shrink-0" />
+          <div className="min-w-0 flex-1 text-xs">
+            <span className="font-semibold text-text-primary">All caught up</span>
+            <p className="text-text-secondary mt-0.5">
+              No overdue deliverables, unpaid invoices, or revision requests.
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Attention Items — divider rows, not card-in-card */}
+      {/* Attention Items — Refined interactive row items */}
       {!allClear && (
-        <div data-testid="attention-items-list" className="mt-4 divide-y divide-border-subtle">
+        <div data-testid="attention-items-list" className="mt-4 divide-y divide-border-subtle/80">
           {items.map((item) => (
             <div
               key={item.id}
@@ -113,13 +126,13 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
                   navigate(`/projects/${item.projectId}`);
                 }
               }}
-              className="group flex items-center justify-between gap-3 py-3 transition-colors hover:bg-surface-muted/30 -mx-2 px-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
+              className="group flex items-center justify-between gap-3 py-3 transition-colors hover:bg-surface-muted/40 -mx-2 px-2.5 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
             >
               <div className="flex items-start gap-3 min-w-0 flex-1">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-surface-muted mt-0.5">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-surface-muted/80 mt-0.5 border border-border/50">
                   {getItemIcon(item.type)}
                 </div>
-                <div className="min-w-0 flex-1 space-y-0.5">
+                <div className="min-w-0 flex-1 space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold text-text-primary truncate">
                       {item.title}
@@ -130,15 +143,19 @@ export const NeedsAttentionCard: React.FC<NeedsAttentionCardProps> = ({
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-text-secondary">
-                    <span className="truncate max-w-[140px] font-medium">{item.projectTitle}</span>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-text-secondary">
+                    <span className="truncate max-w-[160px] font-medium text-text-primary">
+                      {item.projectTitle}
+                    </span>
                     <span className="text-text-muted">·</span>
                     <span className="text-status-danger font-medium truncate">{item.subtitle}</span>
                   </div>
                 </div>
               </div>
 
-              <ArrowRight className="h-3.5 w-3.5 text-text-muted group-hover:text-primary transition-colors shrink-0" />
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ArrowRight className="h-3.5 w-3.5 text-text-muted group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+              </div>
             </div>
           ))}
         </div>
