@@ -1,6 +1,14 @@
 import React from 'react';
 import { Layers, Camera, FileBox, Receipt } from 'lucide-react';
+import { FilterSegmentedControl } from '@/components/ui/filter-segmented-control';
 import type { CalendarCategoryFilter } from '../types';
+
+/**
+ * CAL-003 — CalendarFilterBar
+ * Uses canonical G-006 FilterSegmentedControl (chips variant).
+ * Current filter types: All | Shoots | Deliverables | Payments — unchanged.
+ * Improved density and count presentation via canonical component.
+ */
 
 interface CalendarFilterBarProps {
   currentFilter: CalendarCategoryFilter;
@@ -18,12 +26,7 @@ export const CalendarFilterBar: React.FC<CalendarFilterBarProps> = ({
   onFilterChange,
   counts,
 }) => {
-  const filters: {
-    id: CalendarCategoryFilter;
-    label: string;
-    icon: React.ComponentType<{ className?: string }>;
-    count: number;
-  }[] = [
+  const options = [
     { id: 'all', label: 'All', icon: Layers, count: counts.all },
     { id: 'sessions', label: 'Shoots', icon: Camera, count: counts.sessions },
     { id: 'deadlines', label: 'Deliverables', icon: FileBox, count: counts.deadlines },
@@ -31,37 +34,14 @@ export const CalendarFilterBar: React.FC<CalendarFilterBarProps> = ({
   ];
 
   return (
-    <div data-testid="calendar-filter-bar" className="flex flex-wrap items-center gap-1.5">
-      {filters.map((f) => {
-        const Icon = f.icon;
-        const isActive = currentFilter === f.id;
-        return (
-          <button
-            key={f.id}
-            type="button"
-            data-testid={`filter-${f.id}`}
-            onClick={() => onFilterChange(f.id)}
-            className={[
-              'inline-flex min-h-[36px] cursor-pointer items-center gap-1.5 rounded-[var(--radius-input)] px-3 py-1.5 text-xs font-medium transition-colors duration-[var(--transition-normal)]',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-              isActive
-                ? 'bg-surface-muted text-text-primary font-semibold border border-border'
-                : 'text-text-secondary hover:bg-surface-muted/60 hover:text-text-primary',
-            ].join(' ')}
-          >
-            <Icon className="h-3.5 w-3.5" />
-            <span>{f.label}</span>
-            <span
-              className={[
-                'rounded-full px-1.5 py-px text-[10px] font-semibold tabular-nums',
-                isActive ? 'bg-primary/10 text-primary' : 'bg-surface-muted text-text-muted',
-              ].join(' ')}
-            >
-              {f.count}
-            </span>
-          </button>
-        );
-      })}
+    <div data-testid="calendar-filter-bar">
+      <FilterSegmentedControl
+        options={options}
+        value={currentFilter}
+        onChange={(id) => onFilterChange(id as CalendarCategoryFilter)}
+        variant="chips"
+        testIdPrefix="filter"
+      />
     </div>
   );
 };

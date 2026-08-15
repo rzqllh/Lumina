@@ -2,7 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { Camera, Calendar, Clock, MapPin, ArrowRight } from 'lucide-react';
 import { SessionTypeBadge } from '@/features/sessions';
+import { EmptyState } from '@/components/ui/empty-state';
 import type { Session } from '@/features/sessions';
+
+/**
+ * DASH-006 — UpcomingSessionsCard
+ * Uses existing: date, time, type, project, location.
+ * Compact empty state.
+ */
 
 interface UpcomingSessionsCardProps {
   sessions: (Session & { project?: { title?: string } })[];
@@ -14,12 +21,6 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
   isLoading = false,
 }) => {
   const navigate = useNavigate();
-
-  if (isLoading) {
-    return (
-      <div className="h-44 animate-pulse rounded-2xl border border-border/60 bg-surface-muted/40" />
-    );
-  }
 
   const formatDateParts = (dateStr: string) => {
     try {
@@ -35,22 +36,27 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="h-40 animate-pulse rounded-xl border border-border bg-surface-muted/50" />
+    );
+  }
+
   return (
-    <div
-      data-testid="upcoming-sessions-panel"
-      className="rounded-2xl border border-border/80 bg-surface p-5 shadow-2xs"
-    >
+    <div data-testid="upcoming-sessions-panel" className="surface-level-2 p-5">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500/10 text-status-info border border-sky-500/20">
-            <Camera className="h-4 w-4" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border bg-status-info-subtle text-status-info-text border-status-info-border">
+            <Camera className="h-4 w-4" strokeWidth={1.75} />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-text-primary tracking-tight">
+            <h2 className="text-sm font-semibold text-text-primary tracking-tight">
               Upcoming Shoots
-            </h3>
-            <p className="text-xs text-text-secondary">{sessions.length} on horizon</p>
+            </h2>
+            <p className="text-xs text-text-secondary">
+              {sessions.length > 0 ? `${sessions.length} on horizon` : 'No scheduled sessions'}
+            </p>
           </div>
         </div>
 
@@ -58,31 +64,29 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
           type="button"
           data-testid="view-calendar-btn"
           onClick={() => navigate('/calendar')}
-          className="text-xs font-semibold text-primary hover:text-primary/80 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg px-2 py-1 transition-colors"
+          className="text-xs font-semibold text-primary-text cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md px-2 py-1"
+          style={{ transition: `color var(--duration-fast)` }}
         >
           Calendar →
         </button>
       </div>
 
-      {/* Empty State */}
+      {/* Empty state */}
       {sessions.length === 0 && (
-        <div
-          data-testid="upcoming-sessions-empty-state"
-          className="mt-4 flex items-center gap-3 rounded-xl bg-surface-muted/30 border border-border-subtle p-3.5"
-        >
-          <Calendar className="h-5 w-5 text-text-muted shrink-0" />
-          <div className="min-w-0 flex-1 text-xs">
-            <span className="font-semibold text-text-primary">No upcoming sessions</span>
-            <p className="text-text-secondary mt-0.5">
-              Sessions will appear here once scheduled inside projects.
-            </p>
-          </div>
+        <div className="mt-4">
+          <EmptyState
+            icon={Calendar}
+            title="No upcoming sessions"
+            description="Sessions will appear here once scheduled inside projects."
+            variant="section"
+            testId="upcoming-sessions-empty-state"
+          />
         </div>
       )}
 
-      {/* Sessions List — Refined interactive session rows */}
+      {/* Session list */}
       {sessions.length > 0 && (
-        <div data-testid="upcoming-sessions-list" className="mt-4 divide-y divide-border-subtle/80">
+        <div data-testid="upcoming-sessions-list" className="mt-4 divide-y divide-border-subtle">
           {sessions.slice(0, 5).map((s) => {
             const { month, day, weekday } = formatDateParts(s.date);
             return (
@@ -98,12 +102,17 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
                     navigate(`/projects/${s.project_id}`);
                   }
                 }}
-                className="group flex items-center justify-between gap-3 py-3 transition-colors hover:bg-surface-muted/40 -mx-2 px-2.5 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
+                className="group flex items-center justify-between gap-3 py-3 -mx-2 px-2.5 rounded-lg cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                style={{ transition: `background-color var(--duration-fast) var(--ease-standard)` }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = 'var(--color-surface-muted)')
+                }
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
               >
                 <div className="flex items-start gap-3 min-w-0 flex-1">
-                  {/* Mini Calendar Tile */}
-                  <div className="flex flex-col items-center justify-center h-11 w-11 shrink-0 rounded-xl bg-surface-muted/80 border border-border/60 text-center">
-                    <span className="text-[9px] font-bold text-primary uppercase leading-tight">
+                  {/* Mini date tile */}
+                  <div className="flex flex-col items-center justify-center h-10 w-10 shrink-0 rounded-lg border border-border-subtle bg-surface-muted text-center">
+                    <span className="text-[9px] font-bold text-primary-text uppercase leading-tight">
                       {month || weekday}
                     </span>
                     <span className="text-sm font-bold text-text-primary tabular-nums leading-tight">
@@ -111,7 +120,7 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
                     </span>
                   </div>
 
-                  <div className="min-w-0 flex-1 space-y-1">
+                  <div className="min-w-0 flex-1 space-y-0.5">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-xs font-semibold text-text-primary truncate">
                         {s.title}
@@ -126,14 +135,14 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
                         </span>
                       )}
                       {s.start_time && (
-                        <span className="inline-flex items-center gap-1 font-semibold text-primary">
-                          <Clock className="h-3 w-3" />
+                        <span className="inline-flex items-center gap-1 font-semibold text-primary-text">
+                          <Clock className="h-3 w-3" strokeWidth={1.75} />
                           {s.start_time.slice(0, 5)}
                         </span>
                       )}
                       {s.location && (
                         <span className="inline-flex items-center gap-1 text-text-secondary truncate max-w-[120px]">
-                          <MapPin className="h-3 w-3 text-text-muted shrink-0" />
+                          <MapPin className="h-3 w-3 text-text-muted shrink-0" strokeWidth={1.75} />
                           {s.location}
                         </span>
                       )}
@@ -141,9 +150,11 @@ export const UpcomingSessionsCard: React.FC<UpcomingSessionsCardProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <ArrowRight className="h-3.5 w-3.5 text-text-muted group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
-                </div>
+                <ArrowRight
+                  className="h-3.5 w-3.5 text-text-muted shrink-0"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
               </div>
             );
           })}

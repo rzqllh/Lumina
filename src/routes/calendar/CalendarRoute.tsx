@@ -6,11 +6,17 @@ import {
   CalendarMonthView,
   CalendarAgendaView,
 } from '@/features/dashboard';
-import { ChevronLeft, ChevronRight, List, Grid, AlertCircle, RefreshCw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Grid, List, AlertCircle, RefreshCw } from 'lucide-react';
+import { FilterSegmentedControl } from '@/components/ui/filter-segmented-control';
 import type { CalendarCategoryFilter } from '@/features/dashboard/types';
 
+/**
+ * CAL-001 — Page header: month nav (prev/next/today) + view toggle
+ * CAL-002 — Month/Agenda canonical toggle (FilterSegmentedControl pill variant)
+ * CAL-003 — CalendarFilterBar already uses canonical chips
+ */
 export function CalendarRoute() {
-  const { workspaceId, currentWorkspace } = useWorkspace();
+  const { workspaceId } = useWorkspace();
   const wsId = workspaceId ?? '';
 
   const { data: events = [], isLoading, error, refetch } = useCalendarEvents(wsId);
@@ -19,24 +25,19 @@ export function CalendarRoute() {
   const [viewMode, setViewMode] = useState<'month' | 'agenda'>('month');
   const [categoryFilter, setCategoryFilter] = useState<CalendarCategoryFilter>('all');
 
-  const handlePrevMonth = () => {
+  const handlePrevMonth = () =>
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-  };
 
-  const handleNextMonth = () => {
+  const handleNextMonth = () =>
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-  };
 
-  const handleTodayJump = () => {
-    setCurrentDate(new Date());
-  };
+  const handleTodayJump = () => setCurrentDate(new Date());
 
   const monthFormatted = currentDate.toLocaleDateString(undefined, {
     month: 'long',
     year: 'numeric',
   });
 
-  // Filter events
   const filteredEvents = events.filter((e) => {
     if (categoryFilter === 'sessions') return e.type === 'session';
     if (categoryFilter === 'deadlines') return e.type === 'deliverable' || e.type === 'revision';
@@ -51,35 +52,46 @@ export function CalendarRoute() {
     payments: events.filter((e) => e.type === 'payment').length,
   };
 
+  const viewOptions = [
+    { id: 'month', label: 'Month', icon: Grid, testId: 'view-month-btn' },
+    { id: 'agenda', label: 'Agenda', icon: List, testId: 'view-agenda-btn' },
+  ];
+
   return (
     <div className="space-y-5">
-      {/* Header & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      {/* CAL-001 — Header: title + month nav + view toggle */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border-subtle pb-5">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-text-primary sm:text-2xl">
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary leading-tight">
             Schedule
           </h1>
-          <p className="mt-0.5 text-xs text-text-secondary">
-            {currentWorkspace?.name || 'Production schedule'}
-          </p>
+          <p className="mt-0.5 text-sm text-text-secondary">{monthFormatted}</p>
         </div>
 
-        {/* Navigation & View Toggle */}
+        {/* Controls: month nav + today + CAL-002 view toggle */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Month Navigation */}
-          <div className="flex items-center rounded-[var(--radius-input)] border border-border bg-surface">
+          {/* Month navigation */}
+          <div
+            className="flex items-center rounded-lg border border-border bg-surface overflow-hidden"
+            style={{ borderRadius: 'var(--radius-md)' }}
+          >
             <button
               type="button"
               data-testid="prev-month-btn"
               onClick={handlePrevMonth}
               aria-label="Previous month"
-              className="flex min-h-[40px] min-w-[40px] items-center justify-center text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer rounded-l-[var(--radius-input)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="flex items-center justify-center text-text-secondary hover:bg-surface-muted hover:text-text-primary cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+              style={{
+                width: 'var(--control-height-compact)',
+                height: 'var(--control-height-compact)',
+                transition: `background-color var(--duration-fast)`,
+              }}
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" strokeWidth={1.75} />
             </button>
             <span
               data-testid="current-month-heading"
-              className="px-3 text-xs font-semibold text-text-primary select-none"
+              className="px-3 text-xs font-semibold text-text-primary select-none whitespace-nowrap"
             >
               {monthFormatted}
             </span>
@@ -88,73 +100,60 @@ export function CalendarRoute() {
               data-testid="next-month-btn"
               onClick={handleNextMonth}
               aria-label="Next month"
-              className="flex min-h-[40px] min-w-[40px] items-center justify-center text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer rounded-r-[var(--radius-input)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="flex items-center justify-center text-text-secondary hover:bg-surface-muted hover:text-text-primary cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+              style={{
+                width: 'var(--control-height-compact)',
+                height: 'var(--control-height-compact)',
+                transition: `background-color var(--duration-fast)`,
+              }}
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
             </button>
           </div>
 
+          {/* Today jump */}
           <button
             type="button"
             data-testid="today-jump-btn"
             onClick={handleTodayJump}
-            className="inline-flex min-h-[40px] cursor-pointer items-center justify-center rounded-[var(--radius-input)] border border-border bg-surface px-3.5 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="inline-flex items-center justify-center rounded-lg border border-border bg-surface px-3.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            style={{
+              height: 'var(--control-height-compact)',
+              borderRadius: 'var(--radius-md)',
+              transition: `background-color var(--duration-fast)`,
+            }}
           >
             Today
           </button>
 
-          {/* View Toggle — muted active, not filled purple */}
-          <div className="flex items-center rounded-[var(--radius-input)] border border-border bg-surface p-0.5">
-            <button
-              type="button"
-              data-testid="view-month-btn"
-              onClick={() => setViewMode('month')}
-              className={[
-                'flex min-h-[34px] items-center gap-1.5 rounded-lg px-3 py-1 text-xs font-medium transition-colors cursor-pointer',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                viewMode === 'month'
-                  ? 'bg-surface-muted text-text-primary font-semibold'
-                  : 'text-text-secondary hover:text-text-primary',
-              ].join(' ')}
-            >
-              <Grid className="h-3.5 w-3.5" />
-              <span>Month</span>
-            </button>
-            <button
-              type="button"
-              data-testid="view-agenda-btn"
-              onClick={() => setViewMode('agenda')}
-              className={[
-                'flex min-h-[34px] items-center gap-1.5 rounded-lg px-3 py-1 text-xs font-medium transition-colors cursor-pointer',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                viewMode === 'agenda'
-                  ? 'bg-surface-muted text-text-primary font-semibold'
-                  : 'text-text-secondary hover:text-text-primary',
-              ].join(' ')}
-            >
-              <List className="h-3.5 w-3.5" />
-              <span>Agenda</span>
-            </button>
-          </div>
+          {/* CAL-002 — View toggle: canonical pill */}
+          <FilterSegmentedControl
+            options={viewOptions}
+            value={viewMode}
+            onChange={(id) => setViewMode(id as 'month' | 'agenda')}
+            variant="pill"
+            testIdPrefix="view"
+          />
         </div>
       </div>
 
-      {/* Category Filters */}
+      {/* CAL-003 — Category filter bar */}
       <CalendarFilterBar
         currentFilter={categoryFilter}
         onFilterChange={setCategoryFilter}
         counts={counts}
       />
 
-      {/* Error Alert */}
+      {/* Error alert */}
       {error && (
         <div
           role="alert"
           data-testid="calendar-error"
-          className="flex items-center justify-between rounded-[var(--radius-card)] border border-status-danger/25 bg-status-danger/5 p-4 text-xs text-status-danger"
+          className="flex items-center justify-between rounded-xl border p-4 text-xs bg-status-danger-subtle text-status-danger-text border-status-danger-border"
+          style={{ borderRadius: 'var(--radius-xl)' }}
         >
-          <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0" />
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="h-4 w-4 shrink-0" strokeWidth={1.75} />
             <p className="font-medium">
               {error instanceof Error ? error.message : 'Failed to load calendar events'}
             </p>
@@ -162,19 +161,20 @@ export function CalendarRoute() {
           <button
             type="button"
             onClick={() => refetch()}
-            className="flex items-center gap-1 text-[11px] font-semibold underline cursor-pointer"
+            className="flex items-center gap-1 text-[11px] font-bold underline cursor-pointer"
           >
-            <RefreshCw className="h-3 w-3" />
+            <RefreshCw className="h-3 w-3" strokeWidth={2} />
             Retry
           </button>
         </div>
       )}
 
-      {/* Loading Skeleton */}
+      {/* Loading */}
       {isLoading && (
         <div
           data-testid="calendar-loading"
-          className="h-96 animate-pulse rounded-[var(--radius-card)] border border-border bg-surface-muted/50"
+          className="h-96 animate-pulse rounded-xl border border-border bg-surface-muted/50"
+          style={{ borderRadius: 'var(--radius-xl)' }}
         />
       )}
 

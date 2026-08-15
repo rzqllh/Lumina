@@ -1,111 +1,200 @@
 @import 'tailwindcss';
 
-@theme {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  --color-surface-muted: var(--surface-muted);
-  --color-surface-elevated: var(--surface-elevated);
+/* ─────────────────────────────────────────────────────────────────────────
+   LUMINA CANONICAL DESIGN TOKENS — Phase 1 Light-Only
+   Source of truth: LUMINA_UI_REDESIGN_TRACKER.md §2.1–2.6
+   G-009: OKLCH color primitives + semantic color tokens
+   G-010: Typography, numerics, spacing tokens
+   G-011: Radii, elevation/shadows, motion, icon contract
+   ─────────────────────────────────────────────────────────────────────── */
 
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-
-  --color-border: var(--border);
-  --color-border-subtle: var(--border-subtle);
-  --color-border-interactive: var(--border-interactive);
-
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-
-  --color-status-success: var(--status-success);
-  --color-status-warning: var(--status-warning);
-  --color-status-danger: var(--status-danger);
-  --color-status-info: var(--status-info);
-
-  --color-ring: var(--ring);
-}
-
+/* ── G-009: Canonical Color Tokens ──────────────────────────────────────
+   All colors in OKLCH for perceptual uniformity and WCAG 2.2 AA compliance.
+   Phase 1: light-only. No dark: overrides. No speculative dark values.
+   ─────────────────────────────────────────────────────────────────────── */
 @layer base {
   :root {
-    /* ── Canvas ─────────────────────────────────────────────── */
-    --background: #f2f2f4;
-    --foreground: #18181b;
+    /* A. Neutral & Canvas (Lavender-tinted cool neutral, Hue 280) */
+    --color-canvas-bg: oklch(0.965 0.006 280); /* #f4f4f6 — app canvas */
+    --color-surface: oklch(0.995 0.002 280); /* #fcfcfd — cards, panels */
+    --color-surface-muted: oklch(0.945 0.008 280); /* #efeff2 — inset, disabled */
+    --color-surface-elevated: oklch(1 0 0); /* #ffffff — popovers, sheets */
+    --color-text-primary: oklch(0.2 0.015 280); /* #1c1b22 — headings 14.5:1 */
+    --color-text-secondary: oklch(0.42 0.015 280); /* #54525d — labels 5.8:1 */
+    --color-text-muted: oklch(0.52 0.012 280); /* #6e6c77 — helper 4.6:1 */
+    --color-border-subtle: oklch(0.915 0.008 280); /* #e6e6eb — dividers */
+    --color-border-default: oklch(0.865 0.01 280); /* #d8d8de — card borders */
+    --color-border-interactive: oklch(0.72 0.015 280); /* #adabb5 — input, hover */
 
-    /* ── Surfaces ───────────────────────────────────────────── */
-    --surface: #fdfdfd;
-    --surface-muted: #e4e4e7;
-    --surface-elevated: #ffffff;
+    /* B. Brand Primary — Lumina Violet (Hue 272) */
+    --color-primary: oklch(0.52 0.2 272); /* #5b4feb — CTA, active nav */
+    --color-primary-hover: oklch(0.46 0.2 272); /* #4b3ed9 — hover/press */
+    --color-primary-foreground: oklch(0.995 0.002 280); /* #ffffff — on primary solid */
+    --color-primary-subtle: oklch(0.96 0.03 272); /* #f2f0fe — selected row tint */
+    --color-primary-border: oklch(0.88 0.06 272); /* #dcd7fc — focus container */
+    --color-primary-text: oklch(0.48 0.2 272); /* #5043e0 — link on light 5:1 */
+    --color-ring: oklch(0.52 0.2 272); /* #5b4feb — focus ring */
 
-    /* ── Typography (WCAG 2.2 AA on both surface and background) ── */
-    --text-primary: #18181b;
-    --text-secondary: #3f3f46;
-    --text-muted: #52525b;
-    /* 5.2:1 on --surface, 4.5:1+ on --background */
+    /* C. Status Semantics — Danger / Overdue */
+    --color-status-danger: oklch(0.52 0.2 25);
+    --color-status-danger-text: oklch(0.48 0.21 25);
+    --color-status-danger-subtle: oklch(0.96 0.03 25);
+    --color-status-danger-border: oklch(0.88 0.06 25);
 
-    /* ── Borders ────────────────────────────────────────────── */
-    --border: #d4d4d8;
-    --border-subtle: #e4e4e7;
-    --border-interactive: #71717a;
+    /* C. Status Semantics — Warning / Attention */
+    --color-status-warning: oklch(0.62 0.16 75);
+    --color-status-warning-text: oklch(0.46 0.15 75);
+    --color-status-warning-subtle: oklch(0.96 0.04 75);
+    --color-status-warning-border: oklch(0.87 0.07 75);
 
-    /* ── Primary ────────────────────────────────────────────── */
-    --primary: #2563eb;
-    --primary-foreground: #fafafa;
+    /* C. Status Semantics — Success / Approved */
+    --color-status-success: oklch(0.54 0.16 148);
+    --color-status-success-text: oklch(0.42 0.14 148);
+    --color-status-success-subtle: oklch(0.96 0.03 148);
+    --color-status-success-border: oklch(0.88 0.05 148);
 
-    --accent: #1d4ed8;
-    --accent-foreground: #fafafa;
+    /* C. Status Semantics — Info / Scheduled */
+    --color-status-info: oklch(0.55 0.14 240);
+    --color-status-info-text: oklch(0.44 0.13 240);
+    --color-status-info-subtle: oklch(0.96 0.025 240);
+    --color-status-info-border: oklch(0.88 0.04 240);
 
-    /* ── Semantic Status ────────────────────────────────────── */
-    --status-success: #15803d;
-    --status-warning: #b45309;
-    --status-danger: #b91c1c;
-    --status-info: #0369a1;
+    /* ── G-010: Spacing Scale (4px/8px linear rhythm) ──────────────────── */
+    --space-0-5: 0.125rem; /* 2px  — hairline micro-gap */
+    --space-xs: 0.25rem; /* 4px  — badge pad, icon-label gap */
+    --space-sm: 0.5rem; /* 8px  — button internal, compact card */
+    --space-md: 0.75rem; /* 12px — list row, card internal, input */
+    --space-lg: 1rem; /* 16px — standard card, mobile gutter */
+    --space-xl: 1.5rem; /* 24px — section gap desktop, tablet gutter */
+    --space-2xl: 2rem; /* 32px — major group separation */
+    --space-3xl: 3rem; /* 48px — top-level breathing room */
 
-    /* ── Focus ring ─────────────────────────────────────────── */
-    --ring: #2563eb;
+    /* ── G-011: Radii Scale ─────────────────────────────────────────────── */
+    --radius-xs: 0.25rem; /* 4px  — micro tags, dots */
+    --radius-sm: 0.375rem; /* 6px  — badges, chips */
+    --radius-md: 0.5rem; /* 8px  — buttons, inputs, segmented control */
+    --radius-lg: 0.625rem; /* 10px — list rows, sub-cards */
+    --radius-xl: 0.75rem; /* 12px — primary modules, cards, dialogs */
+    --radius-2xl: 1rem; /* 16px — floating nav, popover sheets */
+    --radius-full: 9999px; /* avatars, pill indicators, circular buttons */
 
-    /* ── Spacing scale ──────────────────────────────────────── */
-    --space-xs: 0.25rem;
-    /* 4px  */
-    --space-sm: 0.5rem;
-    /* 8px  */
-    --space-md: 0.75rem;
-    /* 12px */
-    --space-lg: 1rem;
-    /* 16px */
-    --space-xl: 1.5rem;
-    /* 24px */
-    --space-2xl: 2rem;
-    /* 32px */
+    /* ── G-011: Tinted Shadows (hue-matched to canvas, not pure-black) ──── */
+    --shadow-none: none;
+    --shadow-subtle: 0 1px 2px 0 oklch(0.2 0.015 280 / 0.04), 0 0 0 1px oklch(0.865 0.01 280 / 0.6);
+    --shadow-elevated:
+      0 4px 12px -2px oklch(0.2 0.015 280 / 0.08), 0 0 0 1px oklch(0.865 0.01 280 / 0.8);
+    --shadow-sheet:
+      0 12px 32px -4px oklch(0.2 0.015 280 / 0.12), 0 0 0 1px oklch(0.865 0.01 280 / 0.5);
 
-    /* ── Radii ──────────────────────────────────────────────── */
-    --radius-badge: 0.375rem;
-    /* 6px  */
-    --radius-input: 0.625rem;
-    /* 10px */
-    --radius-card: 0.75rem;
-    /* 12px */
-    --radius-lg: 1rem;
-    /* 16px */
+    /* ── G-011: Motion Tokens ───────────────────────────────────────────── */
+    --duration-instant: 80ms;
+    --duration-fast: 140ms;
+    --duration-normal: 220ms;
+    --duration-deliberate: 320ms;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
 
-    /* ── Shadows (tinted, not pure black) ────────────────────── */
-    --shadow-card: 0 1px 2px 0 rgba(24, 24, 27, 0.06);
-    --shadow-elevated: 0 2px 8px -2px rgba(24, 24, 27, 0.1);
-
-    /* ── Transitions ────────────────────────────────────────── */
-    --transition-fast: 120ms;
-    --transition-normal: 180ms;
+    /* ── G-010: Control Heights (Apple HIG + operational density) ────────── */
+    --control-height-desktop: 2.375rem; /* 38px — standard button/input */
+    --control-height-mobile: 2.75rem; /* 44px — touch-safe mobile */
+    --control-height-compact: 2rem; /* 32px — filter pills, segmented */
+    --control-height-badge: 1.375rem; /* 22px — status badges */
   }
 }
 
-/* ── Base ────────────────────────────────────────────────────── */
+/* ── Tailwind @theme: Expose canonical tokens as Tailwind utilities ──────
+   Wires OKLCH custom properties into Tailwind's color system so classes like
+   `bg-canvas`, `text-primary`, `border-border-subtle`, `bg-status-danger-subtle`
+   are available throughout all components.
+   ─────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Canvas & Surfaces */
+  --color-canvas: var(--color-canvas-bg);
+  --color-background: var(--color-canvas-bg);
+  --color-foreground: var(--color-text-primary);
+  --color-surface: var(--color-surface);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-surface-elevated: var(--color-surface-elevated);
+
+  /* Text */
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+
+  /* Borders */
+  --color-border: var(--color-border-default);
+  --color-border-subtle: var(--color-border-subtle);
+  --color-border-interactive: var(--color-border-interactive);
+
+  /* Brand */
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-foreground: var(--color-primary-foreground);
+  --color-primary-subtle: var(--color-primary-subtle);
+  --color-primary-border: var(--color-primary-border);
+  --color-primary-text: var(--color-primary-text);
+  --color-ring: var(--color-ring);
+
+  /* Status — solid */
+  --color-status-danger: var(--color-status-danger);
+  --color-status-warning: var(--color-status-warning);
+  --color-status-success: var(--color-status-success);
+  --color-status-info: var(--color-status-info);
+
+  /* Status — text (WCAG AA) */
+  --color-status-danger-text: var(--color-status-danger-text);
+  --color-status-warning-text: var(--color-status-warning-text);
+  --color-status-success-text: var(--color-status-success-text);
+  --color-status-info-text: var(--color-status-info-text);
+
+  /* Status — subtle background */
+  --color-status-danger-subtle: var(--color-status-danger-subtle);
+  --color-status-warning-subtle: var(--color-status-warning-subtle);
+  --color-status-success-subtle: var(--color-status-success-subtle);
+  --color-status-info-subtle: var(--color-status-info-subtle);
+
+  /* Status — subtle border */
+  --color-status-danger-border: var(--color-status-danger-border);
+  --color-status-warning-border: var(--color-status-warning-border);
+  --color-status-success-border: var(--color-status-success-border);
+  --color-status-info-border: var(--color-status-info-border);
+
+  /* Radius scale */
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-full: var(--radius-full);
+
+  /* Shadow scale */
+  --shadow-subtle: var(--shadow-subtle);
+  --shadow-elevated: var(--shadow-elevated);
+  --shadow-sheet: var(--shadow-sheet);
+
+  /* Motion */
+  --duration-instant: var(--duration-instant);
+  --duration-fast: var(--duration-fast);
+  --duration-normal: var(--duration-normal);
+  --duration-deliberate: var(--duration-deliberate);
+  --ease-standard: var(--ease-standard);
+  --ease-out: var(--ease-out);
+}
+
+/* ── G-010: Base Typography ─────────────────────────────────────────────
+   UI sans system font stack — no Google Fonts dependency, instant rendering.
+   Matches Apple HIG clarity and cross-platform OS legibility.
+   ─────────────────────────────────────────────────────────────────────── */
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--color-canvas-bg);
+  color: var(--color-text-primary);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+  font-size: 15px; /* text-base = 15px per tracker scale */
+  line-height: 1.4;
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -114,13 +203,71 @@ html {
   scroll-behavior: smooth;
 }
 
-/* ── Global accessible focus-visible treatment ──────────────── */
+/* ── G-010: Typography Scale Utility Classes ────────────────────────────
+   Applied via className. Exact values from tracker §2.2.
+   ─────────────────────────────────────────────────────────────────────── */
+.text-2xl {
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+@media (min-width: 768px) {
+  .text-2xl {
+    font-size: 24px;
+  }
+}
+.text-xl {
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.text-lg {
+  font-size: 17px;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+.text-base {
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.text-sm {
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+.text-xs {
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+/* Eyebrow / uppercase label override: wider tracking */
+.text-xs.uppercase,
+.text-xs[class*='uppercase'] {
+  letter-spacing: +0.02em;
+}
+
+/* ── G-010: Tabular Numerals ─────────────────────────────────────────── */
+.tabular-nums {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Monospace (IDs, metadata) */
+.font-mono {
+  font-family: ui-monospace, 'SF Mono', 'Menlo', monospace;
+}
+
+/* ── G-011: Global Accessible Focus-Visible ─────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--ring);
+  outline: 2px solid var(--color-ring);
   outline-offset: 2px;
 }
 
-/* ── Reduced motion ─────────────────────────────────────────── */
+/* ── G-011: Reduced Motion ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
@@ -128,11 +275,65 @@ html {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
     scroll-behavior: auto !important;
+    transform: none !important;
   }
 }
 
-/* ── Tabular numbers for data display ───────────────────────── */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
+/* ── G-002: Surface Level Utility Classes ───────────────────────────────
+   Three semantic visual levels per tracker §3 G-002.
+   Level 1: operational focal (urgent)
+   Level 2: primary modules
+   Level 3: supporting information
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* Level 1 — Operational Focal Module */
+.surface-level-1 {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-subtle);
+}
+
+/* Level 1 — Attention variant (has urgent items) */
+.surface-level-1-attention {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-status-danger-border);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    var(--shadow-subtle),
+    0 0 0 1px var(--color-status-danger-subtle);
+}
+
+/* Level 2 — Primary Module */
+.surface-level-2 {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-subtle);
+}
+
+/* Level 3 — Supporting / Inset */
+.surface-level-3 {
+  background-color: var(--color-surface-muted);
+  border-radius: var(--radius-lg);
+}
+
+/* ── Operational Row — shared pattern ───────────────────────────────── */
+.op-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-sm);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.op-row:hover {
+  background-color: var(--color-surface-muted);
+}
+.op-row:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
 }
