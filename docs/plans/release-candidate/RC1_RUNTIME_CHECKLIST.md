@@ -1,64 +1,89 @@
 # Lumina — RC1 External Runtime Checklist
 
-This checklist tracks the exact external runtime prerequisites and execution gates required to advance Lumina from `RC1_VALIDATION_BLOCKED` to `RC1_READY_FOR_PRIVATE_USE`.
+This checklist tracks the exact external runtime gates required to advance Lumina through its release-candidate verification.
+
+Current verdict: **`RC1_READY_WITH_ONE_EXTERNAL_ACTION`**
 
 ---
 
 ## Security prerequisites
 
-- [x] service-role credential rotated (CONFIRMED_BY_OPERATOR)
-- [x] repository secret audit clean
-- [x] frontend environment contains public credentials only (`VITE_SUPABASE_URL` and publishable key)
+- [x] `service_role` credential rotated (CONFIRMED_BY_OPERATOR)
+- [x] Repository secret audit clean (no service_role in tracked files or bundles)
+- [x] `src/lib/env.ts` requires explicit env vars; fails loudly if absent — no silent production fallback
+- [x] `.env.example` contains placeholder values only
 
 ## Auth prerequisites
 
-- [x] Google OAuth client configured (Operator configured)
-- [x] Supabase Google provider configured (Operator configured)
-- [x] production/development redirect URI verified (Live Google OAuth round-trip verified to callback → session restore → bootstrap workspace → Dashboard)
+- [x] Google OAuth Client ID & Secret configured by operator (Google Cloud Console + Supabase Dashboard)
+- [x] Supabase Google provider enabled
+- [x] OAuth round-trip verified from localhost (`localhost:5173/login` → Google → Supabase → `/auth/callback` → Dashboard)
+- [ ] **Deployed-origin OAuth round-trip** — Workers URL `https://lumina.checker-syzygy-fff.workers.dev` must be added to Supabase Auth Redirect URLs, then round-trip verified from deployed origin
 
 ## Database
 
-- [x] runtime target identified (`veljyxvrsyptarfgunan` / Southeast Asia - Singapore)
-- [x] migration history inspected and reconciled (00001–00023 applied)
-- [x] migrations 00001–00023 execute successfully (`supabase db push` clean, 0 pending)
+- [x] Runtime target identified: `veljyxvrsyptarfgunan` (Southeast Asia - Singapore)
+- [x] Remote migration ledger aligned (00001–00022 via repair; 00023 as forward migration)
+- [x] `supabase db push --dry-run` returns 0 pending migrations
 - [x] pgTAP executes against remote database (`npx supabase db query --linked`)
-- [x] pgTAP passes (12 suites, 118 assertions passed, 0 failed)
+- [x] pgTAP passes: 12 suites, 118 assertions, 0 failures (2026-08-15)
+- [ ] **Fresh migration replay** (00001→00023 on clean database): `DEFERRED_ENVIRONMENT`
+
+## Migration Lineage Integrity
+
+- [x] Migration `00021` historical content verified byte-for-byte (blob hash `e4c1d30638a7d42da6e1510cbd38c9862950b644`)
+- [x] Migration `00021` restored to exact `b2e818b` content — no diff
+- [x] Migration `00023_fix_apply_brief_submission_review.sql` is the sole forward carrier of the runtime fix
+- [x] Migrations `00001`–`00022` are immutable and unmodified
 
 ## RLS & Multi-tenant Boundaries
 
-- [x] anonymous private-table denial (workspaces, projects, clients, payments, expenses return 0 rows)
-- [x] Workspace A own-row access (verified via pgTAP 01–12 & runtime client)
-- [x] Workspace A → Workspace B denial (cross-workspace rejection verified in 06, 07, 08, 09, 10)
-- [x] public status token projection (`get_public_project_status` omits expenses & internal fees)
-- [x] public Brief token projection (`get_public_brief_intake` strips `internal_only` fields)
-- [x] cross-purpose token denial & invalid token rejection (returns 400 with graceful user-facing error)
+- [x] Anonymous REST inspection of private tables returned zero visible rows
+- [x] Workspace own-row access verified (pgTAP suites 01–12)
+- [x] Cross-workspace access denial verified (pgTAP suites 06, 07, 08, 09, 10)
+- [x] Public status token projection verified (`get_public_project_status` omits expenses & internal fees)
+- [x] Public brief token projection verified (`get_public_brief_intake` strips `internal_only` fields)
+- [x] Invalid/revoked token rejection verified (returns structured error, no crash)
 
 ## RPCs
 
-- [x] bootstrap_personal_workspace (live verified: provisioned owner workspace on real Google login)
-- [x] duplicate_package (verified in pgTAP suite 05)
-- [x] apply_workflow_template_to_project (verified in pgTAP suite 07)
-- [x] create_deliverable_revision (verified in pgTAP suite 09)
-- [x] close_project (verified in pgTAP suite 10: blocked on balance/unapproved, passes when criteria met)
-- [x] force_close_project (verified in pgTAP suite 01, 07, 08, 09, 10: freezes operations, stores reason)
-- [x] reopen_project (verified in pgTAP suite 10)
-- [x] public Brief RPCs (generate, get_intake, submit, review verified in pgTAP 11 and migration 00023)
-- [x] public Project Status RPCs (generate, get_status, revoke verified in pgTAP 12)
+- [x] `bootstrap_personal_workspace` (pgTAP suite 02 + live OAuth session)
+- [x] `duplicate_package` (pgTAP suite 05)
+- [x] `apply_workflow_template_to_project` (pgTAP suite 07)
+- [x] `create_deliverable_revision` (pgTAP suite 09)
+- [x] `close_project` (pgTAP suite 10: blocked on balance/unapproved, passes when criteria met)
+- [x] `force_close_project` (pgTAP suites 01, 07, 08, 09, 10)
+- [x] `reopen_project` (pgTAP suite 10)
+- [x] Public Brief RPCs: `generate_brief_share_link`, `get_public_brief_intake`, `submit_public_brief`, `apply_brief_submission_review` (pgTAP suite 11)
+- [x] Public Status RPCs: `generate_project_status_share_link`, `get_public_project_status`, `revoke_project_share_link` (pgTAP suite 12)
 
 ## Deployment
 
-- [x] Cloudflare target authenticated (`npx wrangler deploy --temporary`)
-- [x] frontend deployed (`https://lumina.checker-syzygy-fff.workers.dev`)
-- [x] SPA nested-route refresh works (`not_found_handling = "single-page-application"`)
-- [x] production environment values configured (bundled with publishable Supabase credentials)
-- [x] PWA assets load (manifest.webmanifest, registerSW.js, sw.js precache registered)
+- [x] Cloudflare Workers authenticated (`npx wrangler deploy --temporary`)
+- [x] Frontend deployed: `https://lumina.checker-syzygy-fff.workers.dev`
+- [x] SPA not-found fallback routing works (`not_found_handling = "single-page-application"`)
+- [x] Production bundle built with publishable credentials from `.env` (no hardcoded defaults)
+- [x] PWA assets present: `manifest.webmanifest`, `registerSW.js`, `sw.js`
 
 ## Browser Smoke
 
-- [x] deployed mobile smoke (390x844: verified responsive login header, Google button)
-- [x] deployed desktop smoke (1440x900: verified clean centered container layout)
-- [x] deployed authenticated routes (verified dashboard greeting, navigation, project statistics)
-- [x] deployed public routes (verified `/share/:token` and `/brief/:token` graceful error states)
-- [x] console clean (0 uncaught exceptions)
-- [x] network clean (Supabase REST/auth round-trips returning 200/204)
+- [x] Deployed mobile smoke (390x844): responsive login, brand header, Google button
+- [x] Deployed desktop smoke (1440x900): centered container, responsive typography
+- [x] Deployed public routes: `/share/:token` and `/brief/:token` handle invalid tokens gracefully
+- [x] Deployed authenticated routes: Dashboard navigation verified (via localhost OAuth → deployed smoke)
+- [x] Console clean (0 uncaught exceptions observed)
 
+## Automated Verification (Frontend)
+
+- [x] `pnpm format:check` — PASS
+- [x] `pnpm typecheck` — PASS (exit 0)
+- [x] `pnpm lint` — PASS (exit 0)
+- [x] `pnpm test:run` — PASS (46 suites, 145 tests)
+- [x] `pnpm build` — PASS
+
+## Outstanding Items
+
+| Item | Status | Blocker Level |
+|---|---|---|
+| Deployed-origin OAuth round-trip | `EXTERNAL_ACTION_REQUIRED` | RC-BLOCKER (for `RC1_READY_FOR_PRIVATE_USE`) |
+| Fresh migration replay (clean DB) | `DEFERRED_ENVIRONMENT` | Engineering debt only |

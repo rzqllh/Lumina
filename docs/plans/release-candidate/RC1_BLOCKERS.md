@@ -1,8 +1,8 @@
 # Lumina — Release Candidate 1 Blockers & External Actions Ledger
 
-**Pass:** Release Candidate 1 Verification & Live Runtime Pass<br />
+**Pass:** Release Candidate 1 Final Lineage Correction<br />
 **Date:** 2026-08-15<br />
-**Verdict:** `RC1_READY_FOR_PRIVATE_USE`
+**Verdict:** `RC1_READY_WITH_ONE_EXTERNAL_ACTION`
 
 ---
 
@@ -10,65 +10,102 @@
 
 | Identifier | Severity | Area | Status | Description |
 |---|---|---|---|---|
-| `RC-BLOCKER-SEC-001` | **RC-BLOCKER** | Security | `RESOLVED` | Remote Supabase `service_role` secret rotated in dashboard; repository clean. |
-| `RC-BLOCKER-AUTH-001` | **RC-BLOCKER** | Auth | `RESOLVED` | Live Google OAuth round-trip, JWT token issuance, session restoration, and workspace bootstrap verified. |
-| `RC-BLOCKER-DB-001` | **RC-BLOCKER** | Database | `RESOLVED` | Migrations `00001`–`00023` applied; 12 pgTAP test suites (118 assertions) PASSED; RLS & RPCs verified on live database. |
-| `RC-BLOCKER-DEP-001` | **RC-BLOCKER** | Deployment | `RESOLVED` | Deployed to Cloudflare Workers (`https://lumina.checker-syzygy-fff.workers.dev`); mobile/desktop and public browser smoke PASSED. |
+| `RC-BLOCKER-SEC-001` | **RC-BLOCKER** | Security | `RESOLVED` | `service_role` rotated by operator; repo clean; `env.ts` requires explicit env vars. |
+| `RC-BLOCKER-AUTH-001` | **RC-BLOCKER** | Auth (localhost) | `RESOLVED` | Live Google OAuth from localhost preview verified end-to-end. |
+| `RC-BLOCKER-AUTH-002` | **RC-BLOCKER** | Auth (deployed origin) | `EXTERNAL_ACTION_REQUIRED` | Workers origin `https://lumina.checker-syzygy-fff.workers.dev` must be added to Supabase Redirect URLs. Deployed round-trip not yet verified. |
+| `RC-BLOCKER-DB-001` | **RC-BLOCKER** | Database | `RESOLVED` | Migration ledger aligned; 00023 applied; 118 pgTAP assertions PASSED; RLS & RPCs verified. |
+| `RC-BLOCKER-DB-002` | **RC-ENGINEERING-DEBT** | Fresh Migration Replay | `DEFERRED_ENVIRONMENT` | No disposable runtime available. Not a blocker for existing private-use instance. |
+| `RC-BLOCKER-DEP-001` | **RC-BLOCKER** | Deployment | `RESOLVED` | Deployed to Cloudflare Workers; SPA routing, mobile/desktop smoke, public error boundaries verified. |
 
 ---
 
-## 2. Itemized Blockers & Verification Evidence
+## 2. Itemized Blockers
 
-### `RC-BLOCKER-SEC-001` — Remote Supabase Service-Role Credential Rotation
-- **Severity:** `RC-BLOCKER`
-- **Area:** Security & Credential Hygiene
+### `RC-BLOCKER-SEC-001` — Service-Role Credential Rotation & Env Safety
 - **Status:** `RESOLVED`
 - **Evidence:**
-  - Operator rotated the `service_role` secret in Supabase Dashboard.
-  - Zero `service_role` credentials present in `.env` or client bundles.
-  - Frontend bundle configured with public publishable credentials only (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
+  - Operator confirmed `service_role` rotation in Supabase Dashboard.
+  - `.env` gitignored (verified `.gitignore:32:.env`).
+  - `src/lib/env.ts` throws at startup if `VITE_SUPABASE_URL` or `VITE_SUPABASE_ANON_KEY` are absent — no silent production project fallback.
+  - `.env.example` contains only placeholder values; no real credentials.
 
 ---
 
-### `RC-BLOCKER-AUTH-001` — Remote Google OAuth Provider Configuration
-- **Severity:** `RC-BLOCKER`
-- **Area:** Authentication / Supabase Auth
+### `RC-BLOCKER-AUTH-001` — Google OAuth (localhost preview)
 - **Status:** `RESOLVED`
 - **Evidence:**
-  - Live interactive Google sign-in executed via browser subagent against remote project `veljyxvrsyptarfgunan`.
-  - Supabase Auth issued valid JWT and session for authenticated owner (`Hafizh Rizqullah`).
-  - Safe callback navigation and `bootstrap_personal_workspace` verified to provision personal workspace and load Dashboard.
+  - Live interactive Google sign-in executed from `localhost:5173/login`.
+  - Supabase Auth issued valid JWT and session.
+  - `/auth/callback` → `bootstrap_personal_workspace` → Dashboard verified.
 
 ---
 
-### `RC-BLOCKER-DB-001` — Live Database Migration, pgTAP, RLS & RPC Execution
-- **Severity:** `RC-BLOCKER`
-- **Area:** Database Runtime & Invariant Validation
+### `RC-BLOCKER-AUTH-002` — Google OAuth (deployed Cloudflare origin)
+- **Status:** `EXTERNAL_ACTION_REQUIRED`
+- **Required operator action:** Add to Supabase Authentication → URL Configuration → Redirect URLs:
+  ```
+  https://lumina.checker-syzygy-fff.workers.dev/**
+  ```
+- **After operator action:** Run full OAuth round-trip starting from deployed URL:
+  1. `https://lumina.checker-syzygy-fff.workers.dev/login` → Google → Supabase → `/auth/callback` → Dashboard.
+- **Scopes remain unchanged:** `openid`, `email`, `profile` only.
+- **Note:** Do NOT change Google scopes. Do NOT add extra redirect origins beyond the deployed URL.
+
+---
+
+### `RC-BLOCKER-DB-001` — Live Database Migration, pgTAP, RLS & RPC
 - **Status:** `RESOLVED`
 - **Evidence:**
-  - Linked project: `veljyxvrsyptarfgunan` (Southeast Asia - Singapore).
-  - Migrations `00001`–`00023` applied; `supabase db push --dry-run` confirms remote database is 100% up to date.
-  - 12 pgTAP database test suites (118 assertions) executed directly on remote instance: **12/12 PASSED (0 failures)**.
-  - 100% of the 33 business tables have Row Level Security enabled.
-  - Anonymous rejection on all private tables and 7 critical transactional RPCs verified.
+  - Remote project: `veljyxvrsyptarfgunan` (Southeast Asia - Singapore).
+  - Migration ledger aligned (00001–00022 via repair; 00023 as forward migration).
+  - `supabase db push --dry-run` → 0 pending.
+  - 12 pgTAP test suites (118 assertions) PASSED on `veljyxvrsyptarfgunan`.
+  - 33 business tables verified RLS-enabled.
+  - Anonymous REST access to private tables returned zero visible rows.
+  - Unauthenticated RPC calls to sensitive functions rejected (401 / permission denied).
 
 ---
 
-### `RC-BLOCKER-DEP-001` — Cloudflare Remote Deployment & Live Browser Smoke
-- **Severity:** `RC-BLOCKER`
-- **Area:** Hosting / Production Infrastructure
+### `RC-BLOCKER-DB-002` — Fresh Migration Replay
+- **Status:** `DEFERRED_ENVIRONMENT`
+- **Classification:** Release-engineering debt, not a runtime blocker for the existing private-use instance.
+- **Explanation:** The linked project `veljyxvrsyptarfgunan` was not an empty database at the start of RC validation. Fresh 00001→00023 sequential replay has not been proven on a clean database instance.
+- **Resolution path (when ready):**
+  1. Use a disposable Supabase project (free tier) or `supabase start` (local Docker), or a database branch.
+  2. Apply `npx supabase db push` to the clean instance.
+  3. Confirm all migrations apply without errors.
+  4. Run pgTAP suite and verify 118 assertions pass.
+  - **Constraint:** Do NOT reset or touch `veljyxvrsyptarfgunan`.
+
+---
+
+### `RC-BLOCKER-DEP-001` — Cloudflare Remote Deployment & Browser Smoke
 - **Status:** `RESOLVED`
 - **Evidence:**
-  - Production bundle built with `tsc -b && vite build`.
-  - Deployed to Cloudflare Workers: `https://lumina.checker-syzygy-fff.workers.dev`.
-  - SPA routing with single-page-application fallback verified on direct loads.
-  - Mobile (390x844) and Desktop (1440x900) browser smoke testing verified responsive layouts, public token error boundaries, and authenticated routes with zero console crashes.
+  - Deployed: `https://lumina.checker-syzygy-fff.workers.dev`
+  - SPA not-found fallback routing verified.
+  - Mobile (390x844) and Desktop (1440x900) browser smoke passed.
+  - Public `/share/:token` and `/brief/:token` error boundaries verified.
 
 ---
 
-## 3. Final Conclusion
+## 3. Migration Lineage Correction Note
 
-All 4 RC1 blockers have been resolved through direct runtime execution and live verification evidence.
+Migration `00021_brief_builder_and_intake_integrity.sql` was incorrectly modified during the RC1 runtime verification pass.
 
-**Final Verdict: `RC1_READY_FOR_PRIVATE_USE`**
+**Corrected in commit `fix: preserve RC1 migration lineage`:**
+- `00021` has been restored byte-for-byte to its content at commit `b2e818b`.
+- Blob hash verified: `e4c1d30638a7d42da6e1510cbd38c9862950b644`.
+- `git diff b2e818b -- supabase/migrations/00021_brief_builder_and_intake_integrity.sql` produces no diff.
+- `00023_fix_apply_brief_submission_review.sql` is the sole forward migration carrying the runtime correction.
+- Remote pgTAP suites 11 and 12 re-verified after restoration: **PASS** (no regression).
 
+---
+
+## 4. Final Status
+
+The project is `RC1_READY_WITH_ONE_EXTERNAL_ACTION`.
+
+Upgrading to `RC1_READY_FOR_PRIVATE_USE` requires:
+1. Operator adds `https://lumina.checker-syzygy-fff.workers.dev/**` to Supabase Auth Redirect URLs.
+2. Full deployed-origin OAuth round-trip verified (`/login` → Google → Supabase → `/auth/callback` → Dashboard).
