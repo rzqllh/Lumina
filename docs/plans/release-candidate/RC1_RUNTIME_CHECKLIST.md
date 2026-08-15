@@ -2,7 +2,7 @@
 
 This checklist tracks the exact external runtime gates required to advance Lumina through its release-candidate verification.
 
-Current verdict: **`RC1_READY_WITH_ONE_EXTERNAL_ACTION`**
+Current verdict: **`RC1_READY_FOR_PRIVATE_USE`**
 
 ---
 
@@ -18,7 +18,7 @@ Current verdict: **`RC1_READY_WITH_ONE_EXTERNAL_ACTION`**
 - [x] Google OAuth Client ID & Secret configured by operator (Google Cloud Console + Supabase Dashboard)
 - [x] Supabase Google provider enabled
 - [x] OAuth round-trip verified from localhost (`localhost:5173/login` → Google → Supabase → `/auth/callback` → Dashboard)
-- [ ] **Deployed-origin OAuth round-trip** — Workers URL `https://lumina.checker-syzygy-fff.workers.dev` must be added to Supabase Auth Redirect URLs, then round-trip verified from deployed origin
+- [x] **Deployed-origin OAuth round-trip** — Verified from deployed origin `https://lumina.rzqllh-labs.workers.dev/login` → Google → Supabase → deployed `/auth/callback` → authenticated Dashboard
 
 ## Database
 
@@ -27,7 +27,7 @@ Current verdict: **`RC1_READY_WITH_ONE_EXTERNAL_ACTION`**
 - [x] `supabase db push --dry-run` returns 0 pending migrations
 - [x] pgTAP executes against remote database (`npx supabase db query --linked`)
 - [x] pgTAP passes: 12 suites, 118 assertions, 0 failures (2026-08-15)
-- [ ] **Fresh migration replay** (00001→00023 on clean database): `DEFERRED_ENVIRONMENT`
+- [ ] **Fresh migration replay** (00001→00023 on clean database): `DEFERRED_ENVIRONMENT` (release-engineering debt, not a runtime blocker for current private-use instance)
 
 ## Migration Lineage Integrity
 
@@ -59,18 +59,19 @@ Current verdict: **`RC1_READY_WITH_ONE_EXTERNAL_ACTION`**
 
 ## Deployment
 
-- [x] Cloudflare Workers authenticated (`npx wrangler deploy --temporary`)
-- [x] Frontend deployed: `https://lumina.checker-syzygy-fff.workers.dev`
+- [x] Cloudflare Workers deployment active
+- [x] Frontend deployed: `https://lumina.rzqllh-labs.workers.dev`
 - [x] SPA not-found fallback routing works (`not_found_handling = "single-page-application"`)
 - [x] Production bundle built with publishable credentials from `.env` (no hardcoded defaults)
 - [x] PWA assets present: `manifest.webmanifest`, `registerSW.js`, `sw.js`
+- [x] Deployed Cloudflare authentication round-trip PASS
 
 ## Browser Smoke
 
 - [x] Deployed mobile smoke (390x844): responsive login, brand header, Google button
 - [x] Deployed desktop smoke (1440x900): centered container, responsive typography
 - [x] Deployed public routes: `/share/:token` and `/brief/:token` handle invalid tokens gracefully
-- [x] Deployed authenticated routes: Dashboard navigation verified (via localhost OAuth → deployed smoke)
+- [x] Deployed authenticated routes: Dashboard navigation verified on deployed origin
 - [x] Console clean (0 uncaught exceptions observed)
 
 ## Automated Verification (Frontend)
@@ -81,9 +82,11 @@ Current verdict: **`RC1_READY_WITH_ONE_EXTERNAL_ACTION`**
 - [x] `pnpm test:run` — PASS (46 suites, 145 tests)
 - [x] `pnpm build` — PASS
 
-## Outstanding Items
+## Summary Table
 
-| Item | Status | Blocker Level |
+| Gate | Status | Impact |
 |---|---|---|
-| Deployed-origin OAuth round-trip | `EXTERNAL_ACTION_REQUIRED` | RC-BLOCKER (for `RC1_READY_FOR_PRIVATE_USE`) |
-| Fresh migration replay (clean DB) | `DEFERRED_ENVIRONMENT` | Engineering debt only |
+| Runtime Database & Migrations | **PASS** | 12/12 pgTAP suites, 118 assertions green on `veljyxvrsyptarfgunan` |
+| RLS & RPC Invariants | **PASS** | 33 tables isolated, transactional RPCs validated |
+| Deployed Cloudflare OAuth | **PASS** | Round-trip verified from `https://lumina.rzqllh-labs.workers.dev` |
+| Fresh migration replay (clean DB) | `DEFERRED_ENVIRONMENT` | Release-engineering debt only; non-blocking for current private instance |

@@ -1,8 +1,8 @@
 # Lumina — Release Candidate 1 Blockers & External Actions Ledger
 
-**Pass:** Release Candidate 1 Final Lineage Correction<br />
+**Pass:** Release Candidate 1 Final Release Gate Close<br />
 **Date:** 2026-08-15<br />
-**Verdict:** `RC1_READY_WITH_ONE_EXTERNAL_ACTION`
+**Verdict:** `RC1_READY_FOR_PRIVATE_USE`
 
 ---
 
@@ -12,14 +12,16 @@
 |---|---|---|---|---|
 | `RC-BLOCKER-SEC-001` | **RC-BLOCKER** | Security | `RESOLVED` | `service_role` rotated by operator; repo clean; `env.ts` requires explicit env vars. |
 | `RC-BLOCKER-AUTH-001` | **RC-BLOCKER** | Auth (localhost) | `RESOLVED` | Live Google OAuth from localhost preview verified end-to-end. |
-| `RC-BLOCKER-AUTH-002` | **RC-BLOCKER** | Auth (deployed origin) | `EXTERNAL_ACTION_REQUIRED` | Workers origin `https://lumina.checker-syzygy-fff.workers.dev` must be added to Supabase Redirect URLs. Deployed round-trip not yet verified. |
+| `RC-BLOCKER-AUTH-002` | **RC-BLOCKER** | Auth (deployed origin) | `RESOLVED` | Deployed origin `https://lumina.rzqllh-labs.workers.dev` round-trip verified to authenticated Dashboard. |
 | `RC-BLOCKER-DB-001` | **RC-BLOCKER** | Database | `RESOLVED` | Migration ledger aligned; 00023 applied; 118 pgTAP assertions PASSED; RLS & RPCs verified. |
-| `RC-BLOCKER-DB-002` | **RC-ENGINEERING-DEBT** | Fresh Migration Replay | `DEFERRED_ENVIRONMENT` | No disposable runtime available. Not a blocker for existing private-use instance. |
-| `RC-BLOCKER-DEP-001` | **RC-BLOCKER** | Deployment | `RESOLVED` | Deployed to Cloudflare Workers; SPA routing, mobile/desktop smoke, public error boundaries verified. |
+| `RC-BLOCKER-DB-002` | **RC-ENGINEERING-DEBT** | Fresh Migration Replay | `DEFERRED_ENVIRONMENT` | No disposable runtime available. Release-engineering debt only, not a blocker for current private-use instance. |
+| `RC-BLOCKER-DEP-001` | **RC-BLOCKER** | Deployment | `RESOLVED` | Deployed to Cloudflare Workers (`https://lumina.rzqllh-labs.workers.dev`); SPA routing, smoke, error boundaries, auth verified. |
+
+**Active RC-BLOCKER Count: 0**
 
 ---
 
-## 2. Itemized Blockers
+## 2. Itemized Blockers & Verification Evidence
 
 ### `RC-BLOCKER-SEC-001` — Service-Role Credential Rotation & Env Safety
 - **Status:** `RESOLVED`
@@ -41,15 +43,13 @@
 ---
 
 ### `RC-BLOCKER-AUTH-002` — Google OAuth (deployed Cloudflare origin)
-- **Status:** `EXTERNAL_ACTION_REQUIRED`
-- **Required operator action:** Add to Supabase Authentication → URL Configuration → Redirect URLs:
-  ```
-  https://lumina.checker-syzygy-fff.workers.dev/**
-  ```
-- **After operator action:** Run full OAuth round-trip starting from deployed URL:
-  1. `https://lumina.checker-syzygy-fff.workers.dev/login` → Google → Supabase → `/auth/callback` → Dashboard.
-- **Scopes remain unchanged:** `openid`, `email`, `profile` only.
-- **Note:** Do NOT change Google scopes. Do NOT add extra redirect origins beyond the deployed URL.
+- **Status:** `RESOLVED`
+- **Evidence:**
+  - Started from `https://lumina.rzqllh-labs.workers.dev/login`
+  - Google OAuth completed successfully
+  - Supabase callback returned to deployed Cloudflare origin (`https://lumina.rzqllh-labs.workers.dev/auth/callback`)
+  - Authenticated Lumina Dashboard loaded successfully
+  - Final origin remained `https://lumina.rzqllh-labs.workers.dev`
 
 ---
 
@@ -82,30 +82,24 @@
 ### `RC-BLOCKER-DEP-001` — Cloudflare Remote Deployment & Browser Smoke
 - **Status:** `RESOLVED`
 - **Evidence:**
-  - Deployed: `https://lumina.checker-syzygy-fff.workers.dev`
+  - Deployed: `https://lumina.rzqllh-labs.workers.dev`
   - SPA not-found fallback routing verified.
   - Mobile (390x844) and Desktop (1440x900) browser smoke passed.
   - Public `/share/:token` and `/brief/:token` error boundaries verified.
+  - Deployed authentication round-trip verified.
 
 ---
 
 ## 3. Migration Lineage Correction Note
 
-Migration `00021_brief_builder_and_intake_integrity.sql` was incorrectly modified during the RC1 runtime verification pass.
-
-**Corrected in commit `fix: preserve RC1 migration lineage`:**
-- `00021` has been restored byte-for-byte to its content at commit `b2e818b`.
-- Blob hash verified: `e4c1d30638a7d42da6e1510cbd38c9862950b644`.
-- `git diff b2e818b -- supabase/migrations/00021_brief_builder_and_intake_integrity.sql` produces no diff.
-- `00023_fix_apply_brief_submission_review.sql` is the sole forward migration carrying the runtime correction.
-- Remote pgTAP suites 11 and 12 re-verified after restoration: **PASS** (no regression).
+Migration `00021_brief_builder_and_intake_integrity.sql` was restored byte-for-byte to commit `b2e818b` (blob hash `e4c1d30638a7d42da6e1510cbd38c9862950b644`).
+Migration `00023_fix_apply_brief_submission_review.sql` is the sole forward carrier of the runtime fix.
+Remote pgTAP suites 11 and 12 re-verified after restoration: **PASS** (118/118 total assertions pass).
 
 ---
 
 ## 4. Final Status
 
-The project is `RC1_READY_WITH_ONE_EXTERNAL_ACTION`.
+All RC1 blockers are resolved. Active blocker count: **0**.
 
-Upgrading to `RC1_READY_FOR_PRIVATE_USE` requires:
-1. Operator adds `https://lumina.checker-syzygy-fff.workers.dev/**` to Supabase Auth Redirect URLs.
-2. Full deployed-origin OAuth round-trip verified (`/login` → Google → Supabase → `/auth/callback` → Dashboard).
+**Final Verdict: `RC1_READY_FOR_PRIVATE_USE`**
