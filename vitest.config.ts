@@ -9,6 +9,10 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    env: {
+      VITE_SUPABASE_URL: 'https://placeholder-test-project.supabase.co',
+      VITE_SUPABASE_ANON_KEY: 'placeholder-test-anon-key',
+    },
   },
   resolve: {
     alias: {
