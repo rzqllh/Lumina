@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Routes, Route } from 'react-router';
 import { DashboardRoute } from '@/routes/dashboard/DashboardRoute';
@@ -118,7 +118,7 @@ describe('DashboardRoute (DASH-REQ-001 / DASH-REQ-002 / DASH-REQ-003 / DASH-REQ-
 
     renderDashboard();
 
-    expect(await screen.findByText(/Welcome back, Alex Creator/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /Overview/i, level: 1 })).toBeInTheDocument();
     expect(await screen.findByTestId('workspace-metrics-grid')).toBeInTheDocument();
     expect(await screen.findByTestId('needs-attention-panel')).toBeInTheDocument();
     expect(await screen.findByTestId('today-agenda-panel')).toBeInTheDocument();
@@ -132,14 +132,12 @@ describe('DashboardRoute (DASH-REQ-001 / DASH-REQ-002 / DASH-REQ-003 / DASH-REQ-
     expect(queriedTables).toContain('project_services');
   });
 
-  it('navigates to create project when New Project shortcut is clicked', async () => {
+  it('renders neutral attention text when attention items count is zero', async () => {
     vi.mocked(supabase.from).mockReturnValue(createMockQueryBuilder([]) as never);
 
     renderDashboard();
 
-    const newProjectBtn = await screen.findByTestId('quick-action-new-project');
-    fireEvent.click(newProjectBtn);
-
-    expect(screen.getByText('Create Project Page')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /Overview/i, level: 1 })).toBeInTheDocument();
+    expect(screen.getByText('No items require attention')).toBeInTheDocument();
   });
 });

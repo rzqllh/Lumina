@@ -1,30 +1,26 @@
-import { useWorkspace, useAuth } from '@/lib/auth';
+import { useWorkspace } from '@/lib/auth';
 import {
   useDashboardData,
   NeedsAttentionCard,
   TodayAgendaCard,
   WorkspaceMetricsGrid,
   ActiveProjectsGrid,
-  QuickActionBar,
   UpcomingSessionsCard,
 } from '@/features/dashboard';
-import { AlertCircle, RefreshCw, Sparkles } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 
 /**
  * DashboardRoute
- * DASH-001: Greeting + date context + New Project + Add Client (QuickActionBar)
+ * DASH-001: Clean overview header + date context + factual attention summary (no generic greeting fluff)
  * DASH-002–006: Operational modules
  * DASH-007: Desktop composition — 2/3 + 1/3 layout, not a narrow mobile column
  * Priority: Needs Attention > Today > Active Projects > Upcoming Sessions > Metrics
  */
 export function DashboardRoute() {
-  const { workspaceId, currentWorkspace } = useWorkspace();
-  const { user } = useAuth();
+  const { workspaceId } = useWorkspace();
 
   const wsId = workspaceId ?? '';
   const { data, isLoading, error, refetch } = useDashboardData(wsId);
-
-  const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Creator';
 
   const todayLabel = new Date().toLocaleDateString(undefined, {
     weekday: 'long',
@@ -37,46 +33,30 @@ export function DashboardRoute() {
 
   return (
     <div className="space-y-6 sm:space-y-7">
-      {/* DASH-001 — Intro: greeting, date, workspace context, quick actions */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between border-b border-border-subtle pb-5">
-        <div className="space-y-1">
-          {/* Eyebrow — date + workspace context */}
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
-            <span
-              className="flex h-1.5 w-1.5 rounded-full"
-              style={{ backgroundColor: 'var(--color-primary)' }}
-              aria-hidden="true"
-            />
-            <span className="tabular-nums">{todayLabel}</span>
-            <span className="text-text-muted" aria-hidden="true">
-              ·
-            </span>
-            <span>{currentWorkspace?.name || 'Lumina Studio'}</span>
+      {/* Page Header: Clean Overview + Date Context */}
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between border-b border-border-subtle pb-4">
+        <div>
+          <div className="flex items-baseline gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-text-primary">
+              Overview
+            </h1>
+            <span className="text-xs text-text-muted tabular-nums">{todayLabel}</span>
           </div>
 
-          <h1 className="text-2xl font-semibold tracking-tight text-text-primary leading-tight">
-            Welcome back, {userName}
-          </h1>
-
-          {/* Attention context — honest only */}
-          <p className="text-xs text-text-secondary">
+          {/* Operational Attention Summary (Factual only, no cheerleading) */}
+          <p className="mt-1 text-xs text-text-secondary">
             {attentionCount > 0 ? (
               <span className="font-medium text-text-primary">
-                <span className="text-status-danger-text font-bold">
+                <span className="text-status-danger-text font-semibold">
                   {attentionCount} {attentionCount === 1 ? 'item requires' : 'items require'}
                 </span>{' '}
-                your attention today.
+                attention
               </span>
             ) : (
-              <span className="flex items-center gap-1.5 text-text-secondary">
-                <Sparkles className="h-3.5 w-3.5 text-status-success-text" strokeWidth={1.75} />
-                <span>All active projects and schedules are on track.</span>
-              </span>
+              <span>No items require attention</span>
             )}
           </p>
         </div>
-
-        <QuickActionBar />
       </div>
 
       {/* Global Query Error */}

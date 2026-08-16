@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router';
-import { Sparkles, Calendar, FolderKanban, Users, Settings, LogOut, Plus } from 'lucide-react';
+import {
+  Sparkles,
+  Calendar,
+  FolderKanban,
+  Users,
+  Settings,
+  LogOut,
+  Plus,
+  ChevronDown,
+  UserPlus,
+} from 'lucide-react';
 import { useAuth, useWorkspace } from '@/lib/auth';
 
 /**
- * NAV-001 — Desktop Header
+ * NAV-001 — Desktop & Mobile Header
  * Desktop: workspace identity | primary nav | account/actions
  * Mobile: lightweight — no duplication of bottom nav, workspace identity remains
- * No fake workspace switcher, command bar, or Supabase status.
+ * Quick Create: Single "+ New" dropdown for Project / Client creation across viewports
  */
 
 const navLinks = [
@@ -22,11 +32,33 @@ export const Header: React.FC = () => {
   const { signOut, user } = useAuth();
   const { currentWorkspace } = useWorkspace();
   const navigate = useNavigate();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const userInitial = (user?.user_metadata?.full_name || user?.email || 'U')
     .charAt(0)
     .toUpperCase();
   const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Studio Owner';
+
+  useEffect(() => {
+    if (!isCreateOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsCreateOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsCreateOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isCreateOpen]);
 
   return (
     <header
@@ -87,21 +119,62 @@ export const Header: React.FC = () => {
 
         {/* Contextual Actions & User Account */}
         <div className="flex items-center gap-2">
-          {/* Quick Create — desktop only */}
-          <button
-            type="button"
-            onClick={() => navigate('/projects/new')}
-            className="hidden sm:inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-primary-border bg-primary-subtle text-primary-text px-2.5 py-1.5 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            style={{
-              transitionDuration: 'var(--duration-fast)',
-              transition: 'background-color var(--duration-fast), color var(--duration-fast)',
-            }}
-            title="Create new project"
-            aria-label="Create new project"
-          >
-            <Plus className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />
-            <span>New</span>
-          </button>
+          {/* Quick Create Dropdown — unified action trigger across desktop & mobile */}
+          <div className="relative" ref={menuRef}>
+            <button
+              type="button"
+              data-testid="header-create-trigger"
+              aria-haspopup="menu"
+              aria-expanded={isCreateOpen}
+              onClick={() => setIsCreateOpen((prev) => !prev)}
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-primary-border bg-primary-subtle text-primary-text px-2.5 py-1.5 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-primary/10 transition-colors"
+              title="Create new project or client"
+              aria-label="Create new"
+            >
+              <Plus className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />
+              <span>New</span>
+              <ChevronDown
+                className={`h-3 w-3 transition-transform duration-150 ${isCreateOpen ? 'rotate-180' : ''}`}
+                aria-hidden="true"
+              />
+            </button>
+
+            {isCreateOpen && (
+              <div
+                role="menu"
+                aria-orientation="vertical"
+                data-testid="header-create-menu"
+                className="absolute right-0 top-full mt-1.5 w-44 rounded-xl border border-border-subtle bg-surface-elevated p-1 shadow-lg z-50 animate-in fade-in zoom-in-95 duration-100"
+              >
+                <button
+                  type="button"
+                  role="menuitem"
+                  data-testid="header-new-project-item"
+                  onClick={() => {
+                    setIsCreateOpen(false);
+                    navigate('/projects/new');
+                  }}
+                  className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors text-left"
+                >
+                  <FolderKanban className="h-3.5 w-3.5 text-text-secondary" strokeWidth={1.75} />
+                  <span>New Project</span>
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  data-testid="header-new-client-item"
+                  onClick={() => {
+                    setIsCreateOpen(false);
+                    navigate('/clients/new');
+                  }}
+                  className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors text-left"
+                >
+                  <UserPlus className="h-3.5 w-3.5 text-text-secondary" strokeWidth={1.75} />
+                  <span>Add Client</span>
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* User identity chip */}
           <div className="flex items-center gap-1.5">
