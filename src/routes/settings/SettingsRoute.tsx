@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { Sparkles, Package, Workflow, Users, Calendar, BookOpen, ChevronRight } from 'lucide-react';
 import { PageHeader } from '@/components/ui/page-header';
 import { StatusBadge } from '@/components/ui/status-badge';
@@ -48,7 +48,7 @@ const settingSections: {
         title: 'Crew & Collaborators',
         description: 'Rolodex of second shooters, editors, and assistants.',
         icon: Users,
-        to: '/collaborators',
+        to: '/settings/collaborators',
         active: true,
       },
     ],
@@ -80,8 +80,6 @@ const settingSections: {
 ];
 
 export function SettingsRoute() {
-  const navigate = useNavigate();
-
   return (
     <div className="space-y-6">
       {/* SET-001 — Page Header */}
@@ -102,59 +100,61 @@ export function SettingsRoute() {
                 const Icon = item.icon;
                 const isLink = item.active && item.to !== '#';
 
+                if (isLink) {
+                  return (
+                    <Link
+                      key={item.title}
+                      to={item.to}
+                      data-testid={`settings-card-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                      className="flex items-center justify-between gap-3 px-4 py-3.5 cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset transition-colors duration-fast"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        {/* Icon spot */}
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border bg-primary-subtle text-primary-text border-primary-border">
+                          <Icon className="h-4 w-4" strokeWidth={1.75} />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-sm font-medium text-text-primary">{item.title}</h3>
+                          </div>
+                          <p className="text-xs text-text-secondary mt-0.5 truncate">
+                            {item.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      <ChevronRight
+                        className="h-4 w-4 text-text-muted shrink-0"
+                        strokeWidth={1.75}
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  );
+                }
+
                 return (
                   <div
                     key={item.title}
-                    role={isLink ? 'button' : undefined}
-                    tabIndex={isLink ? 0 : undefined}
-                    aria-disabled={!item.active}
+                    aria-disabled={true}
                     data-testid={`settings-card-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-                    onClick={() => isLink && navigate(item.to)}
-                    onKeyDown={(e) => {
-                      if (isLink && (e.key === 'Enter' || e.key === ' ')) {
-                        e.preventDefault();
-                        navigate(item.to);
-                      }
-                    }}
-                    className={[
-                      'flex items-center justify-between gap-3 px-4 py-3.5',
-                      isLink
-                        ? 'cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
-                        : 'cursor-not-allowed opacity-50',
-                    ].join(' ')}
-                    style={{ transition: `background-color var(--duration-fast)` }}
+                    className="flex items-center justify-between gap-3 px-4 py-3.5 cursor-not-allowed opacity-50 transition-colors duration-fast"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      {/* Icon spot — aligned, tinted on active */}
-                      <div
-                        className={[
-                          'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border',
-                          item.active
-                            ? 'bg-primary-subtle text-primary-text border-primary-border'
-                            : 'bg-surface-muted text-text-muted border-border-subtle',
-                        ].join(' ')}
-                      >
+                      {/* Icon spot — disabled */}
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border bg-surface-muted text-text-muted border-border-subtle">
                         <Icon className="h-4 w-4" strokeWidth={1.75} />
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
                           <h3 className="text-sm font-medium text-text-primary">{item.title}</h3>
-                          {/* SET-003 — Planned badge: canonical StatusBadge */}
-                          {!item.active && <StatusBadge variant="planned" label="Planned" />}
+                          {/* SET-003 — Planned badge */}
+                          <StatusBadge variant="planned" label="Planned" />
                         </div>
                         <p className="text-xs text-text-secondary mt-0.5 truncate">
                           {item.description}
                         </p>
                       </div>
                     </div>
-
-                    {isLink && (
-                      <ChevronRight
-                        className="h-4 w-4 text-text-muted shrink-0"
-                        strokeWidth={1.75}
-                        aria-hidden="true"
-                      />
-                    )}
                   </div>
                 );
               })}

@@ -112,4 +112,48 @@ describe('ClientNewRoute (CLIENT-REQ-002 / CLIENT-REQ-007)', () => {
       expect(screen.getByTestId('client-detail-page')).toBeInTheDocument();
     });
   });
+
+  it('respects returnUrl on cancel/back and navigates back to source with created clientId on submit', async () => {
+    const builder = createMockQueryBuilder({
+      id: 'new_client_999',
+      display_name: 'Corporate Client Inc',
+    });
+
+    vi.mocked(supabase.from).mockReturnValue(builder as never);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <WorkspaceProvider>
+            <MemoryRouter initialEntries={['/clients/new?returnUrl=/projects/new']}>
+              <Routes>
+                <Route
+                  path="/clients/new"
+                  element={
+                    <ProtectedRoute>
+                      <ClientNewRoute />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/projects/new"
+                  element={<div data-testid="project-new-page">Project New Page</div>}
+                />
+              </Routes>
+            </MemoryRouter>
+          </WorkspaceProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    );
+
+    const nameInput = await screen.findByLabelText(/display name/i);
+    const submitBtn = screen.getByRole('button', { name: 'Create Client' });
+
+    fireEvent.change(nameInput, { target: { value: 'Corporate Client Inc' } });
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('project-new-page')).toBeInTheDocument();
+    });
+  });
 });

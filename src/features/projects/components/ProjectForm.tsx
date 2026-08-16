@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { useClients } from '@/features/clients';
 import { projectFormSchema, type ProjectFormValues } from '../schemas/projectSchemas';
 import type { ProjectStatus } from '../types/projectTypes';
@@ -25,12 +25,14 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   submitLabel = 'Create Project',
   isEdit = false,
 }) => {
+  const location = useLocation();
   // Query clients in the workspace to populate dropdown
   const { data: clients = [], isLoading: isClientsLoading } = useClients(isEdit);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
@@ -42,6 +44,13 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       currency: initialValues?.currency || 'IDR',
     },
   });
+
+  // Synchronize client_id if updated via query params (e.g. returning from /clients/new)
+  React.useEffect(() => {
+    if (initialValues?.client_id) {
+      setValue('client_id', initialValues.client_id);
+    }
+  }, [initialValues?.client_id, setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -65,7 +74,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             Client <span className="text-status-danger-text">*</span>
           </label>
           <Link
-            to="/clients/new"
+            to={`/clients/new?returnUrl=${encodeURIComponent(location.pathname + location.search)}`}
             className="text-xs font-semibold text-primary-text hover:underline"
           >
             + Add New Client

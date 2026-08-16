@@ -132,4 +132,36 @@ describe('ProjectNewRoute (PROJ-REQ-002 / PROJ-REQ-007)', () => {
       expect(screen.getByTestId('project-detail-page')).toBeInTheDocument();
     });
   });
+
+  it('preselects client from clientId query parameter', async () => {
+    const clientsBuilder = createMockQueryBuilder([mockClientList[0]]);
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'clients') return clientsBuilder as never;
+      return createMockQueryBuilder() as never;
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <WorkspaceProvider>
+            <MemoryRouter initialEntries={[`/projects/new?clientId=${mockClientList[0].id}`]}>
+              <Routes>
+                <Route
+                  path="/projects/new"
+                  element={
+                    <ProtectedRoute>
+                      <ProjectNewRoute />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </MemoryRouter>
+          </WorkspaceProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    );
+
+    const clientSelect = (await screen.findByTestId('project-client-select')) as HTMLSelectElement;
+    expect(clientSelect.value).toBe(mockClientList[0].id);
+  });
 });

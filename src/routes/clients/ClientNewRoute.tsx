@@ -1,12 +1,22 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { ClientForm, useClientMutations, type ClientFormValues } from '@/features/clients';
 
 export function ClientNewRoute() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnUrl = searchParams.get('returnUrl') || searchParams.get('from');
   const { createClient } = useClientMutations();
   const [error, setError] = useState<string | null>(null);
+
+  const handleCancelOrBack = () => {
+    if (returnUrl) {
+      navigate(returnUrl);
+    } else {
+      navigate('/clients');
+    }
+  };
 
   const handleSubmit = async (values: ClientFormValues) => {
     try {
@@ -20,7 +30,13 @@ export function ClientNewRoute() {
         notes: values.notes || null,
       });
 
-      navigate(`/clients/${newClient.id}`);
+      if (returnUrl) {
+        // If returning to a project form, append or include the newly created clientId
+        const separator = returnUrl.includes('?') ? '&' : '?';
+        navigate(`${returnUrl}${separator}clientId=${newClient.id}`);
+      } else {
+        navigate(`/clients/${newClient.id}`);
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to create client');
     }
@@ -32,8 +48,8 @@ export function ClientNewRoute() {
       <div className="flex items-center gap-3 border-b border-border-subtle pb-5">
         <button
           type="button"
-          onClick={() => navigate('/clients')}
-          aria-label="Back to clients"
+          onClick={handleCancelOrBack}
+          aria-label={returnUrl ? 'Back' : 'Back to clients'}
           className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
@@ -52,7 +68,7 @@ export function ClientNewRoute() {
       <div className="rounded-xl border border-border bg-surface p-6 shadow-subtle sm:p-7">
         <ClientForm
           onSubmit={handleSubmit}
-          onCancel={() => navigate('/clients')}
+          onCancel={handleCancelOrBack}
           isSubmitting={createClient.isPending}
           serverError={error}
           submitLabel="Create Client"

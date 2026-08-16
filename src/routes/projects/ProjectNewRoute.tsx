@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { ProjectForm, useProjectMutations, type ProjectFormValues } from '@/features/projects';
 
 export function ProjectNewRoute() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const preselectedClientId = searchParams.get('clientId') || '';
   const { createProject } = useProjectMutations();
   const [error, setError] = useState<string | null>(null);
 
@@ -50,6 +52,7 @@ export function ProjectNewRoute() {
       {/* Form Card */}
       <div className="rounded-xl border border-border bg-surface p-6 shadow-subtle sm:p-7">
         <ProjectForm
+          initialValues={{ client_id: preselectedClientId }}
           onSubmit={handleSubmit}
           onCancel={() => navigate('/projects')}
           isSubmitting={createProject.isPending}

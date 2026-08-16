@@ -144,6 +144,10 @@ export const router = createBrowserRouter([
         path: 'settings/guide',
         element: <GuideRoute />,
       },
+      {
+        path: 'guide',
+        element: <GuideRoute />,
+      },
     ],
   },
 
