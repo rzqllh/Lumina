@@ -4,6 +4,7 @@ import {
   useRevokeProjectShareLink,
 } from '../hooks/useFileMutations';
 import { X, Share2, Copy, Check, ExternalLink, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { ContextHelp } from '@/components/ui/context-help';
 
 interface ShareProjectStatusModalProps {
   isOpen: boolean;
@@ -79,7 +80,13 @@ export const ShareProjectStatusModal: React.FC<ShareProjectStatusModalProps> = (
           <div>
             <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
               <Share2 className="h-4 w-4 text-primary-text" strokeWidth={1.75} />
-              Live Client Status Portal
+              <span>Live Client Status Portal</span>
+              <ContextHelp
+                title="Public Status Portal Privacy"
+                description="Clients view live timelines, sessions, approved deliverables, and shared file links. Financial amounts, payment milestones, expenses, collaborator fees, and internal notes are strictly hidden."
+                guideAnchor="#files-sharing"
+                testId="share-status-privacy-help"
+              />
             </h2>
             <p className="text-xs text-text-secondary mt-0.5">
               Share live shoot schedules, stage progress, and approved deliverable media links with

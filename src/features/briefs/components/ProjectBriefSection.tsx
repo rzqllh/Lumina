@@ -18,6 +18,7 @@ import { SaveAsBriefTemplateModal } from './SaveAsBriefTemplateModal';
 import { ShareBriefLinkModal } from './ShareBriefLinkModal';
 import { BriefSubmissionReviewModal } from './BriefSubmissionReviewModal';
 import { EmptyState } from '@/components/ui/empty-state';
+import { ContextHelp } from '@/components/ui/context-help';
 import type { BriefSection, BriefField } from '../types';
 import type {
   BriefSectionFormValues,
@@ -154,6 +155,12 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
               <h2 className="text-base font-semibold text-text-primary">
                 Project Creative Brief & Client Intake
               </h2>
+              <ContextHelp
+                title="Brief & Client Intake"
+                description="Each project has one canonical brief. When clients submit responses via the intake link, you review changes side-by-side. Accepted answers update the canonical brief while raw submissions are preserved."
+                guideAnchor="#project-brief"
+                testId="brief-context-help"
+              />
               {pendingSubmissions.length > 0 && (
                 <button
                   type="button"

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Sparkles, Loader2, Workflow, Check } from 'lucide-react';
 import { useWorkflowTemplates } from '@/features/workflow-templates';
+import { ContextHelp } from '@/components/ui/context-help';
 
 interface ApplyWorkflowTemplateModalProps {
   isOpen: boolean;
@@ -59,9 +60,17 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
               <Sparkles className="w-4 h-4" strokeWidth={1.75} />
             </div>
             <div>
-              <h2 id="apply-template-title" className="text-base font-semibold text-text-primary">
-                Apply Workflow Template
-              </h2>
+              <div className="flex items-center gap-1.5">
+                <h2 id="apply-template-title" className="text-base font-semibold text-text-primary">
+                  Apply Workflow Template
+                </h2>
+                <ContextHelp
+                  title="Workflow Template Snapshot"
+                  description="Applying a template clones blueprint stages into project-owned workflow stages. You can customize, reorder, or skip stages independently."
+                  guideAnchor="#workflow-tasks"
+                  testId="workflow-modal-context-help"
+                />
+              </div>
               <p className="text-xs text-text-secondary">
                 Snapshot preset stages directly into this project.
               </p>

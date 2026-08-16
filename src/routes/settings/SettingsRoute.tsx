@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { Sparkles, Package, Workflow, Users, Calendar, ChevronRight } from 'lucide-react';
+import { Sparkles, Package, Workflow, Users, Calendar, BookOpen, ChevronRight } from 'lucide-react';
 import { PageHeader } from '@/components/ui/page-header';
 import { StatusBadge } from '@/components/ui/status-badge';
 
@@ -62,6 +62,18 @@ const settingSections: {
         icon: Calendar,
         to: '#',
         active: false,
+      },
+    ],
+  },
+  {
+    title: 'Help',
+    items: [
+      {
+        title: 'Lumina Guide',
+        description: 'Learn how projects, payments, deliverables, sharing, and closure work.',
+        icon: BookOpen,
+        to: '/settings/guide',
+        active: true,
       },
     ],
   },

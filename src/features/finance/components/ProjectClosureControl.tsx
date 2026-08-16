@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Lock, Unlock, CheckCircle2, AlertTriangle, AlertCircle, ShieldAlert } from 'lucide-react';
+import { ContextHelp } from '@/components/ui/context-help';
 import { ForceCloseModal } from './ForceCloseModal';
 import {
   useProjectFinancialSummary,
@@ -91,6 +92,12 @@ export const ProjectClosureControl: React.FC<ProjectClosureControlProps> = ({ pr
               <h3 className="text-base font-semibold text-text-primary">
                 Project Completion & Closure
               </h3>
+              <ContextHelp
+                title="Project Closure"
+                description="Normal Close requires all required deliverables approved and full payment collected (Receivable at Rp 0). Force Close overrides these requirements with an explicit audit reason, freezing operational editing while preserving full history."
+                guideAnchor="#project-closure"
+                testId="closure-context-help"
+              />
             </div>
             <p className="text-xs text-text-secondary">
               {summary.canNormalClose

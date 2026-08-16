@@ -22,6 +22,7 @@ import { PackageNewRoute } from '@/routes/catalog/PackageNewRoute';
 import { PackageEditRoute } from '@/routes/catalog/PackageEditRoute';
 import { WorkflowTemplatesRoute } from '@/routes/catalog/WorkflowTemplatesRoute';
 import { SettingsRoute } from '@/routes/settings/SettingsRoute';
+import { GuideRoute } from '@/routes/settings/GuideRoute';
 import { CollaboratorsRoute } from '@/routes/settings/CollaboratorsRoute';
 import { PublicBriefIntakeRoute } from '@/routes/briefs/PublicBriefIntakeRoute';
 
@@ -134,10 +135,14 @@ export const router = createBrowserRouter([
         path: 'settings/collaborators',
         element: <CollaboratorsRoute />,
       },
-      // Workspace Settings Hub
+      // Workspace Settings Hub & Guide
       {
         path: 'settings',
         element: <SettingsRoute />,
+      },
+      {
+        path: 'settings/guide',
+        element: <GuideRoute />,
       },
     ],
   },

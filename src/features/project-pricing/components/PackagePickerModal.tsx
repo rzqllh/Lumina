@@ -3,6 +3,7 @@ import { formatIDR } from '@/lib/money';
 import { usePackages } from '@/features/catalog';
 import type { PackageWithItems } from '@/features/catalog';
 import { Package, AlertCircle, X } from 'lucide-react';
+import { ContextHelp } from '@/components/ui/context-help';
 
 interface PackagePickerModalProps {
   onApply: (packageId: string) => void;
@@ -40,6 +41,12 @@ export function PackagePickerModal({ onApply, onClose, isApplying }: PackagePick
           <div className="flex items-center gap-2">
             <Package className="h-4 w-4 text-primary-text" aria-hidden="true" strokeWidth={1.75} />
             <h2 className="text-sm font-semibold text-text-primary">Apply Package</h2>
+            <ContextHelp
+              title="Package Pricing Snapshot"
+              description="Applying a package clones its items into independent project services. Later changes to catalog packages will not rewrite this project."
+              guideAnchor="#services-packages"
+              testId="package-modal-context-help"
+            />
           </div>
           <button
             type="button"

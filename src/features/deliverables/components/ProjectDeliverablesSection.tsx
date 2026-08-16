@@ -13,6 +13,7 @@ import { DeliverableCard } from './DeliverableCard';
 import { DeliverableFormModal } from './DeliverableFormModal';
 import { RevisionModal } from './RevisionModal';
 import { EmptyState } from '@/components/ui/empty-state';
+import { ContextHelp } from '@/components/ui/context-help';
 import type { Deliverable, DeliverableStatus, RevisionStatus } from '../types';
 import type { DeliverableFormValues } from '../schemas/deliverableSchemas';
 import type { RevisionFormValues } from '../schemas/revisionSchemas';
@@ -177,6 +178,12 @@ export const ProjectDeliverablesSection: React.FC<ProjectDeliverablesSectionProp
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-base font-semibold text-text-primary">Project Deliverables</h3>
+              <ContextHelp
+                title="Required Deliverables"
+                description="Deliverables marked as Required must be approved by the client before a project is eligible for Normal Close. Unapproved required items will block standard project closure."
+                guideAnchor="#deliverables-revisions"
+                testId="deliverables-context-help"
+              />
               <span
                 data-testid="deliverables-count-badge"
                 className="rounded-md bg-surface-muted px-2 py-0.5 text-xs font-semibold text-text-secondary border border-border-subtle tabular-nums"

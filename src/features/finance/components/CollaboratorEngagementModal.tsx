@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X, Users, Plus } from 'lucide-react';
+import { ContextHelp } from '@/components/ui/context-help';
 import {
   collaboratorEngagementFormSchema,
   type CollaboratorEngagementFormValues,
@@ -107,12 +108,20 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
               <Users className="h-4 w-4" strokeWidth={1.75} />
             </div>
             <div>
-              <h2
-                id="collaborator-modal-title"
-                className="text-base font-semibold text-text-primary"
-              >
-                {isEditing ? 'Edit Crew Engagement' : 'Engage External Crew'}
-              </h2>
+              <div className="flex items-center gap-1.5">
+                <h2
+                  id="collaborator-modal-title"
+                  className="text-base font-semibold text-text-primary"
+                >
+                  {isEditing ? 'Edit Crew Engagement' : 'Engage External Crew'}
+                </h2>
+                <ContextHelp
+                  title="Crew Engagements & Fees"
+                  description="Assigning a crew member with an agreed fee commits that cost to Total Project Cost, immediately updating your Projected Profit."
+                  guideAnchor="#collaborators-costs"
+                  testId="collab-modal-context-help"
+                />
+              </div>
               <p className="text-xs text-text-secondary">
                 {isEditing
                   ? 'Update crew member fee and payment.'

@@ -15,3 +15,6 @@ export type { FilterOption, FilterSegmentedControlProps } from './filter-segment
 
 export { EmptyState } from './empty-state';
 export type { EmptyStateProps } from './empty-state';
+
+export { ContextHelp } from './context-help';
+export type { ContextHelpProps } from './context-help';

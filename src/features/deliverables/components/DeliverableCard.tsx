@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { DeliverableStatusBadge } from './DeliverableStatusBadge';
 import { RevisionHistoryList } from './RevisionHistoryList';
+import { ContextHelp } from '@/components/ui/context-help';
 import type { Deliverable, DeliverableStatus, RevisionStatus } from '../types';
 
 interface DeliverableCardProps {
@@ -87,21 +88,29 @@ export const DeliverableCard: React.FC<DeliverableCardProps> = ({
             )}
 
             {revisionCount > 0 && (
-              <button
-                type="button"
-                onClick={() => setShowRevisions(!showRevisions)}
-                className="inline-flex items-center gap-1 rounded-md bg-status-danger-subtle px-2 py-0.5 text-xs font-semibold text-status-danger-text border border-status-danger-border cursor-pointer hover:bg-status-danger-subtle/80"
-              >
-                <RefreshCw className="h-2.5 w-2.5" strokeWidth={1.75} />
-                <span>
-                  {revisionCount} rev{revisionCount > 1 ? 's' : ''}
-                </span>
-                {showRevisions ? (
-                  <ChevronUp className="h-3 w-3" strokeWidth={1.75} />
-                ) : (
-                  <ChevronDown className="h-3 w-3" strokeWidth={1.75} />
-                )}
-              </button>
+              <div className="inline-flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setShowRevisions(!showRevisions)}
+                  className="inline-flex items-center gap-1 rounded-md bg-status-danger-subtle px-2 py-0.5 text-xs font-semibold text-status-danger-text border border-status-danger-border cursor-pointer hover:bg-status-danger-subtle/80"
+                >
+                  <RefreshCw className="h-2.5 w-2.5" strokeWidth={1.75} />
+                  <span>
+                    {revisionCount} rev{revisionCount > 1 ? 's' : ''}
+                  </span>
+                  {showRevisions ? (
+                    <ChevronUp className="h-3 w-3" strokeWidth={1.75} />
+                  ) : (
+                    <ChevronDown className="h-3 w-3" strokeWidth={1.75} />
+                  )}
+                </button>
+                <ContextHelp
+                  title="Revision History"
+                  description="Revision rounds preserve feedback notes and turnaround deadlines. Delivering updates advances the review cycle without erasing past notes."
+                  guideAnchor="#deliverables-revisions"
+                  testId={`deliv-${deliverable.id}-revision-help`}
+                />
+              </div>
             )}
           </div>
 

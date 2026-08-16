@@ -1,6 +1,7 @@
 import React from 'react';
 import { Coins, CheckCircle2, AlertTriangle, TrendingUp, Receipt, Users } from 'lucide-react';
 import { formatMoney } from '@/lib/money';
+import { ContextHelp } from '@/components/ui/context-help';
 import type { ProjectFinancialSummary } from '../types';
 
 interface FinancialSummaryCardProps {
@@ -83,6 +84,12 @@ export const FinancialSummaryCard: React.FC<FinancialSummaryCardProps> = ({
               strokeWidth={1.75}
             />
             <span>Receivable</span>
+            <ContextHelp
+              title="Receivable"
+              description="Receivable is Project Value minus Paid Amount. Represents remaining client balance. A negative value indicates an overpayment or credit."
+              guideAnchor="#payments-finance"
+              testId="receivable-context-help"
+            />
           </div>
           <p
             data-testid="metric-remaining-balance"
@@ -99,6 +106,12 @@ export const FinancialSummaryCard: React.FC<FinancialSummaryCardProps> = ({
           <div className="flex items-center gap-1.5 text-xs text-text-muted">
             <TrendingUp className="h-3.5 w-3.5 text-primary-text" strokeWidth={1.75} />
             <span>Projected Profit ({profitMarginPercent}%)</span>
+            <ContextHelp
+              title="Projected Profit"
+              description="Projected Profit is Project Value minus Total Project Cost (Generic Expenses plus Committed Collaborator Cost). This is a project-level economic projection, not accounting tax profit."
+              guideAnchor="#payments-finance"
+              testId="profit-context-help"
+            />
           </div>
           <p
             data-testid="metric-net-profit"
