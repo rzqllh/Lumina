@@ -70,7 +70,7 @@ export const FileReferenceFormModal: React.FC<FileReferenceFormModalProps> = ({
               Attach External Media Link
             </h2>
             <p className="text-xs text-text-secondary mt-0.5">
-              Connect Google Drive, Dropbox, or custom web galleries to this project
+              Connect Google Drive, Dropbox, or external web links to this project
             </p>
           </div>
           <button
@@ -95,7 +95,7 @@ export const FileReferenceFormModal: React.FC<FileReferenceFormModalProps> = ({
                   className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <option value="google_drive">Google Drive</option>
-                  <option value="external_url">Dropbox / Web Gallery / URL</option>
+                  <option value="external_url">Dropbox / External Link / URL</option>
                   <option value="app_storage">Lumina Cloud Storage</option>
                 </select>
               </div>

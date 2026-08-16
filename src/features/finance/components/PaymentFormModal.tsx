@@ -113,7 +113,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
               </h2>
               <p className="text-xs text-text-secondary">
                 {isEditing
-                  ? 'Update invoice milestone and status.'
+                  ? 'Update payment milestone and status.'
                   : 'Schedule an incoming client payment.'}
               </p>
             </div>
@@ -278,7 +278,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
             <textarea
               id="payment-notes"
               rows={2}
-              placeholder="Invoice reference, receipt info..."
+              placeholder="Payment reference, receipt info..."
               {...register('notes')}
               className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />

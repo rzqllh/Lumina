@@ -24,7 +24,9 @@
     --color-text-muted: oklch(0.52 0.012 280); /* #6e6c77 — helper 4.6:1 */
     --color-border-subtle: oklch(0.915 0.008 280); /* #e6e6eb — dividers */
     --color-border-default: oklch(0.865 0.01 280); /* #d8d8de — card borders */
-    --color-border-interactive: oklch(0.72 0.015 280); /* #adabb5 — input, hover */
+    --color-border-interactive: oklch(
+      0.66 0.015 280
+    ); /* #90919c — input, hover (3.08:1 on surface) */
 
     /* B. Brand Primary — Lumina Violet (Hue 272) */
     --color-primary: oklch(0.52 0.2 272); /* #5b4feb — CTA, active nav */

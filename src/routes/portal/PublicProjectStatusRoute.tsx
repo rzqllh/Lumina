@@ -153,7 +153,7 @@ export function PublicProjectStatusRoute() {
           <div className="flex items-center justify-between border-b border-border pb-3">
             <h2 className="text-base font-bold text-text-primary flex items-center gap-2">
               <FileBox className="h-4 w-4 text-primary" />
-              Promised Deliverables & Media Downloads
+              Promised Deliverables & Shared Files
             </h2>
             <span className="text-xs text-text-muted">
               {deliverables.length} {deliverables.length === 1 ? 'deliverable' : 'deliverables'}
@@ -207,7 +207,7 @@ export function PublicProjectStatusRoute() {
                   {del.files && del.files.length > 0 && (
                     <div className="border-t border-border/80 pt-3 space-y-2">
                       <span className="text-[10px] uppercase font-bold text-text-muted block">
-                        Media Downloads & Galleries:
+                        Shared Files:
                       </span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {del.files.map((file) => (

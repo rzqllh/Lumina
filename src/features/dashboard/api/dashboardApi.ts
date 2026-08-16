@@ -308,7 +308,7 @@ export async function fetchWorkspaceCalendarEvents(workspaceId: string): Promise
       id: `pay-${p.id}`,
       type: 'payment',
       date: p.due_date,
-      title: p.label || `${p.type.toUpperCase()} Invoice`,
+      title: p.label || `${p.type.charAt(0).toUpperCase() + p.type.slice(1)} Payment`,
       projectId: p.project_id,
       projectTitle: p.project?.title || 'Project',
       status: p.status,

@@ -45,11 +45,11 @@ export const FinancialSummaryCard: React.FC<FinancialSummaryCardProps> = ({
     >
       {/* Top Metrics Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {/* Contract Value */}
+        {/* Project Value */}
         <div className="space-y-1">
           <div className="flex items-center gap-1.5 text-xs text-text-muted">
             <Coins className="h-3.5 w-3.5 text-primary-text" strokeWidth={1.75} />
-            <span>Contract Value</span>
+            <span>Project Value</span>
           </div>
           <p
             data-testid="metric-contract-value"
@@ -63,7 +63,7 @@ export const FinancialSummaryCard: React.FC<FinancialSummaryCardProps> = ({
         <div className="space-y-1">
           <div className="flex items-center gap-1.5 text-xs text-text-muted">
             <CheckCircle2 className="h-3.5 w-3.5 text-status-success-text" strokeWidth={1.75} />
-            <span>Received</span>
+            <span>Paid Amount</span>
           </div>
           <p
             data-testid="metric-total-paid"
@@ -82,7 +82,7 @@ export const FinancialSummaryCard: React.FC<FinancialSummaryCardProps> = ({
               }`}
               strokeWidth={1.75}
             />
-            <span>Balance Due</span>
+            <span>Receivable</span>
           </div>
           <p
             data-testid="metric-remaining-balance"
@@ -94,11 +94,11 @@ export const FinancialSummaryCard: React.FC<FinancialSummaryCardProps> = ({
           </p>
         </div>
 
-        {/* Net Profit & Margin */}
+        {/* Projected Profit & Margin */}
         <div className="space-y-1">
           <div className="flex items-center gap-1.5 text-xs text-text-muted">
             <TrendingUp className="h-3.5 w-3.5 text-primary-text" strokeWidth={1.75} />
-            <span>Net Profit ({profitMarginPercent}%)</span>
+            <span>Projected Profit ({profitMarginPercent}%)</span>
           </div>
           <p
             data-testid="metric-net-profit"
@@ -118,7 +118,7 @@ export const FinancialSummaryCard: React.FC<FinancialSummaryCardProps> = ({
           <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted tabular-nums">
             <span className="flex items-center gap-1">
               <Receipt className="h-3 w-3" strokeWidth={1.75} />
-              Direct Costs: {formatMoney(genericExpensesTotal, currency)}
+              Expenses: {formatMoney(genericExpensesTotal, currency)}
             </span>
             <span className="flex items-center gap-1">
               <Users className="h-3 w-3" strokeWidth={1.75} />

@@ -149,9 +149,7 @@ export const PaymentsList: React.FC<PaymentsListProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h4 className="text-sm font-semibold text-text-primary">Payment Schedule</h4>
-          <p className="text-xs text-text-secondary">
-            Structured invoice installments and client payments
-          </p>
+          <p className="text-xs text-text-secondary">Scheduled payment milestones</p>
         </div>
 
         {!isForceClosed && (

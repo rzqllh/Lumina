@@ -105,7 +105,7 @@ export const ProjectFilesSection: React.FC<ProjectFilesSectionProps> = ({
         <EmptyState
           icon={FolderSymlink}
           title="No External Links Attached"
-          description="Attach Google Drive galleries, Dropbox folders, or Frame.io review links directly to this project or to individual deliverables."
+          description="Attach Google Drive folders, Dropbox links, or Frame.io review links directly to this project or to individual deliverables."
           action={
             !isForceClosed ? (
               <button
