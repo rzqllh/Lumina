@@ -24,15 +24,15 @@ export const DeleteContactDialog: React.FC<DeleteContactDialogProps> = ({
       aria-modal="true"
       aria-labelledby="delete-dialog-title"
       aria-describedby="delete-dialog-desc"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 animate-in fade-in duration-150"
     >
-      <div className="w-full max-w-sm rounded-2xl border border-border bg-surface p-6 shadow-lg">
-        <div className="flex items-center gap-3 text-status-danger">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-status-danger/10 text-status-danger">
-            <AlertTriangle className="h-5 w-5" />
+      <div className="w-full max-w-sm rounded-xl border border-border bg-surface p-6 shadow-sheet">
+        <div className="flex items-center gap-3 text-status-danger-text">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-status-danger-subtle text-status-danger-text border border-status-danger-border">
+            <AlertTriangle className="h-5 w-5" strokeWidth={1.75} />
           </div>
           <div>
-            <h2 id="delete-dialog-title" className="text-sm font-bold text-text-primary">
+            <h2 id="delete-dialog-title" className="text-sm font-semibold text-text-primary">
               Delete Contact
             </h2>
             <p className="text-xs text-text-muted">Irreversible action</p>
@@ -49,7 +49,7 @@ export const DeleteContactDialog: React.FC<DeleteContactDialogProps> = ({
             type="button"
             onClick={onCancel}
             disabled={isDeleting}
-            className="cursor-pointer rounded-xl border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Cancel
           </button>
@@ -58,7 +58,7 @@ export const DeleteContactDialog: React.FC<DeleteContactDialogProps> = ({
             data-testid="confirm-delete-contact-btn"
             onClick={onConfirm}
             disabled={isDeleting}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-status-danger px-4 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-status-danger px-4 py-2 text-xs font-semibold text-white shadow-subtle transition-opacity hover:bg-status-danger/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
           >
             {isDeleting ? (
               <>

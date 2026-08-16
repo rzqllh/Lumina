@@ -71,32 +71,35 @@ export const SessionCard: React.FC<SessionCardProps> = ({
             <SessionStatusBadge status={session.status} />
           </div>
 
-          <h4 className="text-sm font-bold text-text-primary truncate">{session.title}</h4>
+          <h4 className="text-sm font-semibold text-text-primary truncate">{session.title}</h4>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary">
             <span className="flex items-center gap-1.5 font-medium text-text-primary">
-              <Calendar className="h-3.5 w-3.5 text-text-muted" />
+              <Calendar className="h-3.5 w-3.5 text-text-muted" strokeWidth={1.75} />
               {formatDate(session.date)}
             </span>
 
             {timeRange && (
-              <span className="flex items-center gap-1.5 text-text-muted">
-                <Clock className="h-3.5 w-3.5" />
+              <span className="flex items-center gap-1.5 text-text-muted tabular-nums">
+                <Clock className="h-3.5 w-3.5" strokeWidth={1.75} />
                 {timeRange}
               </span>
             )}
 
             {session.location && (
               <span className="flex items-center gap-1.5 text-text-muted truncate max-w-xs">
-                <MapPin className="h-3.5 w-3.5 shrink-0" />
+                <MapPin className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
                 <span className="truncate">{session.location}</span>
               </span>
             )}
           </div>
 
           {session.notes && (
-            <div className="mt-2 flex items-start gap-1.5 rounded-lg bg-surface-muted/50 p-2 text-xs text-text-secondary border border-border-subtle/50">
-              <FileText className="h-3.5 w-3.5 text-text-muted shrink-0 mt-0.5" />
+            <div className="mt-2 flex items-start gap-1.5 rounded-lg bg-surface-muted/50 p-2.5 text-xs text-text-secondary border border-border-subtle/50">
+              <FileText
+                className="h-3.5 w-3.5 text-text-muted shrink-0 mt-0.5"
+                strokeWidth={1.75}
+              />
               <p className="whitespace-pre-wrap line-clamp-2">{session.notes}</p>
             </div>
           )}
@@ -113,9 +116,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                   onClick={() => onStatusChange(session.id, 'completed')}
                   title="Mark as Completed"
                   aria-label="Mark session as completed"
-                  className="flex h-7 items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition-colors cursor-pointer"
+                  className="flex h-7 items-center gap-1 rounded-lg border border-status-success-border bg-status-success-subtle px-2 text-xs font-semibold text-status-success-text hover:bg-status-success-subtle/80 transition-colors cursor-pointer"
                 >
-                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.75} />
                   <span className="hidden sm:inline">Complete</span>
                 </button>
                 <button
@@ -124,9 +127,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                   onClick={() => onStatusChange(session.id, 'cancelled')}
                   title="Cancel Session"
                   aria-label="Cancel session"
-                  className="flex h-7 items-center gap-1 rounded-lg border border-border bg-surface px-2 text-xs font-medium text-text-muted hover:bg-surface-muted hover:text-text-secondary transition-colors cursor-pointer"
+                  className="flex h-7 items-center gap-1 rounded-lg border border-border bg-surface px-2 text-xs font-medium text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
                 >
-                  <XCircle className="h-3.5 w-3.5" />
+                  <XCircle className="h-3.5 w-3.5" strokeWidth={1.75} />
                   <span className="hidden sm:inline">Cancel</span>
                 </button>
               </>
@@ -139,9 +142,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                 onClick={() => onStatusChange(session.id, 'scheduled')}
                 title="Reopen Session"
                 aria-label="Reopen session to scheduled"
-                className="flex h-7 items-center gap-1 rounded-lg border border-sky-200 bg-sky-50 px-2 text-xs font-semibold text-sky-700 hover:bg-sky-100 transition-colors cursor-pointer"
+                className="flex h-7 items-center gap-1 rounded-lg border border-status-info-border bg-status-info-subtle px-2 text-xs font-semibold text-status-info-text hover:bg-status-info-subtle/80 transition-colors cursor-pointer"
               >
-                <RotateCcw className="h-3.5 w-3.5" />
+                <RotateCcw className="h-3.5 w-3.5" strokeWidth={1.75} />
                 <span className="hidden sm:inline">Reopen</span>
               </button>
             )}
@@ -154,7 +157,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
               aria-label="Edit session"
               className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
             >
-              <Edit2 className="h-3.5 w-3.5" />
+              <Edit2 className="h-3.5 w-3.5" strokeWidth={1.75} />
             </button>
 
             <button
@@ -163,9 +166,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
               onClick={() => onDelete(session.id)}
               title="Delete Session"
               aria-label="Delete session"
-              className="flex h-7 w-7 items-center justify-center rounded-lg border border-status-danger/20 bg-surface text-status-danger hover:bg-status-danger/10 transition-colors cursor-pointer"
+              className="flex h-7 w-7 items-center justify-center rounded-lg border border-status-danger-border bg-surface text-status-danger-text hover:bg-status-danger-subtle transition-colors cursor-pointer"
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
             </button>
           </div>
         )}

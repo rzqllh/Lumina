@@ -50,13 +50,13 @@ export const ProjectFinancialsSection: React.FC<ProjectFinancialsSectionProps> =
           onClick={() => setActiveTab('payments')}
           className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors cursor-pointer ${
             activeTab === 'payments'
-              ? 'border-primary text-primary'
+              ? 'border-primary text-primary-text'
               : 'border-transparent text-text-muted hover:text-text-primary'
           }`}
         >
-          <CreditCard className="h-3.5 w-3.5" />
+          <CreditCard className="h-3.5 w-3.5" strokeWidth={1.75} />
           <span>Payment Schedule</span>
-          <span className="rounded-full bg-surface-muted px-1.5 py-0.2 text-[10px] font-semibold text-text-secondary border border-border-subtle">
+          <span className="rounded-md bg-surface-muted px-1.5 py-0.5 text-[10px] font-semibold text-text-secondary border border-border-subtle tabular-nums">
             {payments.length}
           </span>
         </button>
@@ -67,13 +67,13 @@ export const ProjectFinancialsSection: React.FC<ProjectFinancialsSectionProps> =
           onClick={() => setActiveTab('expenses')}
           className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors cursor-pointer ${
             activeTab === 'expenses'
-              ? 'border-primary text-primary'
+              ? 'border-primary text-primary-text'
               : 'border-transparent text-text-muted hover:text-text-primary'
           }`}
         >
-          <Receipt className="h-3.5 w-3.5" />
+          <Receipt className="h-3.5 w-3.5" strokeWidth={1.75} />
           <span>Direct Expenses</span>
-          <span className="rounded-full bg-surface-muted px-1.5 py-0.2 text-[10px] font-semibold text-text-secondary border border-border-subtle">
+          <span className="rounded-md bg-surface-muted px-1.5 py-0.5 text-[10px] font-semibold text-text-secondary border border-border-subtle tabular-nums">
             {expenses.length}
           </span>
         </button>
@@ -84,13 +84,13 @@ export const ProjectFinancialsSection: React.FC<ProjectFinancialsSectionProps> =
           onClick={() => setActiveTab('collaborators')}
           className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors cursor-pointer ${
             activeTab === 'collaborators'
-              ? 'border-primary text-primary'
+              ? 'border-primary text-primary-text'
               : 'border-transparent text-text-muted hover:text-text-primary'
           }`}
         >
-          <Users className="h-3.5 w-3.5" />
+          <Users className="h-3.5 w-3.5" strokeWidth={1.75} />
           <span>Crew & Collaborators</span>
-          <span className="rounded-full bg-surface-muted px-1.5 py-0.2 text-[10px] font-semibold text-text-secondary border border-border-subtle">
+          <span className="rounded-md bg-surface-muted px-1.5 py-0.5 text-[10px] font-semibold text-text-secondary border border-border-subtle tabular-nums">
             {engagements.length}
           </span>
         </button>

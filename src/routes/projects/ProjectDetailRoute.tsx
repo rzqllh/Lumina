@@ -12,6 +12,7 @@ import {
   Clock,
   DollarSign,
   FileText,
+  RefreshCw,
 } from 'lucide-react';
 
 import { useProject, ProjectStatusBadge } from '@/features/projects';
@@ -41,8 +42,8 @@ export function ProjectDetailRoute() {
   if (isLoading) {
     return (
       <div data-testid="project-detail-loading" className="space-y-6">
-        <div className="h-28 animate-pulse rounded-2xl border border-border bg-surface-muted/60" />
-        <div className="h-48 animate-pulse rounded-2xl border border-border bg-surface-muted/60" />
+        <div className="h-28 animate-pulse rounded-xl border border-border bg-surface-muted/50" />
+        <div className="h-48 animate-pulse rounded-xl border border-border bg-surface-muted/50" />
       </div>
     );
   }
@@ -52,10 +53,10 @@ export function ProjectDetailRoute() {
       <div
         role="alert"
         data-testid="project-detail-error"
-        className="flex flex-col items-center justify-center rounded-2xl border border-status-danger/25 bg-surface p-8 text-center"
+        className="flex flex-col items-center justify-center rounded-xl border p-8 text-center bg-surface border-status-danger-border"
       >
-        <AlertCircle className="h-8 w-8 text-status-danger mb-2" />
-        <h3 className="text-sm font-bold text-text-primary">Project not found</h3>
+        <AlertCircle className="h-7 w-7 text-status-danger-text mb-2" strokeWidth={1.5} />
+        <h3 className="text-sm font-semibold text-text-primary">Project not found</h3>
         <p className="mt-1 text-xs text-text-secondary max-w-sm">
           {error?.message || 'The requested project could not be loaded.'}
         </p>
@@ -63,15 +64,16 @@ export function ProjectDetailRoute() {
           <button
             type="button"
             onClick={() => navigate('/projects')}
-            className="cursor-pointer rounded-xl border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted"
+            className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors"
           >
             Back to Projects
           </button>
           <button
             type="button"
             onClick={() => refetch()}
-            className="cursor-pointer rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90"
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover transition-colors"
           >
+            <RefreshCw className="h-3.5 w-3.5" strokeWidth={2} />
             Retry
           </button>
         </div>
@@ -86,10 +88,18 @@ export function ProjectDetailRoute() {
   const showFinance = activeTab === 'all' || activeTab === 'finance';
   const showFiles = activeTab === 'all' || activeTab === 'files';
 
+  const tabs: { id: SectionTab; label: string; icon?: typeof Layers; testId: string }[] = [
+    { id: 'all', label: 'All Overview', testId: 'tab-all-sections' },
+    { id: 'workflow', label: 'Workflow & Tasks', icon: Layers, testId: 'tab-workflow' },
+    { id: 'sessions', label: 'Sessions & Deliverables', icon: Clock, testId: 'tab-sessions' },
+    { id: 'finance', label: 'Pricing & Finance', icon: DollarSign, testId: 'tab-finance' },
+    { id: 'files', label: 'Brief & Files', icon: FileText, testId: 'tab-files' },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Header Bar */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border-subtle pb-5">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -98,17 +108,17 @@ export function ProjectDetailRoute() {
             aria-label="Back to projects"
             className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
           </button>
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-text-primary sm:text-2xl">
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary leading-tight">
               {project.title}
             </h1>
             <div className="mt-1 flex items-center gap-2">
               <ProjectStatusBadge status={project.status} />
               {project.project_number && (
-                <span className="inline-flex items-center gap-1 rounded-md bg-surface-muted px-2 py-0.5 text-[11px] font-medium text-text-secondary border border-border-subtle">
-                  <Hash className="h-3 w-3" />
+                <span className="inline-flex items-center gap-1 rounded-md bg-surface-muted px-2 py-0.5 text-xs font-mono font-medium text-text-secondary border border-border-subtle tabular-nums">
+                  <Hash className="h-3 w-3" strokeWidth={1.75} />
                   {project.project_number}
                 </span>
               )}
@@ -120,9 +130,9 @@ export function ProjectDetailRoute() {
           type="button"
           data-testid="edit-project-btn"
           onClick={() => navigate(`/projects/${project.id}/edit`)}
-          className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-surface px-3.5 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-surface px-3.5 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring self-start sm:self-auto"
         >
-          <Edit2 className="h-3.5 w-3.5" />
+          <Edit2 className="h-3.5 w-3.5" strokeWidth={1.75} />
           <span>Edit Project</span>
         </button>
       </div>
@@ -133,54 +143,56 @@ export function ProjectDetailRoute() {
       {/* Overview Metadata Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {/* Linked Client Card */}
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs sm:col-span-2">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-text-muted">
+        <div className="surface-level-2 p-5 sm:col-span-2 space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
               Client Engagement
             </h2>
             {project.client?.id && (
               <button
                 type="button"
                 onClick={() => navigate(`/clients/${project.client.id}`)}
-                className="text-[11px] font-semibold text-primary hover:underline cursor-pointer"
+                className="text-xs font-semibold text-primary-text hover:underline cursor-pointer"
               >
                 View Client Profile →
               </button>
             )}
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-primary border border-purple-200">
-              <User className="h-5 w-5" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border bg-primary-subtle text-primary-text border-primary-border">
+              <User className="h-5 w-5" strokeWidth={1.75} />
             </div>
-            <div>
-              <h3 className="text-sm font-bold text-text-primary">
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold text-text-primary truncate">
                 {project.client?.display_name || 'Unassigned Client'}
               </h3>
-              <p className="text-xs text-text-secondary capitalize">
+              <p className="text-xs text-text-secondary capitalize truncate">
                 {project.client?.client_type} Client
-                {project.client?.email ? ` • ${project.client.email}` : ''}
+                {project.client?.email ? ` · ${project.client.email}` : ''}
               </p>
             </div>
           </div>
         </div>
 
         {/* Currency & Timing Card */}
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-text-muted mb-3">
+        <div className="surface-level-2 p-5 space-y-3">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
             Settings & Specs
           </h2>
           <div className="space-y-2 text-xs text-text-secondary">
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-1.5 text-text-muted">
-                <Coins className="h-3.5 w-3.5" /> Currency
+                <Coins className="h-3.5 w-3.5" strokeWidth={1.75} /> Currency
               </span>
-              <span className="font-semibold text-text-primary">{project.currency}</span>
+              <span className="font-semibold text-text-primary tabular-nums">
+                {project.currency}
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-1.5 text-text-muted">
-                <Calendar className="h-3.5 w-3.5" /> Created
+                <Calendar className="h-3.5 w-3.5" strokeWidth={1.75} /> Created
               </span>
-              <span className="font-semibold text-text-primary">
+              <span className="font-semibold text-text-primary tabular-nums">
                 {new Date(project.created_at).toLocaleDateString()}
               </span>
             </div>
@@ -189,76 +201,33 @@ export function ProjectDetailRoute() {
       </div>
 
       {/* Section Navigation Tabs for Progressive Disclosure */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar border-b border-border">
-        <button
-          type="button"
-          data-testid="tab-all-sections"
-          onClick={() => setActiveTab('all')}
-          className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
-            activeTab === 'all'
-              ? 'bg-primary text-primary-foreground shadow-xs'
-              : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary'
-          }`}
-        >
-          <span>All Overview</span>
-        </button>
-        <button
-          type="button"
-          data-testid="tab-workflow"
-          onClick={() => setActiveTab('workflow')}
-          className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
-            activeTab === 'workflow'
-              ? 'bg-primary text-primary-foreground shadow-xs'
-              : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary'
-          }`}
-        >
-          <Layers className="h-3.5 w-3.5" />
-          <span>Workflow & Tasks</span>
-        </button>
-        <button
-          type="button"
-          data-testid="tab-sessions"
-          onClick={() => setActiveTab('sessions')}
-          className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
-            activeTab === 'sessions'
-              ? 'bg-primary text-primary-foreground shadow-xs'
-              : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary'
-          }`}
-        >
-          <Clock className="h-3.5 w-3.5" />
-          <span>Sessions & Deliverables</span>
-        </button>
-        <button
-          type="button"
-          data-testid="tab-finance"
-          onClick={() => setActiveTab('finance')}
-          className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
-            activeTab === 'finance'
-              ? 'bg-primary text-primary-foreground shadow-xs'
-              : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary'
-          }`}
-        >
-          <DollarSign className="h-3.5 w-3.5" />
-          <span>Pricing & Finance</span>
-        </button>
-        <button
-          type="button"
-          data-testid="tab-files"
-          onClick={() => setActiveTab('files')}
-          className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
-            activeTab === 'files'
-              ? 'bg-primary text-primary-foreground shadow-xs'
-              : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary'
-          }`}
-        >
-          <FileText className="h-3.5 w-3.5" />
-          <span>Brief & Files</span>
-        </button>
+      <div className="flex items-center gap-1 overflow-x-auto pb-1 border-b border-border-subtle">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              data-testid={tab.testId}
+              onClick={() => setActiveTab(tab.id)}
+              className={[
+                'cursor-pointer inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors',
+                isActive
+                  ? 'bg-primary text-primary-foreground shadow-subtle'
+                  : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary',
+              ].join(' ')}
+            >
+              {Icon && <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />}
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Primary Operational Flow: Production Workflow & Stages (Feature #6) */}
+      {/* Primary Operational Flow: Production Workflow & Stages */}
       {showWorkflow && (
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <div className="surface-level-2 p-5 space-y-5">
           <ProjectWorkflowSection
             workspaceId={project.workspace_id}
             projectId={project.id}
@@ -277,9 +246,9 @@ export function ProjectDetailRoute() {
         </div>
       )}
 
-      {/* Production Sessions (Feature #7) */}
+      {/* Production Sessions */}
       {showSessions && (
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <div className="surface-level-2 p-5">
           <ProjectSessionsSection
             workspaceId={project.workspace_id}
             projectId={project.id}
@@ -288,9 +257,9 @@ export function ProjectDetailRoute() {
         </div>
       )}
 
-      {/* Promised Deliverables & Revisions (Feature #8) */}
+      {/* Promised Deliverables & Revisions */}
       {showSessions && (
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <div className="surface-level-2 p-5">
           <ProjectDeliverablesSection
             workspaceId={project.workspace_id}
             projectId={project.id}
@@ -299,16 +268,16 @@ export function ProjectDetailRoute() {
         </div>
       )}
 
-      {/* Commercial Pricing & Services (Feature #5) */}
+      {/* Commercial Pricing & Services */}
       {showFinance && (
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <div className="surface-level-2 p-5">
           <ProjectPricingSection projectId={project.id} />
         </div>
       )}
 
-      {/* Financial Health, Payments, Expenses & Crew (Feature #9) */}
+      {/* Financial Health, Payments, Expenses & Crew */}
       {showFinance && (
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <div className="surface-level-2 p-5">
           <ProjectFinancialsSection
             workspaceId={project.workspace_id}
             projectId={project.id}
@@ -318,16 +287,16 @@ export function ProjectDetailRoute() {
         </div>
       )}
 
-      {/* Creative Brief & Client Intake (Feature #11) */}
+      {/* Creative Brief & Client Intake */}
       {showFiles && (
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <div className="surface-level-2 p-5">
           <ProjectBriefSection workspaceId={project.workspace_id} projectId={project.id} />
         </div>
       )}
 
-      {/* External Files, Google Drive & Client Portal (Feature #12) */}
+      {/* External Files, Google Drive & Client Portal */}
       {showFiles && (
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+        <div className="surface-level-2 p-5">
           <ProjectFilesSection
             workspaceId={project.workspace_id}
             projectId={project.id}

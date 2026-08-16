@@ -49,7 +49,7 @@ export const ClientForm: React.FC<ClientFormProps> = ({
         <div
           role="alert"
           data-testid="client-form-error-alert"
-          className="rounded-xl border border-status-danger/25 bg-status-danger/8 p-4 text-xs font-medium text-status-danger"
+          className="rounded-lg border border-status-danger-border bg-status-danger-subtle p-4 text-xs font-medium text-status-danger-text"
         >
           {serverError}
         </div>
@@ -59,21 +59,21 @@ export const ClientForm: React.FC<ClientFormProps> = ({
       <div>
         <label
           htmlFor="display_name"
-          className="block text-xs font-semibold text-text-primary mb-1.5"
+          className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
         >
-          Display Name <span className="text-status-danger">*</span>
+          Display Name <span className="text-status-danger-text">*</span>
         </label>
         <input
           id="display_name"
           type="text"
           placeholder="e.g. Sarah & Dave Wedding or Nexus Corp"
           {...register('display_name')}
-          className={`w-full rounded-xl border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
-            errors.display_name ? 'border-status-danger' : 'border-border'
+          className={`w-full rounded-lg border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
+            errors.display_name ? 'border-status-danger-border' : 'border-border'
           }`}
         />
         {errors.display_name && (
-          <p className="mt-1 text-xs text-status-danger">{errors.display_name.message}</p>
+          <p className="mt-1 text-xs text-status-danger-text">{errors.display_name.message}</p>
         )}
       </div>
 
@@ -81,14 +81,14 @@ export const ClientForm: React.FC<ClientFormProps> = ({
       <div>
         <label
           htmlFor="client_type"
-          className="block text-xs font-semibold text-text-primary mb-1.5"
+          className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
         >
-          Client Type <span className="text-status-danger">*</span>
+          Client Type <span className="text-status-danger-text">*</span>
         </label>
         <select
           id="client_type"
           {...register('client_type')}
-          className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <option value="individual">Individual</option>
           <option value="couple">Couple (Wedding / Prewedding)</option>
@@ -96,7 +96,7 @@ export const ClientForm: React.FC<ClientFormProps> = ({
           <option value="custom">Custom Identity</option>
         </select>
         {errors.client_type && (
-          <p className="mt-1 text-xs text-status-danger">{errors.client_type.message}</p>
+          <p className="mt-1 text-xs text-status-danger-text">{errors.client_type.message}</p>
         )}
       </div>
 
@@ -105,7 +105,7 @@ export const ClientForm: React.FC<ClientFormProps> = ({
         <div>
           <label
             htmlFor="custom_type_label"
-            className="block text-xs font-semibold text-text-primary mb-1.5"
+            className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
           >
             Custom Type Label
           </label>
@@ -114,7 +114,7 @@ export const ClientForm: React.FC<ClientFormProps> = ({
             type="text"
             placeholder="e.g. Band / Collective / Agency"
             {...register('custom_type_label')}
-            className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
       )}
@@ -122,7 +122,10 @@ export const ClientForm: React.FC<ClientFormProps> = ({
       {/* Email & Phone Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="email" className="block text-xs font-semibold text-text-primary mb-1.5">
+          <label
+            htmlFor="email"
+            className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
+          >
             Primary Email
           </label>
           <input
@@ -130,17 +133,20 @@ export const ClientForm: React.FC<ClientFormProps> = ({
             type="email"
             placeholder="client@example.com"
             {...register('email')}
-            className={`w-full rounded-xl border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
-              errors.email ? 'border-status-danger' : 'border-border'
+            className={`w-full rounded-lg border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
+              errors.email ? 'border-status-danger-border' : 'border-border'
             }`}
           />
           {errors.email && (
-            <p className="mt-1 text-xs text-status-danger">{errors.email.message}</p>
+            <p className="mt-1 text-xs text-status-danger-text">{errors.email.message}</p>
           )}
         </div>
 
         <div>
-          <label htmlFor="phone" className="block text-xs font-semibold text-text-primary mb-1.5">
+          <label
+            htmlFor="phone"
+            className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
+          >
             Primary Phone
           </label>
           <input
@@ -148,19 +154,22 @@ export const ClientForm: React.FC<ClientFormProps> = ({
             type="tel"
             placeholder="+62 812-3456-7890"
             {...register('phone')}
-            className={`w-full rounded-xl border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
-              errors.phone ? 'border-status-danger' : 'border-border'
+            className={`w-full rounded-lg border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
+              errors.phone ? 'border-status-danger-border' : 'border-border'
             }`}
           />
           {errors.phone && (
-            <p className="mt-1 text-xs text-status-danger">{errors.phone.message}</p>
+            <p className="mt-1 text-xs text-status-danger-text">{errors.phone.message}</p>
           )}
         </div>
       </div>
 
       {/* Notes */}
       <div>
-        <label htmlFor="notes" className="block text-xs font-semibold text-text-primary mb-1.5">
+        <label
+          htmlFor="notes"
+          className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
+        >
           Internal Notes
         </label>
         <textarea
@@ -168,20 +177,23 @@ export const ClientForm: React.FC<ClientFormProps> = ({
           rows={3}
           placeholder="Client preferences, referral source, or background notes..."
           {...register('notes')}
-          className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
       </div>
 
       {/* Archive Status Checkbox (Edit Only) */}
       {isEdit && (
-        <div className="flex items-center gap-2.5 rounded-xl border border-border bg-surface-muted/40 p-3.5">
+        <div className="flex items-center gap-2.5 rounded-lg border border-border bg-surface-muted/40 p-3.5">
           <input
             id="is_archived"
             type="checkbox"
             {...register('is_archived')}
             className="h-4 w-4 rounded border-border text-primary focus:ring-ring"
           />
-          <label htmlFor="is_archived" className="text-xs font-medium text-text-primary">
+          <label
+            htmlFor="is_archived"
+            className="text-xs font-medium text-text-primary cursor-pointer"
+          >
             Archive this client (Hides from active project assignment)
           </label>
         </div>
@@ -193,14 +205,14 @@ export const ClientForm: React.FC<ClientFormProps> = ({
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="cursor-pointer rounded-xl border border-border bg-surface px-4 py-2.5 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+          className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60 active:scale-[0.99]"
+          className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary-hover shadow-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
         >
           {isSubmitting ? (
             <>

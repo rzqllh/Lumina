@@ -40,8 +40,8 @@ export const TaskRow: React.FC<TaskRowProps> = ({
 
   return (
     <div
-      className={`group flex items-start gap-3 p-3.5 bg-surface hover:bg-surface-muted/40 border border-border rounded-xl transition-all ${
-        isDone ? 'opacity-75' : ''
+      className={`group flex items-start gap-3 p-3.5 bg-surface hover:bg-surface-muted/50 border border-border rounded-xl transition-all ${
+        isDone ? 'opacity-70' : ''
       }`}
     >
       {/* Checkbox Touch Target */}
@@ -52,9 +52,9 @@ export const TaskRow: React.FC<TaskRowProps> = ({
         role="checkbox"
         aria-checked={isDone}
         aria-label={`Mark task ${task.title} as ${isDone ? 'open' : 'done'}`}
-        className={`w-6 h-6 rounded-lg flex items-center justify-center border transition-all mt-0.5 shrink-0 ${
+        className={`w-6 h-6 rounded-md flex items-center justify-center border transition-all mt-0.5 shrink-0 ${
           isDone
-            ? 'bg-emerald-600 border-emerald-600 text-white shadow-2xs'
+            ? 'bg-status-success border-status-success text-white shadow-2xs'
             : 'bg-surface border-border hover:border-primary text-transparent'
         } ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}
       >
@@ -69,7 +69,7 @@ export const TaskRow: React.FC<TaskRowProps> = ({
       <div className="flex-1 min-w-0">
         <div className="flex flex-wrap items-center gap-2 mb-1">
           <span
-            className={`text-sm font-semibold leading-snug break-words ${
+            className={`text-sm font-medium leading-snug break-words ${
               isDone ? 'line-through text-text-muted font-normal' : 'text-text-primary'
             }`}
           >
@@ -78,7 +78,7 @@ export const TaskRow: React.FC<TaskRowProps> = ({
 
           {/* Stage Pill */}
           {task.stage && (
-            <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-bold text-text-secondary bg-surface-muted border border-border rounded-md shrink-0">
+            <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium text-text-secondary bg-surface-muted border border-border-subtle rounded-md shrink-0">
               {task.stage.label}
             </span>
           )}
@@ -86,15 +86,15 @@ export const TaskRow: React.FC<TaskRowProps> = ({
           {/* Due Date Badge */}
           {dueInfo && (
             <span
-              className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-md shrink-0 border ${
+              className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-md shrink-0 border tabular-nums ${
                 dueInfo.isOverdue
-                  ? 'bg-rose-50 text-rose-800 border-rose-200'
+                  ? 'bg-status-danger-subtle text-status-danger-text border-status-danger-border'
                   : dueInfo.isDueToday
-                    ? 'bg-amber-50 text-amber-800 border-amber-200'
-                    : 'bg-surface-muted text-text-secondary border-border'
+                    ? 'bg-status-warning-subtle text-status-warning-text border-status-warning-border'
+                    : 'bg-surface-muted text-text-secondary border-border-subtle'
               }`}
             >
-              <Calendar className="w-3 h-3" />
+              <Calendar className="w-3 h-3" strokeWidth={1.75} />
               {dueInfo.isOverdue && <span>Overdue: </span>}
               {dueInfo.isDueToday && <span>Due today: </span>}
               {dueInfo.text}
@@ -105,7 +105,7 @@ export const TaskRow: React.FC<TaskRowProps> = ({
         {/* Notes preview */}
         {task.notes && (
           <div className="flex items-start gap-1 text-xs text-text-secondary mt-1">
-            <FileText className="w-3.5 h-3.5 text-text-muted shrink-0 mt-0.5" />
+            <FileText className="w-3.5 h-3.5 text-text-muted shrink-0 mt-0.5" strokeWidth={1.75} />
             <p className="line-clamp-2 leading-relaxed">{task.notes}</p>
           </div>
         )}
@@ -118,17 +118,17 @@ export const TaskRow: React.FC<TaskRowProps> = ({
             type="button"
             onClick={onEdit}
             aria-label={`Edit task ${task.title}`}
-            className="p-1.5 text-text-secondary hover:text-primary hover:bg-surface-muted rounded-lg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="p-1.5 text-text-secondary hover:text-primary-text hover:bg-surface-muted rounded-lg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Edit2 className="w-3.5 h-3.5" />
+            <Edit2 className="w-3.5 h-3.5" strokeWidth={1.75} />
           </button>
           <button
             type="button"
             onClick={onDelete}
             aria-label={`Delete task ${task.title}`}
-            className="p-1.5 text-text-secondary hover:text-status-danger hover:bg-surface-muted rounded-lg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="p-1.5 text-text-secondary hover:text-status-danger-text hover:bg-surface-muted rounded-lg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Trash2 className="w-3.5 h-3.5" />
+            <Trash2 className="w-3.5 h-3.5" strokeWidth={1.75} />
           </button>
         </div>
       )}

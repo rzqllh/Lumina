@@ -23,27 +23,30 @@ export const ApplyBriefTemplateModal: React.FC<ApplyBriefTemplateModalProps> = (
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs animate-in fade-in">
       <div
         data-testid="apply-brief-template-modal"
-        className="w-full max-w-lg rounded-2xl border border-border bg-surface p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150"
+        className="w-full max-w-lg rounded-xl border border-border bg-surface p-6 shadow-sheet space-y-5 animate-in fade-in zoom-in-95 duration-150 overflow-hidden"
       >
         <div className="flex items-center justify-between border-b border-border pb-3">
-          <div>
-            <h2 className="text-base font-bold text-text-primary flex items-center gap-2">
-              <Layers className="h-4 w-4 text-primary" />
-              Apply Brief Template
-            </h2>
-            <p className="text-xs text-text-muted mt-0.5">
-              Select a preset brief structure to instantiate onto this project
-            </p>
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-primary-text border border-primary-border">
+              <Layers className="h-4 w-4" strokeWidth={1.75} />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold text-text-primary">Apply Brief Template</h2>
+              <p className="text-xs text-text-secondary">
+                Select a preset brief structure to instantiate onto this project
+              </p>
+            </div>
           </div>
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close modal"
             className="rounded-lg p-1 text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
         </div>
 
@@ -52,9 +55,9 @@ export const ApplyBriefTemplateModal: React.FC<ApplyBriefTemplateModalProps> = (
             <div className="py-8 text-center text-xs text-text-muted">Loading templates...</div>
           ) : templates.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border py-8 text-center">
-              <Sparkles className="mx-auto h-6 w-6 text-text-muted mb-2" />
+              <Sparkles className="mx-auto h-6 w-6 text-text-muted mb-2" strokeWidth={1.75} />
               <p className="text-xs font-semibold text-text-primary">No brief templates found</p>
-              <p className="text-[11px] text-text-muted mt-1">
+              <p className="text-xs text-text-muted mt-1">
                 Save this project's brief as a template to reuse it later!
               </p>
             </div>
@@ -70,21 +73,21 @@ export const ApplyBriefTemplateModal: React.FC<ApplyBriefTemplateModalProps> = (
                   key={tmpl.id}
                   data-testid={`brief-template-option-${tmpl.id}`}
                   onClick={() => setSelectedTemplateId(tmpl.id)}
-                  className={`flex items-start justify-between gap-3 rounded-xl border p-3.5 cursor-pointer transition-all ${
+                  className={`flex items-start justify-between gap-3 rounded-lg border p-3.5 cursor-pointer transition-all ${
                     isSelected
-                      ? 'border-primary bg-primary/5 shadow-xs'
-                      : 'border-border bg-surface hover:border-border-subtle hover:bg-surface-muted/30'
+                      ? 'border-primary-border bg-primary-subtle ring-1 ring-primary/30 shadow-2xs'
+                      : 'border-border bg-surface hover:bg-surface-muted'
                   }`}
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-text-primary">{tmpl.name}</span>
-                      <span className="rounded-md bg-surface-muted px-1.5 py-0.5 text-[10px] font-bold text-text-secondary">
+                      <span className="text-xs font-semibold text-text-primary">{tmpl.name}</span>
+                      <span className="rounded-md bg-surface-muted border border-border-subtle px-1.5 py-0.5 text-[10px] font-semibold text-text-secondary tabular-nums">
                         {sectionsCount} sections • {fieldsCount} questions
                       </span>
                     </div>
                     {tmpl.description && (
-                      <p className="text-[11px] text-text-muted leading-relaxed">
+                      <p className="text-xs text-text-secondary leading-relaxed">
                         {tmpl.description}
                       </p>
                     )}
@@ -97,7 +100,7 @@ export const ApplyBriefTemplateModal: React.FC<ApplyBriefTemplateModalProps> = (
                         : 'border-border bg-surface'
                     }`}
                   >
-                    {isSelected && <Check className="h-3 w-3" />}
+                    {isSelected && <Check className="h-3 w-3" strokeWidth={2} />}
                   </div>
                 </div>
               );
@@ -109,7 +112,7 @@ export const ApplyBriefTemplateModal: React.FC<ApplyBriefTemplateModalProps> = (
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-border px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors cursor-pointer"
+            className="rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -118,7 +121,7 @@ export const ApplyBriefTemplateModal: React.FC<ApplyBriefTemplateModalProps> = (
             disabled={!selectedTemplateId || isPending}
             onClick={() => selectedTemplateId && onApplyTemplate(selectedTemplateId)}
             data-testid="confirm-apply-template-btn"
-            className="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer disabled:opacity-50"
+            className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors cursor-pointer disabled:opacity-50"
           >
             {isPending ? 'Applying...' : 'Apply Template'}
           </button>

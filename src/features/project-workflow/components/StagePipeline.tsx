@@ -29,12 +29,12 @@ export const StagePipeline: React.FC<StagePipelineProps> = ({
       {/* Progression Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold text-text-primary">
+          <span className="text-xs font-semibold text-text-primary tabular-nums">
             Progress: {completedCount}/{total} completed ({progressPercent}%)
           </span>
           {activeCount > 0 && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium text-status-warning-text bg-status-warning-subtle border border-status-warning-border rounded-full tabular-nums">
+              <span className="w-1.5 h-1.5 rounded-full bg-status-warning animate-pulse" />
               {activeCount} Active
             </span>
           )}
@@ -44,7 +44,7 @@ export const StagePipeline: React.FC<StagePipelineProps> = ({
           <button
             type="button"
             onClick={() => onSelectStage?.(null)}
-            className="text-xs font-semibold text-primary hover:underline self-start sm:self-auto cursor-pointer"
+            className="text-xs font-semibold text-primary-text hover:underline self-start sm:self-auto cursor-pointer"
           >
             Clear stage filter
           </button>
@@ -52,9 +52,9 @@ export const StagePipeline: React.FC<StagePipelineProps> = ({
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full h-2 bg-surface-muted border border-border rounded-full overflow-hidden">
+      <div className="w-full h-2 bg-surface-muted border border-border-subtle rounded-full overflow-hidden">
         <div
-          className="h-full bg-emerald-600 transition-all duration-300 rounded-full"
+          className="h-full bg-status-success transition-all duration-300 rounded-full"
           style={{ width: `${progressPercent}%` }}
         />
       </div>

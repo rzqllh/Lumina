@@ -18,7 +18,7 @@ export const RevisionHistoryList: React.FC<RevisionHistoryListProps> = ({
 
   return (
     <div className="mt-3 space-y-2 border-t border-border-subtle pt-3">
-      <h5 className="text-[11px] font-bold uppercase tracking-wider text-text-muted">
+      <h5 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
         Revision History ({revisions.length})
       </h5>
 
@@ -27,23 +27,25 @@ export const RevisionHistoryList: React.FC<RevisionHistoryListProps> = ({
           <div
             key={rev.id}
             data-testid={`revision-item-${rev.revision_number}`}
-            className="rounded-xl border border-border-subtle bg-surface-muted/30 p-3 text-xs space-y-2"
+            className="rounded-lg border border-border-subtle bg-surface-muted/30 p-3 text-xs space-y-2"
           >
             {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-text-primary">Round #{rev.revision_number}</span>
+                <span className="font-semibold text-text-primary">
+                  Round #{rev.revision_number}
+                </span>
                 <RevisionStatusBadge status={rev.status} />
               </div>
 
-              <div className="flex items-center gap-3 text-[11px] text-text-muted">
+              <div className="flex items-center gap-3 text-xs text-text-muted">
                 <span className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
+                  <Calendar className="h-3 w-3" strokeWidth={1.75} />
                   Req: {rev.requested_date}
                 </span>
                 {rev.due_date && (
                   <span className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
+                    <Clock className="h-3 w-3" strokeWidth={1.75} />
                     Due: {rev.due_date}
                   </span>
                 )}
@@ -51,8 +53,11 @@ export const RevisionHistoryList: React.FC<RevisionHistoryListProps> = ({
             </div>
 
             {/* Client Feedback */}
-            <div className="flex items-start gap-1.5 rounded-lg bg-surface p-2 text-text-secondary border border-border-subtle">
-              <MessageSquareQuote className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+            <div className="flex items-start gap-1.5 rounded-md bg-surface p-2 text-text-secondary border border-border-subtle">
+              <MessageSquareQuote
+                className="h-3.5 w-3.5 text-primary-text shrink-0 mt-0.5"
+                strokeWidth={1.75}
+              />
               <p className="whitespace-pre-wrap">{rev.feedback}</p>
             </div>
 
@@ -64,7 +69,7 @@ export const RevisionHistoryList: React.FC<RevisionHistoryListProps> = ({
                     type="button"
                     data-testid={`start-rev-${rev.revision_number}-btn`}
                     onClick={() => onUpdateRevisionStatus(rev.id, 'in_progress')}
-                    className="flex h-6 cursor-pointer items-center gap-1 rounded-md border border-indigo-200 bg-indigo-50 px-2 text-[10px] font-semibold text-indigo-700 hover:bg-indigo-100 transition-colors"
+                    className="flex h-6 cursor-pointer items-center gap-1 rounded-md border border-primary-border bg-primary-subtle px-2 text-xs font-semibold text-primary-text hover:bg-primary-subtle/80 transition-colors"
                   >
                     <span>Start Work</span>
                   </button>
@@ -75,9 +80,9 @@ export const RevisionHistoryList: React.FC<RevisionHistoryListProps> = ({
                     type="button"
                     data-testid={`deliver-rev-${rev.revision_number}-btn`}
                     onClick={() => onUpdateRevisionStatus(rev.id, 'delivered')}
-                    className="flex h-6 cursor-pointer items-center gap-1 rounded-md border border-sky-200 bg-sky-50 px-2 text-[10px] font-semibold text-sky-700 hover:bg-sky-100 transition-colors"
+                    className="flex h-6 cursor-pointer items-center gap-1 rounded-md border border-status-info-border bg-status-info-subtle px-2 text-xs font-semibold text-status-info-text hover:bg-status-info-subtle/80 transition-colors"
                   >
-                    <Send className="h-3 w-3" />
+                    <Send className="h-3 w-3" strokeWidth={1.75} />
                     <span>Send Revised Version</span>
                   </button>
                 )}
@@ -87,9 +92,9 @@ export const RevisionHistoryList: React.FC<RevisionHistoryListProps> = ({
                     type="button"
                     data-testid={`approve-rev-${rev.revision_number}-btn`}
                     onClick={() => onUpdateRevisionStatus(rev.id, 'approved')}
-                    className="flex h-6 cursor-pointer items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 text-[10px] font-semibold text-emerald-700 hover:bg-emerald-100 transition-colors"
+                    className="flex h-6 cursor-pointer items-center gap-1 rounded-md border border-status-success-border bg-status-success-subtle px-2 text-xs font-semibold text-status-success-text hover:bg-status-success-subtle/80 transition-colors"
                   >
-                    <CheckCircle2 className="h-3 w-3" />
+                    <CheckCircle2 className="h-3 w-3" strokeWidth={1.75} />
                     <span>Approve Revision</span>
                   </button>
                 )}

@@ -28,20 +28,20 @@ export const BriefSectionCard: React.FC<BriefSectionCardProps> = ({
   return (
     <div
       data-testid={`brief-section-card-${section.id}`}
-      className="rounded-2xl border border-border bg-surface shadow-2xs transition-all overflow-hidden"
+      className="rounded-xl border border-border bg-surface shadow-2xs transition-all overflow-hidden"
     >
       {/* Section Header */}
       <div className="flex items-center justify-between border-b border-border bg-surface-muted/30 px-4 py-3 sm:px-5">
         <div className="space-y-0.5 min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-bold text-text-primary truncate">{section.label}</h3>
-            <span className="rounded-md bg-surface px-2 py-0.5 text-[10px] font-bold text-text-muted border border-border/60">
+            <h3 className="text-sm font-semibold text-text-primary truncate">{section.label}</h3>
+            <span className="rounded-md bg-surface px-2 py-0.5 text-xs font-semibold text-text-secondary border border-border-subtle tabular-nums">
               {fields.length} {fields.length === 1 ? 'question' : 'questions'}
             </span>
           </div>
           {section.instruction_text && (
-            <p className="text-xs text-text-muted flex items-center gap-1">
-              <HelpCircle className="h-3 w-3 shrink-0" />
+            <p className="text-xs text-text-secondary flex items-center gap-1">
+              <HelpCircle className="h-3 w-3 shrink-0 text-text-muted" strokeWidth={1.75} />
               {section.instruction_text}
             </p>
           )}
@@ -52,9 +52,9 @@ export const BriefSectionCard: React.FC<BriefSectionCardProps> = ({
             type="button"
             data-testid={`add-field-btn-${section.id}`}
             onClick={() => onAddField(section)}
-            className="flex items-center gap-1 rounded-xl bg-surface px-2.5 py-1.5 text-xs font-semibold text-text-secondary border border-border hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer shadow-2xs"
+            className="flex items-center gap-1 rounded-lg bg-surface px-2.5 py-1.5 text-xs font-semibold text-text-secondary border border-border hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer shadow-subtle"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
             <span className="hidden sm:inline">Add Question</span>
           </button>
 
@@ -65,11 +65,11 @@ export const BriefSectionCard: React.FC<BriefSectionCardProps> = ({
               onClick={() => setShowSectionMenu(!showSectionMenu)}
               className="flex h-7 w-7 items-center justify-center rounded-lg text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
             >
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className="h-4 w-4" strokeWidth={1.75} />
             </button>
 
             {showSectionMenu && (
-              <div className="absolute right-0 top-8 z-30 w-36 rounded-xl border border-border bg-surface p-1 shadow-lg animate-in fade-in zoom-in-95 duration-100">
+              <div className="absolute right-0 top-8 z-30 w-36 rounded-xl border border-border bg-surface p-1 shadow-sheet animate-in fade-in zoom-in-95 duration-100">
                 <button
                   type="button"
                   onClick={() => {
@@ -78,7 +78,7 @@ export const BriefSectionCard: React.FC<BriefSectionCardProps> = ({
                   }}
                   className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
                 >
-                  <Edit2 className="h-3.5 w-3.5" />
+                  <Edit2 className="h-3.5 w-3.5" strokeWidth={1.75} />
                   Edit Section
                 </button>
                 <button
@@ -87,9 +87,9 @@ export const BriefSectionCard: React.FC<BriefSectionCardProps> = ({
                     setShowSectionMenu(false);
                     onDeleteSection(section.id);
                   }}
-                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-status-danger-text hover:bg-status-danger-subtle transition-colors cursor-pointer"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
                   Delete Section
                 </button>
               </div>
@@ -101,12 +101,12 @@ export const BriefSectionCard: React.FC<BriefSectionCardProps> = ({
       {/* Fields List */}
       <div className="p-4 sm:p-5 space-y-3">
         {fields.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border py-6 text-center">
+          <div className="rounded-lg border border-dashed border-border py-6 text-center">
             <p className="text-xs text-text-muted">No questions added to this section yet.</p>
             <button
               type="button"
               onClick={() => onAddField(section)}
-              className="mt-2 text-xs font-bold text-primary hover:underline cursor-pointer"
+              className="mt-2 text-xs font-semibold text-primary-text hover:underline cursor-pointer"
             >
               + Add First Question
             </button>
@@ -126,11 +126,11 @@ export const BriefSectionCard: React.FC<BriefSectionCardProps> = ({
                     }
                     className="flex h-6 w-6 items-center justify-center rounded-md bg-surface border border-border text-text-muted hover:text-text-primary transition-colors cursor-pointer"
                   >
-                    <MoreVertical className="h-3.5 w-3.5" />
+                    <MoreVertical className="h-3.5 w-3.5" strokeWidth={1.75} />
                   </button>
 
                   {activeFieldMenuId === field.id && (
-                    <div className="absolute right-0 top-7 z-30 w-32 rounded-xl border border-border bg-surface p-1 shadow-lg animate-in fade-in zoom-in-95 duration-100">
+                    <div className="absolute right-0 top-7 z-30 w-32 rounded-xl border border-border bg-surface p-1 shadow-sheet animate-in fade-in zoom-in-95 duration-100">
                       <button
                         type="button"
                         onClick={() => {
@@ -139,7 +139,7 @@ export const BriefSectionCard: React.FC<BriefSectionCardProps> = ({
                         }}
                         className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
                       >
-                        <Edit2 className="h-3 w-3" />
+                        <Edit2 className="h-3 w-3" strokeWidth={1.75} />
                         Edit
                       </button>
                       <button
@@ -148,9 +148,9 @@ export const BriefSectionCard: React.FC<BriefSectionCardProps> = ({
                           setActiveFieldMenuId(null);
                           onDeleteField(field.id);
                         }}
-                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-status-danger-text hover:bg-status-danger-subtle transition-colors cursor-pointer"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 className="h-3 w-3" strokeWidth={1.75} />
                         Delete
                       </button>
                     </div>

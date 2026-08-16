@@ -62,7 +62,9 @@ export const DeliverableCard: React.FC<DeliverableCardProps> = ({
   return (
     <div
       data-testid={`deliverable-card-${deliverable.id}`}
-      className="group rounded-xl border border-border bg-surface p-4 shadow-2xs transition-all hover:border-border-subtle"
+      className={`group rounded-xl border border-border bg-surface p-4 shadow-2xs transition-all hover:border-border-subtle ${
+        deliverable.status === 'approved' ? 'bg-surface' : ''
+      }`}
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         {/* Main Info */}
@@ -71,15 +73,15 @@ export const DeliverableCard: React.FC<DeliverableCardProps> = ({
             <DeliverableStatusBadge status={deliverable.status} />
 
             {deliverable.type_label && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-surface-muted px-2 py-0.5 text-[11px] font-medium text-text-secondary border border-border-subtle">
-                <Tag className="h-3 w-3" />
+              <span className="inline-flex items-center gap-1 rounded-md bg-surface-muted px-2 py-0.5 text-xs font-medium text-text-secondary border border-border-subtle">
+                <Tag className="h-3 w-3 text-text-muted" strokeWidth={1.75} />
                 {deliverable.type_label}
               </span>
             )}
 
             {deliverable.quantity && deliverable.quantity > 0 && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-surface-muted px-2 py-0.5 text-[11px] font-medium text-text-secondary border border-border-subtle">
-                <Package className="h-3 w-3" />
+              <span className="inline-flex items-center gap-1 rounded-md bg-surface-muted px-2 py-0.5 text-xs font-medium text-text-secondary border border-border-subtle tabular-nums">
+                <Package className="h-3 w-3 text-text-muted" strokeWidth={1.75} />
                 Qty: {deliverable.quantity}
               </span>
             )}
@@ -88,27 +90,27 @@ export const DeliverableCard: React.FC<DeliverableCardProps> = ({
               <button
                 type="button"
                 onClick={() => setShowRevisions(!showRevisions)}
-                className="inline-flex items-center gap-1 rounded-md bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-700 border border-rose-200 cursor-pointer hover:bg-rose-100"
+                className="inline-flex items-center gap-1 rounded-md bg-status-danger-subtle px-2 py-0.5 text-xs font-semibold text-status-danger-text border border-status-danger-border cursor-pointer hover:bg-status-danger-subtle/80"
               >
-                <RefreshCw className="h-2.5 w-2.5" />
+                <RefreshCw className="h-2.5 w-2.5" strokeWidth={1.75} />
                 <span>
                   {revisionCount} rev{revisionCount > 1 ? 's' : ''}
                 </span>
                 {showRevisions ? (
-                  <ChevronUp className="h-3 w-3" />
+                  <ChevronUp className="h-3 w-3" strokeWidth={1.75} />
                 ) : (
-                  <ChevronDown className="h-3 w-3" />
+                  <ChevronDown className="h-3 w-3" strokeWidth={1.75} />
                 )}
               </button>
             )}
           </div>
 
-          <h4 className="text-sm font-bold text-text-primary">{deliverable.label}</h4>
+          <h4 className="text-sm font-semibold text-text-primary">{deliverable.label}</h4>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary">
             {deliverable.deadline && (
               <span className="flex items-center gap-1.5 text-text-muted">
-                <Calendar className="h-3.5 w-3.5" />
+                <Calendar className="h-3.5 w-3.5" strokeWidth={1.75} />
                 Due: {formatDate(deliverable.deadline)}
               </span>
             )}
@@ -129,9 +131,9 @@ export const DeliverableCard: React.FC<DeliverableCardProps> = ({
                 type="button"
                 data-testid={`start-deliv-${deliverable.id}-btn`}
                 onClick={() => onStatusChange(deliverable.id, 'in_progress')}
-                className="flex h-7 items-center gap-1 rounded-lg border border-indigo-200 bg-indigo-50 px-2.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 transition-colors cursor-pointer"
+                className="flex h-7 items-center gap-1 rounded-lg border border-primary-border bg-primary-subtle px-2.5 text-xs font-semibold text-primary-text hover:bg-primary-subtle/80 transition-colors cursor-pointer"
               >
-                <Play className="h-3 w-3" />
+                <Play className="h-3 w-3" strokeWidth={1.75} />
                 <span>Start</span>
               </button>
             )}
@@ -141,9 +143,9 @@ export const DeliverableCard: React.FC<DeliverableCardProps> = ({
                 type="button"
                 data-testid={`deliver-deliv-${deliverable.id}-btn`}
                 onClick={() => onStatusChange(deliverable.id, 'delivered')}
-                className="flex h-7 items-center gap-1 rounded-lg border border-sky-200 bg-sky-50 px-2.5 text-xs font-semibold text-sky-700 hover:bg-sky-100 transition-colors cursor-pointer"
+                className="flex h-7 items-center gap-1 rounded-lg border border-status-info-border bg-status-info-subtle px-2.5 text-xs font-semibold text-status-info-text hover:bg-status-info-subtle/80 transition-colors cursor-pointer"
               >
-                <Send className="h-3 w-3" />
+                <Send className="h-3 w-3" strokeWidth={1.75} />
                 <span>Deliver</span>
               </button>
             )}
@@ -156,18 +158,18 @@ export const DeliverableCard: React.FC<DeliverableCardProps> = ({
                   type="button"
                   data-testid={`request-rev-${deliverable.id}-btn`}
                   onClick={() => onRequestRevision(deliverable)}
-                  className="flex h-7 items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2.5 text-xs font-semibold text-rose-700 hover:bg-rose-100 transition-colors cursor-pointer"
+                  className="flex h-7 items-center gap-1 rounded-lg border border-status-danger-border bg-status-danger-subtle px-2.5 text-xs font-semibold text-status-danger-text hover:bg-status-danger-subtle/80 transition-colors cursor-pointer"
                 >
-                  <RefreshCw className="h-3 w-3" />
+                  <RefreshCw className="h-3 w-3" strokeWidth={1.75} />
                   <span>Revision</span>
                 </button>
                 <button
                   type="button"
                   data-testid={`approve-deliv-${deliverable.id}-btn`}
                   onClick={() => onStatusChange(deliverable.id, 'approved')}
-                  className="flex h-7 items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition-colors cursor-pointer"
+                  className="flex h-7 items-center gap-1 rounded-lg border border-status-success-border bg-status-success-subtle px-2.5 text-xs font-semibold text-status-success-text hover:bg-status-success-subtle/80 transition-colors cursor-pointer"
                 >
-                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.75} />
                   <span>Approve</span>
                 </button>
               </>
@@ -181,7 +183,7 @@ export const DeliverableCard: React.FC<DeliverableCardProps> = ({
                 title="Reopen Deliverable"
                 className="flex h-7 items-center gap-1 rounded-lg border border-border bg-surface px-2 text-xs font-medium text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
               >
-                <RotateCcw className="h-3 w-3" />
+                <RotateCcw className="h-3 w-3" strokeWidth={1.75} />
                 <span>Reopen</span>
               </button>
             )}
@@ -194,7 +196,7 @@ export const DeliverableCard: React.FC<DeliverableCardProps> = ({
               aria-label="Edit deliverable"
               className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
             >
-              <Edit2 className="h-3.5 w-3.5" />
+              <Edit2 className="h-3.5 w-3.5" strokeWidth={1.75} />
             </button>
 
             <button
@@ -203,9 +205,9 @@ export const DeliverableCard: React.FC<DeliverableCardProps> = ({
               onClick={() => onDelete(deliverable.id)}
               title="Delete Deliverable"
               aria-label="Delete deliverable"
-              className="flex h-7 w-7 items-center justify-center rounded-lg border border-status-danger/20 bg-surface text-status-danger hover:bg-status-danger/10 transition-colors cursor-pointer"
+              className="flex h-7 w-7 items-center justify-center rounded-lg border border-status-danger-border bg-surface text-status-danger-text hover:bg-status-danger-subtle transition-colors cursor-pointer"
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
             </button>
           </div>
         )}

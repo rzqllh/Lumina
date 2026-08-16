@@ -100,16 +100,23 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
       aria-labelledby="payment-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs animate-in fade-in"
     >
-      <div className="relative w-full max-w-md rounded-2xl border border-border bg-surface shadow-xl flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-md rounded-xl border border-border bg-surface shadow-sheet flex flex-col max-h-[90vh] overflow-hidden">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <CreditCard className="h-4 w-4" />
+        <div className="flex items-center justify-between border-b border-border px-6 py-4 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-primary-text border border-primary-border">
+              <CreditCard className="h-4 w-4" strokeWidth={1.75} />
             </div>
-            <h2 id="payment-modal-title" className="text-base font-bold text-text-primary">
-              {isEditing ? 'Edit Payment Milestone' : 'Schedule Payment'}
-            </h2>
+            <div>
+              <h2 id="payment-modal-title" className="text-base font-semibold text-text-primary">
+                {isEditing ? 'Edit Payment Milestone' : 'Schedule Payment'}
+              </h2>
+              <p className="text-xs text-text-secondary">
+                {isEditing
+                  ? 'Update invoice milestone and status.'
+                  : 'Schedule an incoming client payment.'}
+              </p>
+            </div>
           </div>
           <button
             type="button"
@@ -117,7 +124,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
             aria-label="Close modal"
             className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
         </div>
 
@@ -131,14 +138,14 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
             <div>
               <label
                 htmlFor="payment-type"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 Payment Type
               </label>
               <select
                 id="payment-type"
                 {...register('type')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {paymentTypes.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -151,7 +158,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
             <div>
               <label
                 htmlFor="payment-label"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 Label / Milestone
               </label>
@@ -160,7 +167,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
                 type="text"
                 placeholder="e.g., 50% Initial Booking DP"
                 {...register('label')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </div>
@@ -170,9 +177,9 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
             <div>
               <label
                 htmlFor="payment-amount"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
-                Amount ({currency}) <span className="text-status-danger">*</span>
+                Amount ({currency}) <span className="text-status-danger-text">*</span>
               </label>
               <input
                 id="payment-amount"
@@ -180,28 +187,28 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
                 min="1"
                 placeholder="e.g., 5000000"
                 {...register('amount', { valueAsNumber: true })}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.amount && (
-                <p className="mt-1 text-xs text-status-danger">{errors.amount.message}</p>
+                <p className="mt-1 text-xs text-status-danger-text">{errors.amount.message}</p>
               )}
             </div>
 
             <div>
               <label
                 htmlFor="payment-due-date"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
-                Due Date <span className="text-status-danger">*</span>
+                Due Date <span className="text-status-danger-text">*</span>
               </label>
               <input
                 id="payment-due-date"
                 type="date"
                 {...register('due_date')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.due_date && (
-                <p className="mt-1 text-xs text-status-danger">{errors.due_date.message}</p>
+                <p className="mt-1 text-xs text-status-danger-text">{errors.due_date.message}</p>
               )}
             </div>
           </div>
@@ -211,14 +218,14 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
             <div>
               <label
                 htmlFor="payment-status"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 Payment Status
               </label>
               <select
                 id="payment-status"
                 {...register('status')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value="pending">Pending</option>
                 <option value="paid">Paid</option>
@@ -229,7 +236,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
               <div>
                 <label
                   htmlFor="payment-paid-date"
-                  className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                  className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
                 >
                   Paid Date
                 </label>
@@ -237,7 +244,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
                   id="payment-paid-date"
                   type="date"
                   {...register('paid_date')}
-                  className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
             )}
@@ -247,7 +254,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
           <div>
             <label
               htmlFor="payment-method"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
               Payment Method (Optional)
             </label>
@@ -256,7 +263,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
               type="text"
               placeholder="e.g., Bank Transfer (BCA), QRIS, Cash"
               {...register('payment_method')}
-              className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
@@ -264,7 +271,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
           <div>
             <label
               htmlFor="payment-notes"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
               Notes
             </label>
@@ -273,7 +280,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
               rows={2}
               placeholder="Invoice reference, receipt info..."
               {...register('notes')}
-              className="w-full rounded-xl border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
@@ -283,7 +290,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="cursor-pointer rounded-xl border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors disabled:opacity-50"
+              className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
@@ -291,7 +298,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
               type="submit"
               data-testid="payment-submit-btn"
               disabled={isSubmitting}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

@@ -70,18 +70,18 @@ export const ShareProjectStatusModal: React.FC<ShareProjectStatusModalProps> = (
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
       <div
         data-testid="share-project-status-modal"
-        className="w-full max-w-lg rounded-2xl border border-border bg-surface p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150"
+        className="w-full max-w-lg rounded-xl border border-border bg-surface p-6 shadow-sheet space-y-5 animate-in fade-in zoom-in-95 duration-150 overflow-hidden"
       >
         <div className="flex items-center justify-between border-b border-border pb-3">
           <div>
-            <h2 className="text-base font-bold text-text-primary flex items-center gap-2">
-              <Share2 className="h-4 w-4 text-primary" />
+            <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
+              <Share2 className="h-4 w-4 text-primary-text" strokeWidth={1.75} />
               Live Client Status Portal
             </h2>
-            <p className="text-xs text-text-muted mt-0.5">
+            <p className="text-xs text-text-secondary mt-0.5">
               Share live shoot schedules, stage progress, and approved deliverable media links with
               your client
             </p>
@@ -91,17 +91,20 @@ export const ShareProjectStatusModal: React.FC<ShareProjectStatusModalProps> = (
             onClick={onClose}
             className="rounded-lg p-1 text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" strokeWidth={1.75} />
           </button>
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-3.5 text-xs text-emerald-900 space-y-1">
-            <div className="flex items-center gap-1.5 font-bold text-emerald-800">
-              <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
+          <div className="rounded-lg border border-status-success-border bg-status-success-subtle p-3.5 text-xs text-status-success-text space-y-1">
+            <div className="flex items-center gap-1.5 font-semibold text-status-success-text">
+              <ShieldCheck
+                className="h-4 w-4 text-status-success-text shrink-0"
+                strokeWidth={1.75}
+              />
               <span>Commercial & Privacy Safe</span>
             </div>
-            <p className="text-[11px] text-emerald-700 leading-relaxed">
+            <p className="text-xs text-status-success-text/90 leading-relaxed">
               Your client sees only operational milestones: shoot dates, delivery progress, and
               client-visible download links. All internal financials, profit margins, costs, and
               private studio notes are strictly omitted.
@@ -113,12 +116,12 @@ export const ShareProjectStatusModal: React.FC<ShareProjectStatusModalProps> = (
               Generating secure status link...
             </div>
           ) : errorMessage ? (
-            <div className="rounded-xl border border-destructive/20 bg-destructive/10 p-3 text-xs text-destructive">
+            <div className="rounded-lg border border-status-danger-border bg-status-danger-subtle p-3 text-xs text-status-danger-text">
               {errorMessage}
             </div>
           ) : (
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-text-primary">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted">
                 Portal Link URL
               </label>
               <div className="flex items-center gap-2">
@@ -127,22 +130,22 @@ export const ShareProjectStatusModal: React.FC<ShareProjectStatusModalProps> = (
                   readOnly
                   data-testid="status-share-url-input"
                   value={shareUrl || ''}
-                  className="w-full rounded-xl border border-border bg-surface-muted/50 px-3 py-2 text-xs font-mono text-text-primary select-all focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-surface-muted/50 px-3 py-2 text-xs font-mono text-text-primary select-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
                 <button
                   type="button"
                   data-testid="copy-status-link-btn"
                   onClick={handleCopy}
-                  className="flex items-center gap-1.5 rounded-xl bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer shrink-0"
+                  className="flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors cursor-pointer shrink-0"
                 >
                   {hasCopied ? (
                     <>
-                      <Check className="h-3.5 w-3.5" />
+                      <Check className="h-3.5 w-3.5" strokeWidth={2} />
                       Copied
                     </>
                   ) : (
                     <>
-                      <Copy className="h-3.5 w-3.5" />
+                      <Copy className="h-3.5 w-3.5" strokeWidth={1.75} />
                       Copy
                     </>
                   )}
@@ -155,9 +158,9 @@ export const ShareProjectStatusModal: React.FC<ShareProjectStatusModalProps> = (
                     href={shareUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-primary-text hover:underline"
                   >
-                    <ExternalLink className="h-3 w-3" />
+                    <ExternalLink className="h-3 w-3" strokeWidth={1.75} />
                     Open client view in new tab
                   </a>
                 </div>
@@ -173,9 +176,9 @@ export const ShareProjectStatusModal: React.FC<ShareProjectStatusModalProps> = (
               disabled={revokeMutation.isPending}
               data-testid="revoke-status-link-btn"
               onClick={handleRevoke}
-              className="flex items-center gap-1.5 rounded-xl border border-destructive/30 px-3 py-1.5 text-xs font-bold text-destructive hover:bg-destructive/10 transition-colors cursor-pointer disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-lg border border-status-danger-border bg-status-danger-subtle px-3 py-1.5 text-xs font-semibold text-status-danger-text hover:bg-status-danger-subtle/80 transition-colors cursor-pointer disabled:opacity-50"
             >
-              <AlertTriangle className="h-3.5 w-3.5" />
+              <AlertTriangle className="h-3.5 w-3.5" strokeWidth={1.75} />
               {revokeMutation.isPending ? 'Revoking...' : 'Revoke Link'}
             </button>
           )}
@@ -183,7 +186,7 @@ export const ShareProjectStatusModal: React.FC<ShareProjectStatusModalProps> = (
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-border px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors cursor-pointer ml-auto"
+            className="rounded-lg border border-border px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors cursor-pointer ml-auto"
           >
             Done
           </button>

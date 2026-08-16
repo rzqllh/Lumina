@@ -4,6 +4,7 @@ import { useProjectTasks } from '../hooks/useProjectTasks';
 import { useTaskMutations } from '../hooks/useTaskMutations';
 import { TaskRow } from './TaskRow';
 import { TaskFormModal } from './TaskFormModal';
+import { EmptyState } from '@/components/ui/empty-state';
 import type { Task, ProjectWorkflowStage } from '../types';
 import type { TaskFormData } from '../schemas/workflowSchemas';
 
@@ -125,16 +126,16 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
   return (
     <section
       aria-labelledby="project-tasks-heading"
-      className="space-y-4 pt-4 border-t border-border"
+      className="space-y-4 pt-4 border-t border-border-subtle"
     >
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-            <CheckSquare className="w-4 h-4" />
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-primary-subtle border border-primary-border flex items-center justify-center text-primary-text">
+            <CheckSquare className="w-4 h-4" strokeWidth={1.75} />
           </div>
           <div>
-            <h3 id="project-tasks-heading" className="text-base font-bold text-text-primary">
+            <h3 id="project-tasks-heading" className="text-base font-semibold text-text-primary">
               Action Items & Tasks
             </h3>
             <p className="text-xs text-text-secondary">
@@ -145,7 +146,7 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
 
         <div className="flex items-center gap-3 self-start sm:self-auto">
           {totalTasks > 0 && (
-            <span className="text-xs font-semibold text-text-secondary">
+            <span className="text-xs font-semibold text-text-secondary tabular-nums">
               {doneTasks} of {totalTasks} done
             </span>
           )}
@@ -154,9 +155,9 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
             <button
               type="button"
               onClick={() => setIsCreateOpen(true)}
-              className="inline-flex min-h-[36px] items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-primary-foreground bg-primary hover:opacity-90 rounded-lg transition-colors shadow-xs shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="inline-flex cursor-pointer items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-lg transition-colors shadow-subtle shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4" strokeWidth={2} />
               Add Task
             </button>
           )}
@@ -170,10 +171,10 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
           <button
             type="button"
             onClick={() => handleStageSelect(null)}
-            className={`min-h-[36px] px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+            className={`min-h-[32px] px-3 py-1 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               !activeStageId
-                ? 'bg-primary/10 text-primary border border-primary/30 font-bold'
-                : 'bg-surface text-text-secondary border border-border hover:text-text-primary'
+                ? 'bg-primary-subtle text-primary-text border border-primary-border font-semibold'
+                : 'bg-surface text-text-secondary border border-border hover:text-text-primary hover:bg-surface-muted'
             }`}
           >
             All Tasks ({tasks.length})
@@ -187,10 +188,10 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
                 key={s.id}
                 type="button"
                 onClick={() => handleStageSelect(isSelected ? null : s.id)}
-                className={`min-h-[36px] px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                className={`min-h-[32px] px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isSelected
-                    ? 'bg-primary/10 text-primary border border-primary/30 font-bold'
-                    : 'bg-surface text-text-secondary border border-border hover:text-text-primary'
+                    ? 'bg-primary-subtle text-primary-text border border-primary-border font-semibold'
+                    : 'bg-surface text-text-secondary border border-border hover:text-text-primary hover:bg-surface-muted'
                 }`}
               >
                 {s.label} ({stageTaskCount})
@@ -204,10 +205,10 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
               onClick={() =>
                 handleStageSelect(activeStageId === 'unassigned' ? null : 'unassigned')
               }
-              className={`min-h-[36px] px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+              className={`min-h-[32px] px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 activeStageId === 'unassigned'
-                  ? 'bg-primary/10 text-primary border border-primary/30 font-bold'
-                  : 'bg-surface text-text-secondary border border-border hover:text-text-primary'
+                  ? 'bg-primary-subtle text-primary-text border border-primary-border font-semibold'
+                  : 'bg-surface text-text-secondary border border-border hover:text-text-primary hover:bg-surface-muted'
               }`}
             >
               Unassigned ({tasks.filter((t) => !t.stage_id).length})
@@ -217,12 +218,12 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
 
         {/* Status Filter Toggle */}
         <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-auto">
-          <span className="text-xs text-text-secondary font-semibold">Show:</span>
+          <span className="text-xs text-text-muted font-medium">Show:</span>
           <select
             value={statusFilter}
             aria-label="Filter tasks by status"
             onChange={(e) => setStatusFilter(e.target.value as 'all' | 'open' | 'done')}
-            className="min-h-[36px] px-3 py-1.5 bg-surface border border-border rounded-lg text-xs font-medium text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            className="min-h-[32px] px-3 py-1 bg-surface border border-border rounded-lg text-xs font-medium text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <option value="all">All</option>
             <option value="open">Open Only</option>
@@ -233,41 +234,42 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
 
       {/* Loading & Error States */}
       {isLoading && (
-        <div className="flex items-center justify-center py-8 text-text-secondary bg-surface-muted/30 border border-border rounded-xl">
+        <div className="flex items-center justify-center py-8 text-text-muted bg-surface-muted/30 border border-border rounded-xl">
           <Loader2 className="w-5 h-5 animate-spin mr-2" />
           Loading tasks...
         </div>
       )}
 
       {error && (
-        <div className="p-3.5 bg-status-danger/8 border border-status-danger/25 rounded-xl text-xs text-status-danger">
+        <div className="p-3.5 bg-status-danger-subtle border border-status-danger-border rounded-xl text-xs font-medium text-status-danger-text">
           Failed to load project tasks. Please try refreshing.
         </div>
       )}
 
       {/* Empty State */}
       {!isLoading && !error && filteredTasks.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-10 px-4 bg-surface-muted/30 border border-border border-dashed rounded-xl text-center">
-          <CheckSquare className="w-8 h-8 text-text-secondary mb-2" />
-          <h4 className="text-sm font-semibold text-text-primary mb-1">
-            {tasks.length === 0 ? 'No action items yet' : 'No tasks match current filter'}
-          </h4>
-          <p className="text-xs text-text-secondary max-w-sm mb-4">
-            {tasks.length === 0
+        <EmptyState
+          icon={CheckSquare}
+          title={tasks.length === 0 ? 'No action items yet' : 'No tasks match current filter'}
+          description={
+            tasks.length === 0
               ? 'Track pre-production checklists, gear prep, editing batches, and client tasks.'
-              : 'Try clearing your stage or status filters.'}
-          </p>
-          {!isForceClosed && tasks.length === 0 && (
-            <button
-              type="button"
-              onClick={() => setIsCreateOpen(true)}
-              className="inline-flex min-h-[40px] items-center gap-1.5 px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:opacity-90 rounded-lg transition-colors shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              <Plus className="w-4 h-4" />
-              Add First Task
-            </button>
-          )}
-        </div>
+              : 'Try clearing your stage or status filters.'
+          }
+          variant="section"
+          action={
+            !isForceClosed && tasks.length === 0 ? (
+              <button
+                type="button"
+                onClick={() => setIsCreateOpen(true)}
+                className="inline-flex cursor-pointer items-center gap-1.5 px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-lg transition-colors shadow-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Plus className="w-4 h-4" strokeWidth={2} />
+                Add First Task
+              </button>
+            ) : undefined
+          }
+        />
       )}
 
       {/* Tasks List */}
@@ -310,23 +312,23 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
       {/* Delete Confirmation Modal */}
       {deletingTaskId && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-sm p-5 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl space-y-3">
-            <div className="flex items-center gap-2 text-red-400">
-              <AlertTriangle className="w-4 h-4" />
-              <h3 className="text-sm font-bold text-neutral-100">Delete Action Item?</h3>
+          <div className="w-full max-w-sm p-5 bg-surface border border-border rounded-xl shadow-sheet space-y-3">
+            <div className="flex items-center gap-2 text-status-danger-text">
+              <AlertTriangle className="w-4 h-4" strokeWidth={1.75} />
+              <h3 className="text-sm font-semibold text-text-primary">Delete Action Item?</h3>
             </div>
-            <p className="text-xs text-neutral-400 leading-relaxed">
+            <p className="text-xs text-text-secondary leading-relaxed">
               Are you sure you want to delete this task? This action cannot be undone.
             </p>
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setDeletingTaskId(null)}
-                className="px-3 py-1.5 text-xs text-neutral-400 hover:text-neutral-200"
+                className="px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary cursor-pointer"
               >
                 Cancel
               </button>
@@ -334,7 +336,7 @@ export const ProjectTasksSection: React.FC<ProjectTasksSectionProps> = ({
                 type="button"
                 disabled={isDeletingTask}
                 onClick={() => handleDeleteConfirm(deletingTaskId)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-red-600 hover:bg-red-500 rounded-md"
+                className="inline-flex cursor-pointer items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-status-danger hover:bg-status-danger/90 rounded-md"
               >
                 {isDeletingTask && <Loader2 className="w-3 h-3 animate-spin" />}
                 Confirm Delete

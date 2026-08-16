@@ -8,26 +8,26 @@ export function WorkflowTemplatesRoute() {
   const { currentWorkspace } = useWorkspace();
 
   if (!currentWorkspace) {
-    return <div className="py-12 text-center text-neutral-400">Workspace not loaded.</div>;
+    return <div className="py-12 text-center text-text-muted">Workspace not loaded.</div>;
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 border-b border-border-subtle pb-5">
         <button
           type="button"
           onClick={() => navigate('/settings')}
           aria-label="Back to Settings"
-          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-neutral-800 bg-neutral-900 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 transition-colors"
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface text-text-muted hover:text-text-primary hover:bg-surface-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
         </button>
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-neutral-100 sm:text-2xl">
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary leading-tight">
             Workflow Templates
           </h1>
-          <p className="text-xs text-neutral-400 mt-0.5">
+          <p className="text-xs text-text-secondary mt-0.5">
             Manage reusable production stage pipelines to standardize project workflows.
           </p>
         </div>

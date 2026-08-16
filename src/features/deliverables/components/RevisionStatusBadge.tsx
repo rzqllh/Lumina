@@ -15,37 +15,38 @@ export const RevisionStatusBadge: React.FC<RevisionStatusBadgeProps> = ({
       case 'requested':
         return {
           label: 'Requested',
-          style: 'bg-rose-50 text-rose-700 border-rose-200',
+          style: 'bg-status-danger-subtle text-status-danger-text border-status-danger-border',
         };
       case 'in_progress':
         return {
           label: 'In Progress',
-          style: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+          style: 'bg-status-info-subtle text-status-info-text border-status-info-border',
         };
       case 'delivered':
         return {
           label: 'Delivered',
-          style: 'bg-sky-50 text-sky-700 border-sky-200',
+          style: 'bg-status-info-subtle text-status-info-text border-status-info-border',
         };
       case 'awaiting_review':
         return {
           label: 'Awaiting Review',
-          style: 'bg-amber-50 text-amber-700 border-amber-200',
+          style: 'bg-status-warning-subtle text-status-warning-text border-status-warning-border',
         };
       case 'approved':
         return {
           label: 'Approved',
-          style: 'bg-emerald-50 text-emerald-700 border-emerald-200 font-bold',
+          style:
+            'bg-status-success-subtle text-status-success-text border-status-success-border font-semibold',
         };
       case 'changes_requested':
         return {
           label: 'Changes Requested',
-          style: 'bg-purple-50 text-purple-700 border-purple-200',
+          style: 'bg-primary-subtle text-primary-text border-primary-border',
         };
       default:
         return {
           label: status,
-          style: 'bg-zinc-100 text-zinc-600 border-zinc-200',
+          style: 'bg-surface-muted text-text-secondary border-border-subtle',
         };
     }
   };
@@ -55,7 +56,7 @@ export const RevisionStatusBadge: React.FC<RevisionStatusBadgeProps> = ({
   return (
     <span
       data-testid={`revision-status-${status}`}
-      className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium ${style} ${className}`}
+      className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${style} ${className}`}
     >
       {label}
     </span>

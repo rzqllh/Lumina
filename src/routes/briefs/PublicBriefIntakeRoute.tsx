@@ -67,7 +67,7 @@ export function PublicBriefIntakeRoute() {
           data-testid="brief-submission-success"
           className="max-w-md w-full rounded-2xl border border-border bg-surface p-8 text-center shadow-xl space-y-4 animate-in fade-in zoom-in-95 duration-200"
         >
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-status-success-subtle text-status-success-text border border-status-success-border">
             <CheckCircle2 className="h-8 w-8" />
           </div>
           <div>

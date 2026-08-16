@@ -12,23 +12,23 @@ export function PricingSummary({ projectServices }: PricingSummaryProps) {
 
   return (
     <div
-      className="mt-2 rounded-xl border border-primary/20 bg-purple-50/60 px-4 py-3.5"
+      className="mt-2 rounded-xl border border-primary-border bg-primary-subtle px-4 py-3.5"
       role="region"
       aria-label="Project value summary"
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-text-secondary">
-          <DollarSign className="h-4 w-4 text-primary" aria-hidden="true" />
-          <span className="text-xs font-bold uppercase tracking-wide text-text-secondary">
+          <DollarSign className="h-4 w-4 text-primary-text" aria-hidden="true" strokeWidth={1.75} />
+          <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
             Project Value
           </span>
-          <span className="text-xs text-text-muted">
+          <span className="text-xs text-text-muted tabular-nums">
             ({lineCount} {lineCount === 1 ? 'service' : 'services'})
           </span>
         </div>
         <span
           data-testid="project-value-total"
-          className="text-base font-bold tabular-nums text-primary"
+          className="text-base font-semibold tabular-nums text-primary-text"
           aria-label={`Project total value: ${formatIDR(projectValue)}`}
         >
           {formatIDR(projectValue)}

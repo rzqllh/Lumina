@@ -77,8 +77,12 @@ export const CollaboratorFormModal: React.FC<CollaboratorFormModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-primary border border-purple-200">
-              {isEditing ? <UserCheck className="h-5 w-5" /> : <UserPlus className="h-5 w-5" />}
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-subtle text-primary-text border border-primary-border">
+              {isEditing ? (
+                <UserCheck className="h-5 w-5" strokeWidth={1.75} />
+              ) : (
+                <UserPlus className="h-5 w-5" strokeWidth={1.75} />
+              )}
             </div>
             <div>
               <h2 id="collaborator-modal-title" className="text-base font-bold text-text-primary">

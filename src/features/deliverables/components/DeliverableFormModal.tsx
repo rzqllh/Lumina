@@ -85,16 +85,26 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
       aria-labelledby="deliverable-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs animate-in fade-in"
     >
-      <div className="relative w-full max-w-lg rounded-2xl border border-border bg-surface shadow-xl flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-lg rounded-xl border border-border bg-surface shadow-sheet flex flex-col max-h-[90vh] overflow-hidden">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Package className="h-4 w-4" />
+        <div className="flex items-center justify-between border-b border-border px-6 py-4 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-primary-text border border-primary-border">
+              <Package className="h-4 w-4" strokeWidth={1.75} />
             </div>
-            <h2 id="deliverable-modal-title" className="text-base font-bold text-text-primary">
-              {isEditing ? 'Edit Deliverable' : 'Add Promised Deliverable'}
-            </h2>
+            <div>
+              <h2
+                id="deliverable-modal-title"
+                className="text-base font-semibold text-text-primary"
+              >
+                {isEditing ? 'Edit Deliverable' : 'Add Promised Deliverable'}
+              </h2>
+              <p className="text-xs text-text-secondary">
+                {isEditing
+                  ? 'Update deliverable details and deadline.'
+                  : 'Add a promised client asset.'}
+              </p>
+            </div>
           </div>
           <button
             type="button"
@@ -102,7 +112,7 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
             aria-label="Close modal"
             className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
         </div>
 
@@ -115,19 +125,19 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
           <div>
             <label
               htmlFor="deliverable-label"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
-              Deliverable Title <span className="text-status-danger">*</span>
+              Deliverable Title <span className="text-status-danger-text">*</span>
             </label>
             <input
               id="deliverable-label"
               type="text"
               placeholder="e.g., 50 Edited Photos, 4K Highlight Reel, Reels Cut"
               {...register('label')}
-              className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             {errors.label && (
-              <p className="mt-1 text-xs text-status-danger">{errors.label.message}</p>
+              <p className="mt-1 text-xs text-status-danger-text">{errors.label.message}</p>
             )}
           </div>
 
@@ -136,7 +146,7 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
             <div>
               <label
                 htmlFor="deliverable-quantity"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 Quantity (Units/Files)
               </label>
@@ -146,17 +156,17 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
                 min="1"
                 placeholder="e.g., 50"
                 {...register('quantity', { valueAsNumber: true })}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.quantity && (
-                <p className="mt-1 text-xs text-status-danger">{errors.quantity.message}</p>
+                <p className="mt-1 text-xs text-status-danger-text">{errors.quantity.message}</p>
               )}
             </div>
 
             <div>
               <label
                 htmlFor="deliverable-type"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 Category / Format
               </label>
@@ -165,7 +175,7 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
                 type="text"
                 placeholder="e.g., Video, Photos, Album"
                 {...register('type_label')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </div>
@@ -175,7 +185,7 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
             <div>
               <label
                 htmlFor="deliverable-deadline"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 Target Delivery Deadline
               </label>
@@ -183,21 +193,21 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
                 id="deliverable-deadline"
                 type="date"
                 {...register('deadline')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
             <div>
               <label
                 htmlFor="deliverable-status"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 Status
               </label>
               <select
                 id="deliverable-status"
                 {...register('status')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value="planned">Planned</option>
                 <option value="in_progress">In Progress</option>
@@ -213,7 +223,7 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
           <div>
             <label
               htmlFor="deliverable-notes"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
               Notes & Technical Specs
             </label>
@@ -222,7 +232,7 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
               rows={3}
               placeholder="Resolution, aspect ratio, audio mix notes, export settings..."
               {...register('notes')}
-              className="w-full rounded-xl border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
@@ -232,7 +242,7 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="cursor-pointer rounded-xl border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors disabled:opacity-50"
+              className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
@@ -240,7 +250,7 @@ export const DeliverableFormModal: React.FC<DeliverableFormModalProps> = ({
               type="submit"
               data-testid="deliverable-submit-btn"
               disabled={isSubmitting}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

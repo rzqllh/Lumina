@@ -276,7 +276,7 @@ export function ProjectServiceForm({
 
       {/* Live preview */}
       <div
-        className="rounded-xl border border-primary/20 bg-purple-50/50 px-4 py-3"
+        className="rounded-xl border border-primary-border bg-primary-subtle px-4 py-3"
         aria-live="polite"
         aria-atomic="true"
       >

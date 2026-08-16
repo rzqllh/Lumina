@@ -60,22 +60,22 @@ export const ProjectClosureControl: React.FC<ProjectClosureControlProps> = ({ pr
   return (
     <div
       data-testid="project-closure-control"
-      className="rounded-2xl border border-border bg-surface p-5 shadow-xs space-y-4"
+      className="rounded-xl border border-border bg-surface p-5 shadow-2xs space-y-4"
     >
       {/* Error Alert */}
       {errorMsg && (
         <div
           role="alert"
-          className="flex items-center justify-between rounded-xl border border-status-danger/25 bg-status-danger/8 p-3 text-xs text-status-danger"
+          className="flex items-center justify-between rounded-lg border border-status-danger-border bg-status-danger-subtle p-3 text-xs text-status-danger-text"
         >
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0" />
+            <AlertCircle className="h-4 w-4 shrink-0" strokeWidth={1.75} />
             <p className="font-medium">{errorMsg}</p>
           </div>
           <button
             type="button"
             onClick={() => setErrorMsg(null)}
-            className="text-[11px] font-bold underline cursor-pointer"
+            className="text-xs font-semibold underline cursor-pointer"
           >
             Dismiss
           </button>
@@ -87,10 +87,12 @@ export const ProjectClosureControl: React.FC<ProjectClosureControlProps> = ({ pr
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Lock className="h-4 w-4 text-text-muted" />
-              <h3 className="text-sm font-bold text-text-primary">Project Completion & Closure</h3>
+              <Lock className="h-4 w-4 text-text-muted" strokeWidth={1.75} />
+              <h3 className="text-base font-semibold text-text-primary">
+                Project Completion & Closure
+              </h3>
             </div>
-            <p className="text-xs text-text-muted">
+            <p className="text-xs text-text-secondary">
               {summary.canNormalClose
                 ? 'All deliverables are approved and full payment is received. Project is eligible for normal closure.'
                 : 'Normal closure requires all deliverables approved and full payment received.'}
@@ -104,9 +106,9 @@ export const ProjectClosureControl: React.FC<ProjectClosureControlProps> = ({ pr
               data-testid="normal-close-btn"
               disabled={!summary.canNormalClose || closeMutation.isPending || isSummaryLoading}
               onClick={handleNormalClose}
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white transition-all hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-status-success-text px-3.5 py-2 text-xs font-semibold text-white transition-all hover:bg-status-success-text/90 shadow-subtle disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <CheckCircle2 className="h-3.5 w-3.5" />
+              <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.75} />
               <span>{closeMutation.isPending ? 'Closing...' : 'Close Project'}</span>
             </button>
 
@@ -115,9 +117,9 @@ export const ProjectClosureControl: React.FC<ProjectClosureControlProps> = ({ pr
               type="button"
               data-testid="open-force-close-modal-btn"
               onClick={() => setIsForceCloseModalOpen(true)}
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-status-danger/30 bg-surface px-3 py-2 text-xs font-semibold text-status-danger transition-colors hover:bg-status-danger/10"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-status-danger-border bg-status-danger-subtle px-3 py-2 text-xs font-semibold text-status-danger-text transition-colors hover:bg-status-danger-subtle/80"
             >
-              <AlertTriangle className="h-3.5 w-3.5" />
+              <AlertTriangle className="h-3.5 w-3.5" strokeWidth={1.75} />
               <span>Force-Close Override</span>
             </button>
           </div>
@@ -128,17 +130,17 @@ export const ProjectClosureControl: React.FC<ProjectClosureControlProps> = ({ pr
       {isClosed && (
         <div
           data-testid="project-closed-banner"
-          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4"
+          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl border border-status-success-border bg-status-success-subtle p-4"
         >
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-200">
-              <CheckCircle2 className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-surface border border-status-success-border text-status-success-text">
+              <CheckCircle2 className="h-5 w-5" strokeWidth={1.75} />
             </div>
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-status-success-text">
                 Project Officially Closed
               </h4>
-              <p className="text-xs text-emerald-700">
+              <p className="text-xs text-status-success-text/90">
                 Deliverables approved and full payment settled.
                 {project.closed_at && (
                   <span> Closed on {new Date(project.closed_at).toLocaleDateString()}.</span>
@@ -152,9 +154,9 @@ export const ProjectClosureControl: React.FC<ProjectClosureControlProps> = ({ pr
             data-testid="reopen-project-btn"
             onClick={handleReopen}
             disabled={reopenMutation.isPending}
-            className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-primary shadow-2xs hover:bg-surface-muted transition-colors disabled:opacity-50"
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-primary shadow-subtle hover:bg-surface-muted transition-colors disabled:opacity-50"
           >
-            <Unlock className="h-3.5 w-3.5" />
+            <Unlock className="h-3.5 w-3.5" strokeWidth={1.75} />
             <span>{reopenMutation.isPending ? 'Reopening...' : 'Reopen Project'}</span>
           </button>
         </div>
@@ -164,14 +166,14 @@ export const ProjectClosureControl: React.FC<ProjectClosureControlProps> = ({ pr
       {isForceClosed && (
         <div
           data-testid="project-force-closed-banner"
-          className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 rounded-xl border border-status-danger/25 bg-status-danger/5 p-4"
+          className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 rounded-xl border border-status-danger-border bg-status-danger-subtle p-4"
         >
           <div className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-status-danger/10 text-status-danger border border-status-danger/20">
-              <ShieldAlert className="h-5 w-5" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface text-status-danger-text border border-status-danger-border">
+              <ShieldAlert className="h-5 w-5" strokeWidth={1.75} />
             </div>
             <div className="space-y-1">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-status-danger">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-status-danger-text">
                 Project Force-Closed (Operational Freeze Active)
               </h4>
               <p className="text-xs text-text-secondary">
@@ -183,7 +185,7 @@ export const ProjectClosureControl: React.FC<ProjectClosureControlProps> = ({ pr
                 </p>
               )}
               {project.force_closed_at && (
-                <p className="text-[11px] text-text-muted">
+                <p className="text-xs text-text-muted">
                   Recorded on {new Date(project.force_closed_at).toLocaleString()}
                 </p>
               )}
@@ -195,9 +197,9 @@ export const ProjectClosureControl: React.FC<ProjectClosureControlProps> = ({ pr
             data-testid="reopen-force-closed-btn"
             onClick={handleReopen}
             disabled={reopenMutation.isPending}
-            className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-border bg-surface px-3.5 py-2 text-xs font-semibold text-text-primary shadow-2xs hover:bg-surface-muted transition-colors disabled:opacity-50 shrink-0 self-start sm:self-center"
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-surface px-3.5 py-2 text-xs font-semibold text-text-primary shadow-subtle hover:bg-surface-muted transition-colors disabled:opacity-50 shrink-0 self-start sm:self-center"
           >
-            <Unlock className="h-3.5 w-3.5" />
+            <Unlock className="h-3.5 w-3.5" strokeWidth={1.75} />
             <span>{reopenMutation.isPending ? 'Reopening...' : 'Reopen Project'}</span>
           </button>
         </div>

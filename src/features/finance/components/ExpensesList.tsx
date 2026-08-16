@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Tag, Edit2, Trash2, Plus, AlertCircle, Receipt } from 'lucide-react';
 import { ExpenseFormModal } from './ExpenseFormModal';
+import { EmptyState } from '@/components/ui/empty-state';
 import { formatMoney } from '@/lib/money';
 import { useProjectExpenses, useCreateExpense, useUpdateExpense, useDeleteExpense } from '../hooks';
 import type { Expense } from '../types';
@@ -111,21 +112,19 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
 
   return (
     <div data-testid="expenses-list-container" className="space-y-4">
-      {/* Subheader */}
-      <div className="flex items-center justify-between gap-4">
+      {/* List Header */}
+      <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-text-muted">
-              Project Direct Expenses ({expenses.length})
-            </h4>
+            <h4 className="text-sm font-semibold text-text-primary">Direct Project Expenses</h4>
             {expenses.length > 0 && (
-              <span className="text-xs font-bold text-text-primary">
-                • {formatMoney(totalExpenseAmount, currency)}
+              <span className="text-xs text-text-secondary tabular-nums font-normal">
+                (Total: {formatMoney(totalExpenseAmount, currency)})
               </span>
             )}
           </div>
-          <p className="text-xs text-text-muted">
-            Equipment rentals, transportation, permits, and miscellaneous project costs
+          <p className="text-xs text-text-secondary">
+            Production costs, equipment rentals, permits, and travel
           </p>
         </div>
 
@@ -134,28 +133,28 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
             type="button"
             data-testid="add-expense-btn"
             onClick={handleOpenCreateModal}
-            className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-98"
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
             <span>Record Expense</span>
           </button>
         )}
       </div>
 
-      {/* Global Error Alert */}
+      {/* Global Error Notice */}
       {actionError && (
         <div
           role="alert"
-          className="flex items-center justify-between rounded-xl border border-status-danger/25 bg-status-danger/8 p-3 text-xs text-status-danger"
+          className="flex items-center justify-between rounded-lg border border-status-danger-border bg-status-danger-subtle p-3 text-xs text-status-danger-text"
         >
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0" />
+            <AlertCircle className="h-4 w-4 shrink-0" strokeWidth={1.75} />
             <p className="font-medium">{actionError}</p>
           </div>
           <button
             type="button"
             onClick={() => setActionError(null)}
-            className="text-[11px] font-bold underline cursor-pointer"
+            className="text-xs font-semibold underline cursor-pointer"
           >
             Dismiss
           </button>
@@ -175,17 +174,17 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
         <div
           role="alert"
           data-testid="expenses-error"
-          className="flex flex-col items-center justify-center rounded-xl border border-status-danger/25 bg-surface p-6 text-center"
+          className="flex flex-col items-center justify-center rounded-xl border border-status-danger-border bg-surface p-6 text-center"
         >
-          <AlertCircle className="h-6 w-6 text-status-danger mb-1" />
-          <h4 className="text-xs font-bold text-text-primary">Failed to load expenses</h4>
-          <p className="mt-1 text-[11px] text-text-secondary">
+          <AlertCircle className="h-6 w-6 text-status-danger-text mb-1" strokeWidth={1.75} />
+          <h4 className="text-xs font-semibold text-text-primary">Failed to load expenses</h4>
+          <p className="mt-1 text-xs text-text-secondary">
             {error instanceof Error ? error.message : 'Unknown error occurred'}
           </p>
           <button
             type="button"
             onClick={() => refetch()}
-            className="mt-3 cursor-pointer rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90"
+            className="mt-3 cursor-pointer rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors"
           >
             Retry
           </button>
@@ -194,29 +193,24 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
 
       {/* Empty State */}
       {!isLoading && !error && expenses.length === 0 && (
-        <div
-          data-testid="expenses-empty-state"
-          className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface-muted/30 p-8 text-center"
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface border border-border text-text-muted shadow-2xs mb-2">
-            <Receipt className="h-5 w-5" />
-          </div>
-          <h4 className="text-xs font-bold text-text-primary">No project expenses recorded</h4>
-          <p className="mt-1 max-w-xs text-[11px] text-text-muted">
-            Track gear rental, vehicle fuel, permits, or studio booking fees for accurate profit
-            margins.
-          </p>
-          {!isForceClosed && (
-            <button
-              type="button"
-              data-testid="empty-add-expense-btn"
-              onClick={handleOpenCreateModal}
-              className="mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-primary shadow-2xs hover:bg-surface-muted transition-colors"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>Record First Expense</span>
-            </button>
-          )}
+        <div data-testid="expenses-empty-state">
+          <EmptyState
+            icon={Receipt}
+            title="No project expenses logged"
+            description="Log direct production costs like equipment rentals, travel, location permits, or props to accurately calculate profit margins."
+            action={
+              !isForceClosed ? (
+                <button
+                  type="button"
+                  onClick={handleOpenCreateModal}
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors"
+                >
+                  <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
+                  <span>Record First Expense</span>
+                </button>
+              ) : undefined
+            }
+          />
         </div>
       )}
 
@@ -227,65 +221,70 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
             <div
               key={e.id}
               data-testid={`expense-item-${e.id}`}
-              className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface p-3.5 shadow-2xs transition-all hover:border-border-subtle"
+              className="group rounded-xl border border-border bg-surface p-4 shadow-2xs transition-all hover:border-border-subtle"
             >
-              {/* Left Info */}
-              <div className="space-y-1 min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-bold text-text-primary truncate">{e.label}</span>
-                  {e.category && (
-                    <span className="inline-flex items-center gap-1 rounded-md bg-surface-muted px-2 py-0.5 text-[11px] font-medium text-text-secondary border border-border-subtle">
-                      <Tag className="h-3 w-3" />
-                      {e.category}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary">
-                  <span className="flex items-center gap-1 text-text-muted">
-                    <Calendar className="h-3.5 w-3.5" />
-                    {formatDate(e.date)}
-                  </span>
-                  {e.notes && (
-                    <span className="text-text-muted italic truncate max-w-xs">"{e.notes}"</span>
-                  )}
-                </div>
-              </div>
-
-              {/* Right: Amount & Actions */}
-              <div className="flex items-center justify-between sm:justify-end gap-3 self-end sm:self-center shrink-0">
-                <p
-                  data-testid={`expense-amount-${e.id}`}
-                  className="text-sm sm:text-base font-bold text-text-primary"
-                >
-                  {formatMoney(e.amount, currency)}
-                </p>
-
-                {!isForceClosed && (
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      data-testid={`edit-expense-${e.id}-btn`}
-                      onClick={() => handleOpenEditModal(e)}
-                      title="Edit Expense"
-                      aria-label="Edit expense"
-                      className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
-                    >
-                      <Edit2 className="h-3.5 w-3.5" />
-                    </button>
-
-                    <button
-                      type="button"
-                      data-testid={`delete-expense-${e.id}-btn`}
-                      onClick={() => setExpenseToDelete(e.id)}
-                      title="Delete Expense"
-                      aria-label="Delete expense"
-                      className="flex h-7 w-7 items-center justify-center rounded-lg border border-status-danger/20 bg-surface text-status-danger hover:bg-status-danger/10 transition-colors cursor-pointer"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                {/* Left: Info */}
+                <div className="space-y-1 flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-sm font-semibold text-text-primary">{e.label}</span>
+                    {e.category && (
+                      <span className="inline-flex items-center gap-1 rounded-md bg-surface-muted px-2 py-0.5 text-xs font-medium text-text-secondary border border-border-subtle">
+                        <Tag className="h-3 w-3 text-text-muted" strokeWidth={1.75} />
+                        {e.category}
+                      </span>
+                    )}
                   </div>
-                )}
+
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary">
+                    <span className="flex items-center gap-1.5 text-text-muted">
+                      <Calendar className="h-3.5 w-3.5" strokeWidth={1.75} />
+                      {formatDate(e.date)}
+                    </span>
+                  </div>
+
+                  {e.notes && (
+                    <p className="text-xs text-text-muted italic truncate max-w-sm pt-0.5">
+                      "{e.notes}"
+                    </p>
+                  )}
+                </div>
+
+                {/* Right: Amount & Actions */}
+                <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1 sm:pt-0">
+                  <span
+                    data-testid={`expense-amount-${e.id}`}
+                    className="text-sm sm:text-base font-bold text-status-danger-text tabular-nums tracking-tight"
+                  >
+                    -{formatMoney(e.amount, currency)}
+                  </span>
+
+                  {!isForceClosed && (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        data-testid={`edit-expense-btn-${e.id}`}
+                        onClick={() => handleOpenEditModal(e)}
+                        title="Edit Expense"
+                        aria-label="Edit expense"
+                        className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
+                      >
+                        <Edit2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+                      </button>
+
+                      <button
+                        type="button"
+                        data-testid={`delete-expense-btn-${e.id}`}
+                        onClick={() => setExpenseToDelete(e.id)}
+                        title="Delete Expense"
+                        aria-label="Delete expense"
+                        className="flex h-7 w-7 items-center justify-center rounded-lg border border-status-danger-border bg-surface text-status-danger-text hover:bg-status-danger-subtle transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -310,8 +309,8 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
           aria-labelledby="delete-expense-title"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs animate-in fade-in"
         >
-          <div className="w-full max-w-sm rounded-2xl border border-border bg-surface p-6 shadow-xl space-y-4">
-            <h3 id="delete-expense-title" className="text-sm font-bold text-text-primary">
+          <div className="w-full max-w-sm rounded-xl border border-border bg-surface p-6 shadow-sheet space-y-4">
+            <h3 id="delete-expense-title" className="text-base font-semibold text-text-primary">
               Delete Project Expense?
             </h3>
             <p className="text-xs text-text-secondary">
@@ -321,7 +320,7 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
               <button
                 type="button"
                 onClick={() => setExpenseToDelete(null)}
-                className="cursor-pointer rounded-xl border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors"
+                className="cursor-pointer rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors"
               >
                 Cancel
               </button>
@@ -330,7 +329,7 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({
                 data-testid="confirm-delete-expense-btn"
                 onClick={handleDeleteConfirm}
                 disabled={deleteMutation.isPending}
-                className="cursor-pointer rounded-xl bg-status-danger px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+                className="cursor-pointer rounded-lg bg-status-danger px-3 py-1.5 text-xs font-semibold text-white hover:bg-status-danger/90 transition-colors shadow-subtle disabled:opacity-50"
               >
                 {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
               </button>

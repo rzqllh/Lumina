@@ -46,23 +46,23 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="apply-template-title"
     >
-      <div className="relative w-full max-w-xl max-h-[85vh] flex flex-col bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-xl max-h-[85vh] flex flex-col bg-surface border border-border rounded-xl shadow-sheet overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-              <Sparkles className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-lg bg-primary-subtle border border-primary-border flex items-center justify-center text-primary-text">
+              <Sparkles className="w-4 h-4" strokeWidth={1.75} />
             </div>
             <div>
-              <h2 id="apply-template-title" className="text-base font-bold text-neutral-100">
+              <h2 id="apply-template-title" className="text-base font-semibold text-text-primary">
                 Apply Workflow Template
               </h2>
-              <p className="text-xs text-neutral-400">
+              <p className="text-xs text-text-secondary">
                 Snapshot preset stages directly into this project.
               </p>
             </div>
@@ -71,34 +71,34 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="p-1.5 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-lg transition-colors"
+            className="p-1.5 text-text-muted hover:text-text-primary hover:bg-surface-muted rounded-lg transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" strokeWidth={1.75} />
           </button>
         </div>
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {isLoading && (
-            <div className="flex items-center justify-center py-12 text-neutral-400">
+            <div className="flex items-center justify-center py-12 text-text-muted">
               <Loader2 className="w-5 h-5 animate-spin mr-2" />
               Loading workflow templates...
             </div>
           )}
 
           {error && (
-            <div className="p-3.5 bg-red-950/40 border border-red-800/60 rounded-lg text-xs text-red-300">
+            <div className="p-3.5 bg-status-danger-subtle border border-status-danger-border rounded-lg text-xs font-medium text-status-danger-text">
               Failed to load workflow templates.
             </div>
           )}
 
           {!isLoading && !error && templates.length === 0 && (
-            <div className="text-center py-10 px-4 bg-neutral-950 border border-neutral-800 rounded-xl">
-              <Workflow className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
-              <p className="text-sm font-semibold text-neutral-300 mb-1">
+            <div className="text-center py-10 px-4 bg-surface-muted/50 border border-border rounded-xl">
+              <Workflow className="w-8 h-8 text-text-muted mx-auto mb-2" strokeWidth={1.75} />
+              <p className="text-sm font-semibold text-text-primary mb-1">
                 No active workflow templates
               </p>
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-text-secondary">
                 Create templates in the Catalog to apply them here.
               </p>
             </div>
@@ -108,7 +108,7 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
             <>
               {/* Template Picker */}
               <div className="space-y-2">
-                <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted">
                   Select Template:
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -120,17 +120,19 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
                         onClick={() => setSelectedTemplateId(tmpl.id)}
                         className={`p-3 rounded-lg border text-left cursor-pointer transition-all ${
                           isSelected
-                            ? 'bg-amber-500/10 border-amber-500/50 ring-1 ring-amber-500/30'
-                            : 'bg-neutral-950/60 border-neutral-800 hover:border-neutral-700'
+                            ? 'bg-primary-subtle border-primary-border ring-1 ring-primary/30'
+                            : 'bg-surface border-border hover:border-border-interactive'
                         }`}
                       >
                         <div className="flex items-center justify-between gap-1 mb-1">
-                          <h4 className="text-sm font-bold text-neutral-100 truncate">
+                          <h4 className="text-sm font-semibold text-text-primary truncate">
                             {tmpl.name}
                           </h4>
-                          {isSelected && <Check className="w-4 h-4 text-amber-400 shrink-0" />}
+                          {isSelected && (
+                            <Check className="w-4 h-4 text-primary-text shrink-0" strokeWidth={2} />
+                          )}
                         </div>
-                        <p className="text-xs text-neutral-400 line-clamp-1">
+                        <p className="text-xs text-text-secondary line-clamp-1 tabular-nums">
                           {tmpl.workflow_template_stages.length} stages
                         </p>
                       </div>
@@ -141,8 +143,8 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
 
               {/* Template Stages Preview */}
               {selectedTemplate && (
-                <div className="p-4 bg-neutral-950 border border-neutral-800 rounded-xl space-y-2.5">
-                  <span className="text-xs font-semibold text-neutral-300">
+                <div className="p-4 bg-surface-muted/40 border border-border rounded-xl space-y-2.5">
+                  <span className="text-xs font-semibold text-text-primary">
                     Template Pipeline Preview ({selectedTemplate.workflow_template_stages.length}{' '}
                     stages):
                   </span>
@@ -150,9 +152,9 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
                     {selectedTemplate.workflow_template_stages.map((s, idx) => (
                       <span
                         key={s.id || idx}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs text-neutral-300 bg-neutral-900 border border-neutral-800 rounded-md"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs text-text-primary bg-surface border border-border rounded-md"
                       >
-                        <span className="w-4 h-4 rounded-full bg-neutral-800 text-[10px] font-mono flex items-center justify-center text-neutral-400">
+                        <span className="w-4 h-4 rounded-full bg-surface-muted text-[10px] font-mono flex items-center justify-center text-text-secondary tabular-nums">
                           {idx + 1}
                         </span>
                         {s.label}
@@ -164,8 +166,8 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
 
               {/* Mode Selection (if project already has stages) */}
               {hasExistingStages && (
-                <div className="space-y-2 pt-2 border-t border-neutral-800">
-                  <label className="block text-xs font-semibold text-neutral-300">
+                <div className="space-y-2 pt-2 border-t border-border-subtle">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted">
                     Application Mode:
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -173,14 +175,14 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
                       onClick={() => setMode('append')}
                       className={`flex flex-col p-3 rounded-lg border cursor-pointer transition-all ${
                         mode === 'append'
-                          ? 'bg-amber-500/10 border-amber-500/50 ring-1 ring-amber-500/30'
-                          : 'bg-neutral-950/60 border-neutral-800 hover:border-neutral-700'
+                          ? 'bg-primary-subtle border-primary-border ring-1 ring-primary/30'
+                          : 'bg-surface border-border hover:border-border-interactive'
                       }`}
                     >
-                      <span className="text-xs font-bold text-neutral-200 mb-0.5">
+                      <span className="text-xs font-semibold text-text-primary mb-0.5">
                         Append Stages
                       </span>
-                      <span className="text-[11px] text-neutral-400">
+                      <span className="text-xs text-text-secondary">
                         Add these stages after your existing project stages.
                       </span>
                     </label>
@@ -189,14 +191,14 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
                       onClick={() => setMode('replace')}
                       className={`flex flex-col p-3 rounded-lg border cursor-pointer transition-all ${
                         mode === 'replace'
-                          ? 'bg-amber-500/10 border-amber-500/50 ring-1 ring-amber-500/30'
-                          : 'bg-neutral-950/60 border-neutral-800 hover:border-neutral-700'
+                          ? 'bg-primary-subtle border-primary-border ring-1 ring-primary/30'
+                          : 'bg-surface border-border hover:border-border-interactive'
                       }`}
                     >
-                      <span className="text-xs font-bold text-neutral-200 mb-0.5">
+                      <span className="text-xs font-semibold text-text-primary mb-0.5">
                         Replace Stages
                       </span>
-                      <span className="text-[11px] text-neutral-400">
+                      <span className="text-xs text-text-secondary">
                         Overwrite existing stages. Associated tasks will become unassigned.
                       </span>
                     </label>
@@ -208,11 +210,11 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 bg-neutral-950/50 border-t border-neutral-800 shrink-0">
+        <div className="flex items-center justify-end gap-3 px-6 py-4 bg-surface-muted/30 border-t border-border shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-xs font-semibold text-neutral-400 hover:text-neutral-200 rounded-lg transition-colors"
+            className="px-4 py-2 text-xs font-semibold text-text-secondary hover:text-text-primary rounded-lg transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -220,7 +222,7 @@ export const ApplyWorkflowTemplateModal: React.FC<ApplyWorkflowTemplateModalProp
             type="button"
             disabled={!selectedTemplateId || isApplying || templates.length === 0}
             onClick={handleApplySubmit}
-            className="inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold text-neutral-950 bg-amber-400 hover:bg-amber-300 disabled:opacity-50 rounded-lg transition-colors shadow-sm"
+            className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover disabled:opacity-50 rounded-lg transition-colors shadow-subtle"
           >
             {isApplying && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             {mode === 'replace' ? 'Replace & Apply Template' : 'Apply Template'}

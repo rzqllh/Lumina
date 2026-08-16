@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { Package as PackageIcon, Copy, Edit2, Layers } from 'lucide-react';
 import { formatIDR } from '@/lib/money';
+import { StatusBadge } from '@/components/ui/status-badge';
 import type { PackageWithItems } from '../types/catalogTypes';
 
 interface PackageCardProps {
@@ -20,35 +21,30 @@ export const PackageCard: React.FC<PackageCardProps> = ({
   return (
     <div
       data-testid={`package-card-${pkg.id}`}
-      className="flex flex-col justify-between rounded-2xl border border-border bg-surface p-5 shadow-xs transition-all hover:border-primary/40 hover:bg-surface-muted/30"
+      className="flex flex-col justify-between rounded-xl border border-border bg-surface p-5 shadow-subtle transition-all hover:border-border-interactive hover:bg-surface-muted/30"
     >
       <div>
         {/* Header: Title and Status */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-50 text-primary border border-purple-200 shrink-0">
-              <PackageIcon className="h-4 w-4" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-subtle text-primary-text border border-primary-border shrink-0">
+              <PackageIcon className="h-4 w-4" strokeWidth={1.75} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-text-primary">{pkg.name}</h3>
+              <h3 className="text-sm font-semibold text-text-primary">{pkg.name}</h3>
               <div className="flex items-center gap-2 mt-0.5 text-xs text-text-muted">
-                <span className="flex items-center gap-1 font-medium">
-                  <Layers className="h-3 w-3" />
+                <span className="flex items-center gap-1 font-medium tabular-nums">
+                  <Layers className="h-3 w-3" strokeWidth={1.75} />
                   {pkg.package_items.length} {pkg.package_items.length === 1 ? 'item' : 'items'}
                 </span>
               </div>
             </div>
           </div>
 
-          <span
-            className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-medium ${
-              pkg.is_active
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                : 'bg-zinc-100 text-zinc-600 border-zinc-200'
-            }`}
-          >
-            {pkg.is_active ? 'Active' : 'Archived'}
-          </span>
+          <StatusBadge
+            variant={pkg.is_active ? 'active' : 'archived'}
+            label={pkg.is_active ? 'Active' : 'Archived'}
+          />
         </div>
 
         {/* Description */}
@@ -57,17 +53,19 @@ export const PackageCard: React.FC<PackageCardProps> = ({
         )}
 
         {/* Line item snippets */}
-        <div className="mt-3 space-y-1 rounded-xl bg-surface-muted/40 p-2.5 border border-border-subtle text-xs text-text-secondary">
+        <div className="mt-3 space-y-1 rounded-lg bg-surface-muted/40 p-2.5 border border-border-subtle text-xs text-text-secondary">
           {pkg.package_items.slice(0, 3).map((item, i) => (
-            <div key={i} className="flex items-center justify-between text-[11px]">
+            <div key={i} className="flex items-center justify-between text-xs">
               <span className="truncate max-w-[160px] text-text-primary">
                 {item.quantity}× {item.label}
               </span>
-              <span className="text-text-muted">{formatIDR(item.quantity * item.unit_price)}</span>
+              <span className="text-text-muted tabular-nums">
+                {formatIDR(item.quantity * item.unit_price)}
+              </span>
             </div>
           ))}
           {pkg.package_items.length > 3 && (
-            <div className="text-[10px] font-medium text-text-muted pt-1 border-t border-border-subtle">
+            <div className="text-[10px] font-medium text-text-muted pt-1 border-t border-border-subtle tabular-nums">
               +{pkg.package_items.length - 3} more items...
             </div>
           )}
@@ -77,8 +75,10 @@ export const PackageCard: React.FC<PackageCardProps> = ({
       {/* Footer: Total and Actions */}
       <div className="mt-4 flex items-center justify-between border-t border-border-subtle pt-3">
         <div className="flex flex-col">
-          <span className="text-[10px] uppercase font-bold text-text-muted">Preset Total</span>
-          <span className="text-sm font-bold text-primary">{formatIDR(pkg.calculated_total)}</span>
+          <span className="text-[10px] uppercase font-semibold text-text-muted">Preset Total</span>
+          <span className="text-sm font-semibold tabular-nums text-primary-text">
+            {formatIDR(pkg.calculated_total)}
+          </span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -90,7 +90,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
             title="Duplicate package"
             className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
           >
-            <Copy className="h-3.5 w-3.5" />
+            <Copy className="h-3.5 w-3.5" strokeWidth={1.75} />
           </button>
           <button
             type="button"
@@ -98,7 +98,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
             onClick={() => navigate(`/packages/${pkg.id}/edit`)}
             className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Edit2 className="h-3.5 w-3.5" />
+            <Edit2 className="h-3.5 w-3.5" strokeWidth={1.75} />
             <span>Edit</span>
           </button>
         </div>

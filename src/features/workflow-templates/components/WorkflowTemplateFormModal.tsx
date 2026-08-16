@@ -95,19 +95,22 @@ export const WorkflowTemplateFormModal: React.FC<WorkflowTemplateFormModalProps>
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="workflow-template-modal-title"
     >
-      <div className="relative w-full max-w-xl max-h-[90vh] flex flex-col bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-xl max-h-[90vh] flex flex-col bg-surface border border-border rounded-xl shadow-sheet overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
           <div>
-            <h2 id="workflow-template-modal-title" className="text-lg font-bold text-neutral-100">
+            <h2
+              id="workflow-template-modal-title"
+              className="text-base font-semibold text-text-primary"
+            >
               {title || (isEdit ? 'Edit Workflow Template' : 'New Workflow Template')}
             </h2>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-text-secondary">
               {isEdit
                 ? 'Update reusable stages and template metadata.'
                 : 'Define reusable production stages for projects.'}
@@ -117,9 +120,9 @@ export const WorkflowTemplateFormModal: React.FC<WorkflowTemplateFormModalProps>
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="p-1.5 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-lg transition-colors"
+            className="p-1.5 text-text-muted hover:text-text-primary hover:bg-surface-muted rounded-lg transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" strokeWidth={1.75} />
           </button>
         </div>
 
@@ -133,36 +136,38 @@ export const WorkflowTemplateFormModal: React.FC<WorkflowTemplateFormModalProps>
             <div>
               <label
                 htmlFor="template-name"
-                className="block text-sm font-semibold text-neutral-200 mb-1"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1"
               >
-                Template Name <span className="text-red-400">*</span>
+                Template Name <span className="text-status-danger-text">*</span>
               </label>
               <input
                 id="template-name"
                 type="text"
                 {...register('name')}
                 placeholder="e.g. Standard Wedding, Corporate Video..."
-                className="w-full px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500/50"
+                className="w-full px-3.5 py-2 bg-surface border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
-              {errors.name && <p className="mt-1 text-xs text-red-400">{errors.name.message}</p>}
+              {errors.name && (
+                <p className="mt-1 text-xs text-status-danger-text">{errors.name.message}</p>
+              )}
             </div>
 
             <div>
               <label
                 htmlFor="template-description"
-                className="block text-sm font-semibold text-neutral-200 mb-1"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1"
               >
-                Description <span className="text-xs font-normal text-neutral-400">(optional)</span>
+                Description <span className="text-xs font-normal text-text-muted">(optional)</span>
               </label>
               <textarea
                 id="template-description"
                 rows={2}
                 {...register('description')}
                 placeholder="Brief description of when this workflow should be applied..."
-                className="w-full px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500/50"
+                className="w-full px-3.5 py-2 bg-surface border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.description && (
-                <p className="mt-1 text-xs text-red-400">{errors.description.message}</p>
+                <p className="mt-1 text-xs text-status-danger-text">{errors.description.message}</p>
               )}
             </div>
 
@@ -171,18 +176,18 @@ export const WorkflowTemplateFormModal: React.FC<WorkflowTemplateFormModalProps>
                 id="template-active"
                 type="checkbox"
                 {...register('is_active')}
-                className="w-4 h-4 rounded bg-neutral-950 border-neutral-800 text-amber-500 focus:ring-amber-500/30"
+                className="w-4 h-4 rounded border-border text-primary focus:ring-ring"
               />
               <label
                 htmlFor="template-active"
-                className="text-sm font-medium text-neutral-300 cursor-pointer"
+                className="text-xs font-medium text-text-secondary cursor-pointer"
               >
                 Active (available to apply in projects)
               </label>
             </div>
           </div>
 
-          <hr className="border-neutral-800" />
+          <hr className="border-border-subtle" />
 
           {/* Stages Editor */}
           <WorkflowTemplateStagesEditor
@@ -194,11 +199,11 @@ export const WorkflowTemplateFormModal: React.FC<WorkflowTemplateFormModalProps>
         </form>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 bg-neutral-950/50 border-t border-neutral-800 shrink-0">
+        <div className="flex items-center justify-end gap-3 px-6 py-4 bg-surface-muted/30 border-t border-border shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800 rounded-lg transition-colors"
+            className="px-4 py-2 text-xs font-semibold text-text-secondary hover:text-text-primary rounded-lg transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -206,7 +211,7 @@ export const WorkflowTemplateFormModal: React.FC<WorkflowTemplateFormModalProps>
             type="submit"
             form="workflow-template-form"
             disabled={isSubmitting}
-            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold text-neutral-950 bg-amber-400 hover:bg-amber-300 disabled:opacity-50 disabled:hover:bg-amber-400 rounded-lg transition-colors shadow-sm"
+            className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover disabled:opacity-50 rounded-lg transition-colors shadow-subtle"
           >
             {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
             {isEdit ? 'Save Changes' : 'Create Template'}

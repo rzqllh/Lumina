@@ -63,15 +63,15 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({
       aria-labelledby="revision-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs animate-in fade-in"
     >
-      <div className="relative w-full max-w-md rounded-2xl border border-border bg-surface shadow-xl flex flex-col">
+      <div className="relative w-full max-w-md rounded-xl border border-border bg-surface shadow-sheet flex flex-col overflow-hidden">
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50 text-rose-600 border border-rose-200">
-              <RefreshCw className="h-4 w-4" />
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-status-danger-subtle text-status-danger-text border border-status-danger-border">
+              <RefreshCw className="h-4 w-4" strokeWidth={1.75} />
             </div>
             <div>
-              <h2 id="revision-modal-title" className="text-base font-bold text-text-primary">
+              <h2 id="revision-modal-title" className="text-base font-semibold text-text-primary">
                 Log Revision #{nextRevNumber}
               </h2>
               <p className="text-xs text-text-muted truncate max-w-xs">{deliverable.label}</p>
@@ -83,7 +83,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({
             aria-label="Close modal"
             className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
         </div>
 
@@ -93,9 +93,9 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({
           <div>
             <label
               htmlFor="revision-feedback"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
-              Client Feedback / Change Requests <span className="text-status-danger">*</span>
+              Client Feedback / Change Requests <span className="text-status-danger-text">*</span>
             </label>
             <div className="relative">
               <textarea
@@ -103,11 +103,11 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({
                 rows={4}
                 placeholder="Specific adjustments requested by the client (timestamps, scene changes, color tweaks)..."
                 {...register('feedback')}
-                className="w-full rounded-xl border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             {errors.feedback && (
-              <p className="mt-1 text-xs text-status-danger">{errors.feedback.message}</p>
+              <p className="mt-1 text-xs text-status-danger-text">{errors.feedback.message}</p>
             )}
           </div>
 
@@ -115,7 +115,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({
           <div>
             <label
               htmlFor="revision-due-date"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
               Revised Due Date
             </label>
@@ -124,11 +124,11 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({
                 id="revision-due-date"
                 type="date"
                 {...register('due_date')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             {errors.due_date && (
-              <p className="mt-1 text-xs text-status-danger">{errors.due_date.message}</p>
+              <p className="mt-1 text-xs text-status-danger-text">{errors.due_date.message}</p>
             )}
           </div>
 
@@ -136,7 +136,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({
           <div>
             <label
               htmlFor="revision-notes"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
               Internal Notes (Optional)
             </label>
@@ -145,7 +145,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({
               type="text"
               placeholder="e.g., Export preset, editor assigned"
               {...register('notes')}
-              className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
@@ -155,7 +155,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="cursor-pointer rounded-xl border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors disabled:opacity-50"
+              className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
@@ -163,7 +163,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({
               type="submit"
               data-testid="revision-submit-btn"
               disabled={isSubmitting}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

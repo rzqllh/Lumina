@@ -64,7 +64,7 @@ export function PublicProjectStatusRoute() {
               <Sparkles className="h-4 w-4" />
               <span>Lumina Client Status Portal</span>
             </div>
-            <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-extrabold text-emerald-700 uppercase tracking-wide">
+            <span className="rounded-full bg-status-success-subtle border border-status-success-border px-3 py-1 text-xs font-bold text-status-success-text uppercase tracking-wide">
               {project.status.replace('_', ' ')}
             </span>
           </div>
@@ -190,11 +190,11 @@ export function PublicProjectStatusRoute() {
                     </div>
 
                     <span
-                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold capitalize self-start sm:self-auto ${
+                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize self-start sm:self-auto ${
                         del.status === 'approved'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          ? 'bg-status-success-subtle text-status-success-text border border-status-success-border'
                           : del.status === 'delivered'
-                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                            ? 'bg-status-info-subtle text-status-info-text border border-status-info-border'
                             : 'bg-surface-muted text-text-secondary border border-border'
                       }`}
                     >

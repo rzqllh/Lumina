@@ -56,28 +56,30 @@ export const WorkflowTemplateStagesEditor: React.FC<WorkflowTemplateStagesEditor
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <label className="block text-sm font-semibold text-neutral-200">
-            Workflow Stages <span className="text-red-400">*</span>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted">
+            Workflow Stages <span className="text-status-danger-text">*</span>
           </label>
-          <p className="text-xs text-neutral-400">
+          <p className="text-xs text-text-secondary">
             Define the sequential stages for projects using this template.
           </p>
         </div>
         <button
           type="button"
           onClick={handleApplyPresetGroup}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-md transition-colors"
+          className="inline-flex cursor-pointer items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-primary-text bg-primary-subtle hover:bg-primary-subtle/80 border border-primary-border rounded-md transition-colors self-start sm:self-auto"
         >
-          <Sparkles className="w-3.5 h-3.5" />
+          <Sparkles className="w-3.5 h-3.5" strokeWidth={1.75} />
           Load Standard Preset
         </button>
       </div>
 
-      {errors.stages?.root && <p className="text-xs text-red-400">{errors.stages.root.message}</p>}
+      {errors.stages?.root && (
+        <p className="text-xs text-status-danger-text">{errors.stages.root.message}</p>
+      )}
       {typeof errors.stages?.message === 'string' && (
-        <p className="text-xs text-red-400">{errors.stages.message}</p>
+        <p className="text-xs text-status-danger-text">{errors.stages.message}</p>
       )}
 
       <div className="space-y-2">
@@ -87,9 +89,9 @@ export const WorkflowTemplateStagesEditor: React.FC<WorkflowTemplateStagesEditor
           return (
             <div
               key={field.id}
-              className="flex items-center gap-2 p-2.5 bg-neutral-900/60 border border-neutral-800 rounded-lg group hover:border-neutral-700 transition-colors"
+              className="flex items-center gap-2 p-2.5 bg-surface border border-border rounded-lg group hover:border-border-interactive transition-colors"
             >
-              <div className="flex items-center justify-center w-6 h-6 rounded bg-neutral-800 text-xs font-mono font-medium text-neutral-400 shrink-0">
+              <div className="flex items-center justify-center w-6 h-6 rounded bg-surface-muted text-xs font-mono font-medium text-text-secondary shrink-0 tabular-nums">
                 {index + 1}
               </div>
 
@@ -98,9 +100,11 @@ export const WorkflowTemplateStagesEditor: React.FC<WorkflowTemplateStagesEditor
                   type="text"
                   {...register(`stages.${index}.label`)}
                   placeholder="e.g. Pre-Production, Shoot, Editing..."
-                  className="w-full px-3 py-1.5 bg-neutral-950 border border-neutral-800 rounded-md text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500/50"
+                  className="w-full px-3 py-1.5 bg-surface border border-border rounded-md text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
-                {fieldError && <p className="mt-1 text-xs text-red-400">{fieldError.message}</p>}
+                {fieldError && (
+                  <p className="mt-1 text-xs text-status-danger-text">{fieldError.message}</p>
+                )}
               </div>
 
               <div className="flex items-center gap-1 shrink-0">
@@ -109,27 +113,27 @@ export const WorkflowTemplateStagesEditor: React.FC<WorkflowTemplateStagesEditor
                   disabled={index === 0}
                   onClick={() => move(index, index - 1)}
                   aria-label={`Move stage ${index + 1} up`}
-                  className="p-1.5 text-neutral-400 hover:text-neutral-200 disabled:opacity-30 disabled:hover:text-neutral-400 rounded hover:bg-neutral-800"
+                  className="p-1.5 text-text-muted hover:text-text-primary disabled:opacity-30 disabled:hover:text-text-muted rounded hover:bg-surface-muted cursor-pointer"
                 >
-                  <ArrowUp className="w-4 h-4" />
+                  <ArrowUp className="w-4 h-4" strokeWidth={1.75} />
                 </button>
                 <button
                   type="button"
                   disabled={index === fields.length - 1}
                   onClick={() => move(index, index + 1)}
                   aria-label={`Move stage ${index + 1} down`}
-                  className="p-1.5 text-neutral-400 hover:text-neutral-200 disabled:opacity-30 disabled:hover:text-neutral-400 rounded hover:bg-neutral-800"
+                  className="p-1.5 text-text-muted hover:text-text-primary disabled:opacity-30 disabled:hover:text-text-muted rounded hover:bg-surface-muted cursor-pointer"
                 >
-                  <ArrowDown className="w-4 h-4" />
+                  <ArrowDown className="w-4 h-4" strokeWidth={1.75} />
                 </button>
                 <button
                   type="button"
                   disabled={fields.length <= 1}
                   onClick={() => remove(index)}
                   aria-label={`Remove stage ${index + 1}`}
-                  className="p-1.5 text-neutral-500 hover:text-red-400 disabled:opacity-30 disabled:hover:text-neutral-500 rounded hover:bg-neutral-800"
+                  className="p-1.5 text-text-muted hover:text-status-danger-text disabled:opacity-30 disabled:hover:text-text-muted rounded hover:bg-status-danger-subtle cursor-pointer"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4" strokeWidth={1.75} />
                 </button>
               </div>
             </div>
@@ -141,20 +145,20 @@ export const WorkflowTemplateStagesEditor: React.FC<WorkflowTemplateStagesEditor
         <button
           type="button"
           onClick={() => handleAddStage('')}
-          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-neutral-200 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 rounded-lg transition-colors"
+          className="inline-flex cursor-pointer items-center gap-1.5 px-3 py-2 text-xs font-semibold text-text-primary bg-surface border border-border hover:bg-surface-muted rounded-lg transition-colors"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4" strokeWidth={2} />
           Add Stage
         </button>
 
         <div className="flex flex-wrap items-center gap-1.5 ml-auto">
-          <span className="text-xs text-neutral-400">Quick add:</span>
+          <span className="text-xs text-text-muted">Quick add:</span>
           {COMMON_STAGE_PRESETS.slice(0, 4).map((preset) => (
             <button
               key={preset}
               type="button"
               onClick={() => handleAddStage(preset)}
-              className="px-2 py-1 text-xs text-neutral-400 hover:text-neutral-200 bg-neutral-900 border border-neutral-800 hover:border-neutral-700 rounded transition-colors"
+              className="px-2 py-1 text-xs text-text-secondary hover:text-text-primary bg-surface border border-border hover:bg-surface-muted rounded transition-colors cursor-pointer"
             >
               + {preset}
             </button>

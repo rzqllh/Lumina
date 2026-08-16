@@ -129,13 +129,13 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
                     const chipColor = (() => {
                       switch (event.type) {
                         case 'session':
-                          return 'text-indigo-800 bg-indigo-50';
+                          return 'text-primary-text bg-primary-subtle border border-primary-border';
                         case 'deliverable':
-                          return 'text-emerald-800 bg-emerald-50';
+                          return 'text-status-success-text bg-status-success-subtle border border-status-success-border';
                         case 'payment':
-                          return 'text-amber-800 bg-amber-50';
+                          return 'text-status-warning-text bg-status-warning-subtle border border-status-warning-border';
                         default:
-                          return 'text-purple-800 bg-purple-50';
+                          return 'text-status-info-text bg-status-info-subtle border border-status-info-border';
                       }
                     })();
 

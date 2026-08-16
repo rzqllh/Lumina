@@ -100,19 +100,19 @@ export const StageManagerModal: React.FC<StageManagerModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="stage-manager-title"
     >
-      <div className="relative w-full max-w-lg max-h-[85vh] flex flex-col bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-lg max-h-[85vh] flex flex-col bg-surface border border-border rounded-xl shadow-sheet overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
           <div>
-            <h2 id="stage-manager-title" className="text-base font-bold text-neutral-100">
+            <h2 id="stage-manager-title" className="text-base font-semibold text-text-primary">
               Customize Project Workflow Stages
             </h2>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-text-secondary">
               Add, rename, reorder, or remove stages for this project.
             </p>
           </div>
@@ -120,9 +120,9 @@ export const StageManagerModal: React.FC<StageManagerModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="p-1.5 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 rounded-lg transition-colors"
+            className="p-1.5 text-text-muted hover:text-text-primary hover:bg-surface-muted rounded-lg transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" strokeWidth={1.75} />
           </button>
         </div>
 
@@ -136,14 +136,14 @@ export const StageManagerModal: React.FC<StageManagerModalProps> = ({
                 value={newStageLabel}
                 onChange={(e) => setNewStageLabel(e.target.value)}
                 placeholder="New stage name (e.g. Gallery Review)..."
-                className="flex-1 px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                className="flex-1 px-3.5 py-2 bg-surface border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               <button
                 type="submit"
                 disabled={!newStageLabel.trim() || isSubmitting}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-neutral-950 bg-amber-400 hover:bg-amber-300 disabled:opacity-50 rounded-lg transition-colors shadow-sm shrink-0"
+                className="inline-flex cursor-pointer items-center gap-1.5 px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover disabled:opacity-50 rounded-lg transition-colors shadow-subtle shrink-0"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-4 h-4" strokeWidth={2} />
                 Add Stage
               </button>
             </form>
@@ -152,17 +152,17 @@ export const StageManagerModal: React.FC<StageManagerModalProps> = ({
           {/* Stages List */}
           <div className="space-y-2">
             {stages.length === 0 ? (
-              <p className="text-center py-6 text-xs text-neutral-500">
+              <p className="text-center py-6 text-xs text-text-muted">
                 No stages in this project yet. Add one above or apply a template.
               </p>
             ) : (
               stages.map((stage, idx) => (
                 <div
                   key={stage.id}
-                  className="flex items-center justify-between gap-2 p-3 bg-neutral-950/70 border border-neutral-800 rounded-lg"
+                  className="flex items-center justify-between gap-2 p-3 bg-surface border border-border rounded-lg"
                 >
                   <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <span className="w-5 h-5 rounded bg-neutral-800 text-[11px] font-mono flex items-center justify-center text-neutral-400 shrink-0">
+                    <span className="w-5 h-5 rounded bg-surface-muted text-[11px] font-mono flex items-center justify-center text-text-secondary shrink-0 tabular-nums">
                       {idx + 1}
                     </span>
 
@@ -172,7 +172,7 @@ export const StageManagerModal: React.FC<StageManagerModalProps> = ({
                           type="text"
                           value={editLabel}
                           onChange={(e) => setEditLabel(e.target.value)}
-                          className="flex-1 px-2.5 py-1 bg-neutral-900 border border-amber-500/50 rounded text-xs text-neutral-100 focus:outline-none"
+                          className="flex-1 px-2.5 py-1 bg-surface border border-border-interactive rounded text-xs text-text-primary focus:outline-none focus:ring-1 focus:ring-ring"
                           autoFocus
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') handleSaveEdit(stage.id);
@@ -183,24 +183,24 @@ export const StageManagerModal: React.FC<StageManagerModalProps> = ({
                           type="button"
                           disabled={isSubmitting}
                           onClick={() => handleSaveEdit(stage.id)}
-                          className="p-1 text-emerald-400 hover:bg-emerald-500/10 rounded"
+                          className="p-1 text-status-success-text hover:bg-status-success-subtle rounded cursor-pointer"
                         >
-                          <Check className="w-3.5 h-3.5" />
+                          <Check className="w-3.5 h-3.5" strokeWidth={2} />
                         </button>
                         <button
                           type="button"
                           onClick={() => setEditingId(null)}
-                          className="p-1 text-neutral-400 hover:bg-neutral-800 rounded"
+                          className="p-1 text-text-muted hover:bg-surface-muted rounded cursor-pointer"
                         >
-                          <X className="w-3.5 h-3.5" />
+                          <X className="w-3.5 h-3.5" strokeWidth={2} />
                         </button>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2 truncate">
-                        <span className="text-xs font-semibold text-neutral-200 truncate">
+                        <span className="text-xs font-semibold text-text-primary truncate">
                           {stage.label}
                         </span>
-                        <span className="text-[10px] font-mono text-neutral-500">
+                        <span className="text-[10px] font-mono text-text-muted">
                           ({stage.status})
                         </span>
                       </div>
@@ -214,34 +214,34 @@ export const StageManagerModal: React.FC<StageManagerModalProps> = ({
                         disabled={idx === 0 || isSubmitting}
                         onClick={() => handleMove(idx, 'up')}
                         aria-label={`Move stage ${stage.label} up`}
-                        className="p-1 text-neutral-400 hover:text-neutral-200 disabled:opacity-30 rounded hover:bg-neutral-800"
+                        className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30 rounded hover:bg-surface-muted cursor-pointer"
                       >
-                        <ArrowUp className="w-3.5 h-3.5" />
+                        <ArrowUp className="w-3.5 h-3.5" strokeWidth={1.75} />
                       </button>
                       <button
                         type="button"
                         disabled={idx === stages.length - 1 || isSubmitting}
                         onClick={() => handleMove(idx, 'down')}
                         aria-label={`Move stage ${stage.label} down`}
-                        className="p-1 text-neutral-400 hover:text-neutral-200 disabled:opacity-30 rounded hover:bg-neutral-800"
+                        className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30 rounded hover:bg-surface-muted cursor-pointer"
                       >
-                        <ArrowDown className="w-3.5 h-3.5" />
+                        <ArrowDown className="w-3.5 h-3.5" strokeWidth={1.75} />
                       </button>
                       <button
                         type="button"
                         onClick={() => handleStartEdit(stage)}
                         aria-label={`Rename stage ${stage.label}`}
-                        className="p-1 text-neutral-400 hover:text-amber-400 rounded hover:bg-neutral-800"
+                        className="p-1 text-text-muted hover:text-primary-text rounded hover:bg-primary-subtle cursor-pointer"
                       >
-                        <Edit2 className="w-3.5 h-3.5" />
+                        <Edit2 className="w-3.5 h-3.5" strokeWidth={1.75} />
                       </button>
                       <button
                         type="button"
                         onClick={() => setDeletingId(stage.id)}
                         aria-label={`Delete stage ${stage.label}`}
-                        className="p-1 text-neutral-500 hover:text-red-400 rounded hover:bg-neutral-800"
+                        className="p-1 text-text-muted hover:text-status-danger-text rounded hover:bg-status-danger-subtle cursor-pointer"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-3.5 h-3.5" strokeWidth={1.75} />
                       </button>
                     </div>
                   )}
@@ -252,11 +252,11 @@ export const StageManagerModal: React.FC<StageManagerModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end px-6 py-4 bg-neutral-950/50 border-t border-neutral-800 shrink-0">
+        <div className="flex items-center justify-end px-6 py-4 bg-surface-muted/30 border-t border-border shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-xs font-semibold text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800 rounded-lg transition-colors"
+            className="px-4 py-2 text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-muted rounded-lg transition-colors cursor-pointer"
           >
             Done
           </button>
@@ -266,24 +266,24 @@ export const StageManagerModal: React.FC<StageManagerModalProps> = ({
       {/* Delete Confirmation Alert Modal */}
       {deletingId && (
         <div
-          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-sm p-5 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl space-y-3">
-            <div className="flex items-center gap-2 text-amber-400">
-              <AlertTriangle className="w-4 h-4" />
-              <h3 className="text-sm font-bold text-neutral-100">Remove Workflow Stage?</h3>
+          <div className="w-full max-w-sm p-5 bg-surface border border-border rounded-xl shadow-sheet space-y-3">
+            <div className="flex items-center gap-2 text-status-warning-text">
+              <AlertTriangle className="w-4 h-4" strokeWidth={1.75} />
+              <h3 className="text-sm font-semibold text-text-primary">Remove Workflow Stage?</h3>
             </div>
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              Removing this stage will <strong className="text-neutral-200">not</strong> delete your
-              tasks. Tasks assigned to this stage will be detached to unassigned.
+            <p className="text-xs text-text-secondary leading-relaxed">
+              Removing this stage will <strong className="text-text-primary">not</strong> delete
+              your tasks. Tasks assigned to this stage will be detached to unassigned.
             </p>
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setDeletingId(null)}
-                className="px-3 py-1.5 text-xs text-neutral-400 hover:text-neutral-200"
+                className="px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary cursor-pointer"
               >
                 Cancel
               </button>
@@ -291,7 +291,7 @@ export const StageManagerModal: React.FC<StageManagerModalProps> = ({
                 type="button"
                 disabled={isSubmitting}
                 onClick={() => handleDeleteConfirm(deletingId)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-red-600 hover:bg-red-500 rounded-md"
+                className="inline-flex cursor-pointer items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-status-danger hover:bg-status-danger/90 rounded-md"
               >
                 {isSubmitting && <Loader2 className="w-3 h-3 animate-spin" />}
                 Confirm Remove

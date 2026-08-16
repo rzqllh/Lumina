@@ -55,40 +55,45 @@ export const BriefFieldFormModal: React.FC<BriefFieldFormModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs animate-in fade-in">
       <div
         data-testid="brief-field-form-modal"
-        className="w-full max-w-lg rounded-2xl border border-border bg-surface p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150"
+        className="w-full max-w-lg rounded-xl border border-border bg-surface p-6 shadow-sheet space-y-5 animate-in fade-in zoom-in-95 duration-150 overflow-hidden"
       >
         <div className="flex items-center justify-between border-b border-border pb-3">
-          <div>
-            <h2 className="text-base font-bold text-text-primary flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
-              {fieldToEdit ? 'Edit Brief Question' : 'Add Question to Brief'}
-            </h2>
-            {sectionTitle && (
-              <p className="text-xs text-text-muted mt-0.5">Section: {sectionTitle}</p>
-            )}
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-primary-text border border-primary-border">
+              <Sparkles className="h-4 w-4" strokeWidth={1.75} />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold text-text-primary">
+                {fieldToEdit ? 'Edit Brief Question' : 'Add Question to Brief'}
+              </h2>
+              {sectionTitle && (
+                <p className="text-xs text-text-secondary">Section: {sectionTitle}</p>
+              )}
+            </div>
           </div>
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close modal"
             className="rounded-lg p-1 text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-text-primary mb-1">
-                Question Type *
+              <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5">
+                Question Type <span className="text-status-danger-text">*</span>
               </label>
               <select
                 data-testid="field-type-select"
                 {...register('field_type')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-xs text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value="short_text">Short Text (Single Line)</option>
                 <option value="long_text">Long Text (Multi-Line)</option>
@@ -103,13 +108,13 @@ export const BriefFieldFormModal: React.FC<BriefFieldFormModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-text-primary mb-1">
-                Client Visibility *
+              <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5">
+                Client Visibility <span className="text-status-danger-text">*</span>
               </label>
               <select
                 data-testid="field-visibility-select"
                 {...register('visibility')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-xs text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value="client_can_fill">Client Can Fill (Optional)</option>
                 <option value="client_must_fill">Client Must Fill (Required in Intake)</option>
@@ -120,23 +125,23 @@ export const BriefFieldFormModal: React.FC<BriefFieldFormModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-primary mb-1">
-              Question / Field Label *
+            <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5">
+              Question / Field Label <span className="text-status-danger-text">*</span>
             </label>
             <input
               type="text"
               data-testid="field-label-input"
               {...register('label')}
               placeholder="e.g., Target Aesthetic, Preferred Call Time, Shot List"
-              className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             {errors.label && (
-              <p className="text-[11px] text-destructive mt-1">{errors.label.message}</p>
+              <p className="text-xs text-status-danger-text mt-1">{errors.label.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-primary mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5">
               Instructions or Helper Note
             </label>
             <input
@@ -144,12 +149,12 @@ export const BriefFieldFormModal: React.FC<BriefFieldFormModalProps> = ({
               data-testid="field-helper-input"
               {...register('helper_text')}
               placeholder="e.g., Provide link to your Pinterest board or Instagram moodboard"
-              className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-primary mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5">
               Current / Initial Value
             </label>
             <input
@@ -157,7 +162,7 @@ export const BriefFieldFormModal: React.FC<BriefFieldFormModalProps> = ({
               data-testid="field-value-input"
               {...register('value')}
               placeholder="Enter value or leave empty for client intake"
-              className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
@@ -167,7 +172,7 @@ export const BriefFieldFormModal: React.FC<BriefFieldFormModalProps> = ({
               id="is_required_chk"
               data-testid="field-required-checkbox"
               {...register('is_required')}
-              className="h-4 w-4 rounded border-border text-primary focus:ring-primary/20 cursor-pointer"
+              className="h-4 w-4 rounded border-border text-primary focus:ring-ring cursor-pointer"
             />
             <label
               htmlFor="is_required_chk"
@@ -181,7 +186,7 @@ export const BriefFieldFormModal: React.FC<BriefFieldFormModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-border px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors cursor-pointer"
+              className="rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -189,7 +194,7 @@ export const BriefFieldFormModal: React.FC<BriefFieldFormModalProps> = ({
               type="submit"
               disabled={isPending}
               data-testid="field-submit-btn"
-              className="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer disabled:opacity-50"
+              className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors cursor-pointer disabled:opacity-50"
             >
               {isPending ? 'Saving...' : fieldToEdit ? 'Update Question' : 'Add Question'}
             </button>

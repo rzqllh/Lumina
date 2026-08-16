@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react';
 import { useNavigate, NavLink } from 'react-router';
 import { Plus, Search, Sparkles, AlertCircle, Package } from 'lucide-react';
 import { useServices, ServiceCard } from '@/features/catalog';
+import { FilterSegmentedControl } from '@/components/ui/filter-segmented-control';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export function ServicesListRoute() {
   const navigate = useNavigate();
@@ -31,19 +33,19 @@ export function ServicesListRoute() {
   return (
     <div className="space-y-6">
       {/* Navigation Tabs between Services and Packages */}
-      <div className="flex items-center gap-2 border-b border-border pb-3">
+      <div className="flex items-center gap-2 border-b border-border-subtle pb-3">
         <NavLink
           to="/services"
-          className="flex items-center gap-1.5 rounded-lg bg-surface-muted px-3 py-1.5 text-xs font-bold text-text-primary shadow-2xs"
+          className="flex items-center gap-1.5 rounded-lg bg-surface-muted px-3 py-1.5 text-xs font-semibold text-text-primary shadow-subtle border border-border"
         >
-          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          <Sparkles className="h-3.5 w-3.5 text-primary-text" strokeWidth={1.75} />
           <span>Services</span>
         </NavLink>
         <NavLink
           to="/packages"
-          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-text-muted hover:bg-surface-muted/60 hover:text-text-primary transition-colors"
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors"
         >
-          <Package className="h-3.5 w-3.5" />
+          <Package className="h-3.5 w-3.5" strokeWidth={1.75} />
           <span>Packages</span>
         </NavLink>
       </div>
@@ -51,7 +53,9 @@ export function ServicesListRoute() {
       {/* Page Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-text-primary">Services Catalog</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary leading-tight">
+            Services Catalog
+          </h1>
           <p className="text-xs text-text-secondary mt-0.5">
             Individual creator services, default unit pricing, and standard deliverables.
           </p>
@@ -61,9 +65,9 @@ export function ServicesListRoute() {
           type="button"
           data-testid="create-service-btn"
           onClick={() => navigate('/services/new')}
-          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-xs transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
+          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-subtle transition-opacity hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring self-start sm:self-auto"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4 w-4" strokeWidth={2} />
           <span>Create Service</span>
         </button>
       </div>
@@ -71,38 +75,31 @@ export function ServicesListRoute() {
       {/* Search and Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+          <Search
+            className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
+            strokeWidth={1.75}
+          />
           <input
             type="text"
             placeholder="Search services by name or description..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-border bg-surface pl-10 pr-4 py-2 text-xs text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="w-full rounded-lg border border-border bg-surface pl-10 pr-4 py-2 text-xs text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
 
         {/* Status Filters */}
-        <div className="flex items-center gap-1 rounded-xl border border-border bg-surface p-1 self-start sm:self-auto">
-          {[
-            { id: 'all', label: 'All' },
-            { id: 'active', label: 'Active' },
-            { id: 'archived', label: 'Archived' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              data-testid={`filter-${tab.id}-services`}
-              onClick={() => setActiveTab(tab.id as 'all' | 'active' | 'archived')}
-              className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                activeTab === tab.id
-                  ? 'bg-surface-muted text-text-primary shadow-2xs font-semibold'
-                  : 'text-text-muted hover:text-text-primary'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <FilterSegmentedControl
+          variant="pill"
+          testIdPrefix="filter"
+          value={activeTab}
+          onChange={(val) => setActiveTab(val as 'all' | 'active' | 'archived')}
+          options={[
+            { id: 'all', label: 'All', testId: 'filter-all-services' },
+            { id: 'active', label: 'Active', testId: 'filter-active-services' },
+            { id: 'archived', label: 'Archived', testId: 'filter-archived-services' },
+          ]}
+        />
       </div>
 
       {/* Content Area */}
@@ -114,7 +111,7 @@ export function ServicesListRoute() {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-32 animate-pulse rounded-2xl border border-border bg-surface-muted/60"
+              className="h-32 animate-pulse rounded-xl border border-border bg-surface-muted/60"
             />
           ))}
         </div>
@@ -122,46 +119,43 @@ export function ServicesListRoute() {
         <div
           role="alert"
           data-testid="services-error-state"
-          className="flex flex-col items-center justify-center rounded-2xl border border-status-danger/25 bg-surface p-8 text-center shadow-xs"
+          className="flex flex-col items-center justify-center rounded-xl border border-status-danger-border bg-surface p-8 text-center shadow-subtle"
         >
-          <AlertCircle className="h-8 w-8 text-status-danger mb-2" />
-          <h3 className="text-sm font-bold text-text-primary">Failed to load services</h3>
+          <AlertCircle className="h-8 w-8 text-status-danger-text mb-2" strokeWidth={1.75} />
+          <h3 className="text-base font-semibold text-text-primary">Failed to load services</h3>
           <p className="mt-1 text-xs text-text-secondary max-w-sm">{error.message}</p>
           <button
             type="button"
             onClick={() => refetch()}
-            className="mt-4 cursor-pointer rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90"
+            className="mt-4 cursor-pointer rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle"
           >
             Retry
           </button>
         </div>
       ) : filteredServices.length === 0 ? (
-        <div
-          data-testid="services-empty-state"
-          className="flex min-h-[30vh] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface/50 p-8 text-center"
-        >
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface-muted text-text-muted mb-3">
-            <Sparkles className="h-6 w-6" />
-          </div>
-          <h3 className="text-base font-bold text-text-primary">
-            {searchQuery ? 'No matching services found' : 'No services in catalog yet'}
-          </h3>
-          <p className="mt-1 max-w-xs text-xs text-text-muted">
-            {searchQuery
-              ? 'Try adjusting your search keywords.'
-              : 'Add your individual photography, videography, or editing service rates.'}
-          </p>
-          {!searchQuery && (
-            <button
-              type="button"
-              data-testid="empty-create-service-btn"
-              onClick={() => navigate('/services/new')}
-              className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Create Service</span>
-            </button>
-          )}
+        <div data-testid="services-empty-state">
+          <EmptyState
+            icon={Sparkles}
+            title={searchQuery ? 'No matching services found' : 'No services in catalog yet'}
+            description={
+              searchQuery
+                ? 'Try adjusting your search keywords.'
+                : 'Add your individual photography, videography, or editing service rates.'
+            }
+            action={
+              !searchQuery ? (
+                <button
+                  type="button"
+                  data-testid="empty-create-service-btn"
+                  onClick={() => navigate('/services/new')}
+                  className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Plus className="h-4 w-4" strokeWidth={2} />
+                  <span>Create Service</span>
+                </button>
+              ) : undefined
+            }
+          />
         </div>
       ) : (
         <div data-testid="services-grid" className="grid grid-cols-1 gap-4 sm:grid-cols-2">

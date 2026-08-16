@@ -47,14 +47,14 @@ export const PackageItemRow: React.FC<PackageItemRowProps> = ({
   return (
     <div
       data-testid={`package-item-row-${index}`}
-      className="space-y-3 rounded-xl border border-border bg-surface-muted/30 p-3.5 sm:p-4"
+      className="space-y-3 rounded-lg border border-border bg-surface p-3.5 sm:p-4"
     >
       {/* Top line: Service Preset Selector & Remove Button */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex-1 max-w-xs">
           <label
             htmlFor={`items.${index}.service_id`}
-            className="block text-[11px] font-semibold text-text-muted mb-1"
+            className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1"
           >
             Catalog Service Template
           </label>
@@ -80,9 +80,9 @@ export const PackageItemRow: React.FC<PackageItemRowProps> = ({
             data-testid={`remove-item-${index}`}
             onClick={() => onRemove(index)}
             title="Remove item"
-            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-text-muted hover:bg-status-danger/10 hover:text-status-danger transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-text-muted hover:bg-status-danger-subtle hover:text-status-danger-text transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-4 w-4" strokeWidth={1.75} />
           </button>
         )}
       </div>
@@ -93,9 +93,9 @@ export const PackageItemRow: React.FC<PackageItemRowProps> = ({
         <div className="sm:col-span-6">
           <label
             htmlFor={`items.${index}.label`}
-            className="block text-[11px] font-semibold text-text-primary mb-1"
+            className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1"
           >
-            Item Label <span className="text-status-danger">*</span>
+            Item Label <span className="text-status-danger-text">*</span>
           </label>
           <input
             id={`items.${index}.label`}
@@ -110,7 +110,7 @@ export const PackageItemRow: React.FC<PackageItemRowProps> = ({
         <div className="sm:col-span-2">
           <label
             htmlFor={`items.${index}.quantity`}
-            className="block text-[11px] font-semibold text-text-primary mb-1"
+            className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1"
           >
             Qty
           </label>
@@ -121,7 +121,7 @@ export const PackageItemRow: React.FC<PackageItemRowProps> = ({
             {...register(`items.${index}.quantity`, {
               valueAsNumber: true,
             })}
-            className="w-full rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="w-full rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs text-text-primary tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
 
@@ -130,11 +130,11 @@ export const PackageItemRow: React.FC<PackageItemRowProps> = ({
           <div className="flex items-center justify-between mb-1">
             <label
               htmlFor={`items.${index}.unit_price`}
-              className="block text-[11px] font-semibold text-text-primary"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted"
             >
               Unit Price (IDR)
             </label>
-            <span className="text-[11px] font-bold text-primary">
+            <span className="text-xs font-semibold tabular-nums text-primary-text">
               Subtotal: {formatIDR(lineSubtotal)}
             </span>
           </div>
@@ -146,7 +146,7 @@ export const PackageItemRow: React.FC<PackageItemRowProps> = ({
             {...register(`items.${index}.unit_price`, {
               setValueAs: (v) => parseMoneyInput(v),
             })}
-            className="w-full rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-text-primary tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
       </div>

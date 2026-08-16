@@ -13,13 +13,13 @@ export const SessionStatusBadge: React.FC<SessionStatusBadgeProps> = ({
   const getBadgeStyle = () => {
     switch (status) {
       case 'scheduled':
-        return 'bg-sky-50 text-sky-700 border-sky-200';
+        return 'bg-status-info-subtle text-status-info-text border-status-info-border';
       case 'completed':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        return 'bg-status-success-subtle text-status-success-text border-status-success-border';
       case 'cancelled':
-        return 'bg-zinc-100 text-zinc-500 border-zinc-200 line-through opacity-80';
+        return 'bg-surface-muted text-text-muted border-border-subtle line-through opacity-80';
       default:
-        return 'bg-zinc-100 text-zinc-600 border-zinc-200';
+        return 'bg-surface-muted text-text-secondary border-border-subtle';
     }
   };
 

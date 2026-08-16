@@ -17,6 +17,7 @@ import { ApplyBriefTemplateModal } from './ApplyBriefTemplateModal';
 import { SaveAsBriefTemplateModal } from './SaveAsBriefTemplateModal';
 import { ShareBriefLinkModal } from './ShareBriefLinkModal';
 import { BriefSubmissionReviewModal } from './BriefSubmissionReviewModal';
+import { EmptyState } from '@/components/ui/empty-state';
 import type { BriefSection, BriefField } from '../types';
 import type {
   BriefSectionFormValues,
@@ -64,7 +65,7 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-8 text-center text-xs text-text-muted">
+      <div className="rounded-xl border border-border bg-surface p-8 text-center text-xs text-text-muted">
         Loading project brief...
       </div>
     );
@@ -72,7 +73,7 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
 
   if (!brief) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-8 text-center text-xs text-text-muted">
+      <div className="rounded-xl border border-border bg-surface p-8 text-center text-xs text-text-muted">
         Brief not initialized.
       </div>
     );
@@ -143,14 +144,14 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
   return (
     <div data-testid="project-brief-section" className="space-y-4">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-border bg-surface p-4 shadow-2xs">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface p-4 shadow-2xs">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <FileText className="h-5 w-5" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-subtle text-primary-text border border-primary-border">
+            <FileText className="h-5 w-5" strokeWidth={1.75} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold text-text-primary sm:text-base">
+              <h2 className="text-base font-semibold text-text-primary">
                 Project Creative Brief & Client Intake
               </h2>
               {pendingSubmissions.length > 0 && (
@@ -158,15 +159,15 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
                   type="button"
                   data-testid="pending-submissions-badge"
                   onClick={() => setIsReviewModalOpen(true)}
-                  className="flex items-center gap-1 rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-extrabold text-white animate-pulse cursor-pointer shadow-xs"
+                  className="flex items-center gap-1 rounded-md bg-status-warning-subtle border border-status-warning-border px-2 py-0.5 text-xs font-semibold text-status-warning-text animate-pulse cursor-pointer shadow-2xs"
                 >
-                  <Inbox className="h-3 w-3" />
+                  <Inbox className="h-3 w-3" strokeWidth={1.75} />
                   {pendingSubmissions.length} new client{' '}
                   {pendingSubmissions.length === 1 ? 'submission' : 'submissions'}
                 </button>
               )}
             </div>
-            <p className="text-xs text-text-muted mt-0.5">
+            <p className="text-xs text-text-secondary mt-0.5 tabular-nums">
               {sections.length} {sections.length === 1 ? 'section' : 'sections'} • {totalQuestions}{' '}
               {totalQuestions === 1 ? 'question' : 'questions'}
             </p>
@@ -179,9 +180,9 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
               type="button"
               data-testid="review-submissions-btn"
               onClick={() => setIsReviewModalOpen(true)}
-              className="flex items-center gap-1.5 rounded-xl bg-amber-50 border border-amber-300 px-3 py-1.5 text-xs font-bold text-amber-800 hover:bg-amber-100 transition-colors cursor-pointer shadow-2xs"
+              className="flex items-center gap-1.5 rounded-lg bg-status-warning-subtle border border-status-warning-border px-3 py-1.5 text-xs font-semibold text-status-warning-text hover:bg-status-warning-subtle/80 transition-colors cursor-pointer shadow-subtle"
             >
-              <Inbox className="h-3.5 w-3.5" />
+              <Inbox className="h-3.5 w-3.5" strokeWidth={1.75} />
               Review Submissions ({pendingSubmissions.length})
             </button>
           )}
@@ -190,9 +191,9 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
             type="button"
             data-testid="share-intake-link-btn"
             onClick={() => setIsShareModalOpen(true)}
-            className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer shadow-2xs"
+            className="flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer shadow-subtle"
           >
-            <Share2 className="h-3.5 w-3.5" />
+            <Share2 className="h-3.5 w-3.5" strokeWidth={1.75} />
             Share Intake Link
           </button>
 
@@ -200,9 +201,9 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
             type="button"
             data-testid="apply-brief-template-btn"
             onClick={() => setIsApplyTemplateModalOpen(true)}
-            className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer shadow-2xs"
+            className="flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer shadow-subtle"
           >
-            <Layers className="h-3.5 w-3.5" />
+            <Layers className="h-3.5 w-3.5" strokeWidth={1.75} />
             Apply Template
           </button>
 
@@ -211,9 +212,9 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
             data-testid="save-as-template-btn"
             disabled={sections.length === 0}
             onClick={() => setIsSaveTemplateModalOpen(true)}
-            className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer shadow-2xs disabled:opacity-40"
+            className="flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer shadow-subtle disabled:opacity-40"
           >
-            <BookmarkPlus className="h-3.5 w-3.5" />
+            <BookmarkPlus className="h-3.5 w-3.5" strokeWidth={1.75} />
             Save as Template
           </button>
 
@@ -224,9 +225,9 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
               setSectionToEdit(null);
               setIsSectionModalOpen(true);
             }}
-            className="flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer shadow-2xs"
+            className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-hover transition-colors cursor-pointer shadow-subtle"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
             Add Section
           </button>
         </div>
@@ -234,41 +235,24 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
 
       {/* Sections List */}
       {sections.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface/50 p-10 text-center space-y-3">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <Sparkles className="h-6 w-6" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-text-primary">Creative Brief is Empty</h3>
-            <p className="text-xs text-text-muted max-w-md mx-auto mt-1">
-              Organize moodboard references, run of show timelines, and client questionnaires into
-              structured sections.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+        <EmptyState
+          icon={Sparkles}
+          title="Creative Brief is Empty"
+          description="Organize moodboard references, run of show timelines, and client questionnaires into structured sections."
+          action={
             <button
               type="button"
-              data-testid="empty-apply-template-btn"
-              onClick={() => setIsApplyTemplateModalOpen(true)}
-              className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3.5 py-2 text-xs font-bold text-text-primary hover:bg-surface-muted transition-colors cursor-pointer shadow-2xs"
-            >
-              <Layers className="h-3.5 w-3.5" />
-              Apply Brief Template
-            </button>
-            <button
-              type="button"
-              data-testid="empty-add-section-btn"
               onClick={() => {
                 setSectionToEdit(null);
                 setIsSectionModalOpen(true);
               }}
-              className="flex items-center gap-1.5 rounded-xl bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer shadow-2xs"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-hover transition-colors shadow-subtle"
             >
-              <Plus className="h-3.5 w-3.5" />
-              Add First Section
+              <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
+              <span>Add First Section</span>
             </button>
-          </div>
-        </div>
+          }
+        />
       ) : (
         <div className="space-y-4">
           {sections.map((section) => (
@@ -290,13 +274,13 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
                 setFieldToEdit(field);
                 setIsFieldModalOpen(true);
               }}
-              onDeleteField={(fId) => deleteFieldMutation.mutateAsync(fId)}
+              onDeleteField={(fieldId) => deleteFieldMutation.mutateAsync(fieldId)}
             />
           ))}
         </div>
       )}
 
-      {/* Modals */}
+      {/* Section Form Modal */}
       <BriefSectionFormModal
         isOpen={isSectionModalOpen}
         onClose={() => {
@@ -308,6 +292,7 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
         isPending={createSectionMutation.isPending || updateSectionMutation.isPending}
       />
 
+      {/* Field Form Modal */}
       <BriefFieldFormModal
         isOpen={isFieldModalOpen}
         onClose={() => {
@@ -321,6 +306,7 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
         isPending={createFieldMutation.isPending || updateFieldMutation.isPending}
       />
 
+      {/* Apply Template Modal */}
       <ApplyBriefTemplateModal
         isOpen={isApplyTemplateModalOpen}
         onClose={() => setIsApplyTemplateModalOpen(false)}
@@ -329,20 +315,22 @@ export const ProjectBriefSection: React.FC<ProjectBriefSectionProps> = ({
         isPending={applyTemplateMutation.isPending}
       />
 
+      {/* Save As Template Modal */}
       <SaveAsBriefTemplateModal
         isOpen={isSaveTemplateModalOpen}
         onClose={() => setIsSaveTemplateModalOpen(false)}
         onSubmit={handleSaveAsTemplate}
-        defaultName={`${brief.title || 'Project'} Template`}
         isPending={saveTemplateMutation.isPending}
       />
 
+      {/* Share Link Modal */}
       <ShareBriefLinkModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
         projectId={projectId}
       />
 
+      {/* Submission Review Modal */}
       <BriefSubmissionReviewModal
         isOpen={isReviewModalOpen}
         onClose={() => setIsReviewModalOpen(false)}

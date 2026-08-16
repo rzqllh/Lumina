@@ -212,8 +212,8 @@ export const CollaboratorsList: React.FC<CollaboratorsListProps> = ({ workspaceI
               <div>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-primary border border-purple-200">
-                      <Users className="h-5 w-5" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-subtle text-primary-text border border-primary-border">
+                      <Users className="h-5 w-5" strokeWidth={1.75} />
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-text-primary">{collab.name}</h3>

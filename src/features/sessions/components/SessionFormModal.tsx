@@ -104,16 +104,23 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
       aria-labelledby="session-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs animate-in fade-in"
     >
-      <div className="relative w-full max-w-lg rounded-2xl border border-border bg-surface shadow-xl flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-lg rounded-xl border border-border bg-surface shadow-sheet flex flex-col max-h-[90vh] overflow-hidden">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Calendar className="h-4 w-4" />
+        <div className="flex items-center justify-between border-b border-border px-6 py-4 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-primary-text border border-primary-border">
+              <Calendar className="h-4 w-4" strokeWidth={1.75} />
             </div>
-            <h2 id="session-modal-title" className="text-base font-bold text-text-primary">
-              {isEditing ? 'Edit Session' : 'Schedule New Session'}
-            </h2>
+            <div>
+              <h2 id="session-modal-title" className="text-base font-semibold text-text-primary">
+                {isEditing ? 'Edit Session' : 'Schedule New Session'}
+              </h2>
+              <p className="text-xs text-text-secondary">
+                {isEditing
+                  ? 'Update session agenda and schedule.'
+                  : 'Book a production date or client meeting.'}
+              </p>
+            </div>
           </div>
           <button
             type="button"
@@ -121,7 +128,7 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
             aria-label="Close modal"
             className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
         </div>
 
@@ -132,17 +139,17 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
         >
           {/* Session Type */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5">
               Session Type
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {sessionTypeOptions.map((opt) => (
                 <label
                   key={opt.value}
-                  className={`flex items-center justify-center gap-1.5 rounded-xl border p-2 text-xs font-semibold cursor-pointer transition-all ${
+                  className={`flex items-center justify-center gap-1.5 rounded-lg border p-2 text-xs font-medium cursor-pointer transition-all ${
                     selectedType === opt.value
-                      ? 'border-primary bg-primary/8 text-primary shadow-2xs'
-                      : 'border-border bg-surface text-text-secondary hover:bg-surface-muted'
+                      ? 'border-primary-border bg-primary-subtle text-primary-text ring-1 ring-primary/30 font-semibold'
+                      : 'border-border bg-surface text-text-secondary hover:bg-surface-muted hover:text-text-primary'
                   }`}
                 >
                   <input
@@ -158,7 +165,7 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
               ))}
             </div>
             {errors.type && (
-              <p className="mt-1 text-xs text-status-danger">{errors.type.message}</p>
+              <p className="mt-1 text-xs text-status-danger-text">{errors.type.message}</p>
             )}
           </div>
 
@@ -167,22 +174,25 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
             <div>
               <label
                 htmlFor="custom_type_label"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
-                Custom Label <span className="text-status-danger">*</span>
+                Custom Label <span className="text-status-danger-text">*</span>
               </label>
               <div className="relative">
-                <Tag className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-text-muted" />
+                <Tag
+                  className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-text-muted"
+                  strokeWidth={1.75}
+                />
                 <input
                   id="custom_type_label"
                   type="text"
                   placeholder="e.g., Wardrobe Fitting, Aerial Recon"
                   {...register('custom_type_label')}
-                  className="w-full rounded-xl border border-border bg-surface py-2 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full rounded-lg border border-border bg-surface py-2 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
               {errors.custom_type_label && (
-                <p className="mt-1 text-xs text-status-danger">
+                <p className="mt-1 text-xs text-status-danger-text">
                   {errors.custom_type_label.message}
                 </p>
               )}
@@ -193,19 +203,19 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
           <div>
             <label
               htmlFor="session-title"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
-              Session Title <span className="text-status-danger">*</span>
+              Session Title <span className="text-status-danger-text">*</span>
             </label>
             <input
               id="session-title"
               type="text"
               placeholder="e.g., Morning Outdoor Shoot, Main Ceremony"
               {...register('title')}
-              className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             {errors.title && (
-              <p className="mt-1 text-xs text-status-danger">{errors.title.message}</p>
+              <p className="mt-1 text-xs text-status-danger-text">{errors.title.message}</p>
             )}
           </div>
 
@@ -215,20 +225,20 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
             <div>
               <label
                 htmlFor="session-date"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
-                Date <span className="text-status-danger">*</span>
+                Date <span className="text-status-danger-text">*</span>
               </label>
               <div className="relative">
                 <input
                   id="session-date"
                   type="date"
                   {...register('date')}
-                  className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
               {errors.date && (
-                <p className="mt-1 text-xs text-status-danger">{errors.date.message}</p>
+                <p className="mt-1 text-xs text-status-danger-text">{errors.date.message}</p>
               )}
             </div>
 
@@ -236,7 +246,7 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
             <div>
               <label
                 htmlFor="session-start-time"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 Start Time
               </label>
@@ -244,7 +254,7 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
                 id="session-start-time"
                 type="time"
                 {...register('start_time')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -252,7 +262,7 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
             <div>
               <label
                 htmlFor="session-end-time"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 End Time
               </label>
@@ -260,7 +270,7 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
                 id="session-end-time"
                 type="time"
                 {...register('end_time')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </div>
@@ -269,22 +279,25 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
           <div>
             <label
               htmlFor="session-location"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
               Location / Venue
             </label>
             <div className="relative">
-              <MapPin className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-text-muted" />
+              <MapPin
+                className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-text-muted"
+                strokeWidth={1.75}
+              />
               <input
                 id="session-location"
                 type="text"
                 placeholder="e.g., Grand Ballroom, Studio A, Pine Forest"
                 {...register('location')}
-                className="w-full rounded-xl border border-border bg-surface py-2 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface py-2 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             {errors.location && (
-              <p className="mt-1 text-xs text-status-danger">{errors.location.message}</p>
+              <p className="mt-1 text-xs text-status-danger-text">{errors.location.message}</p>
             )}
           </div>
 
@@ -292,7 +305,7 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
           <div>
             <label
               htmlFor="session-notes"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
               Notes & Call Details
             </label>
@@ -301,7 +314,7 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
               rows={2}
               placeholder="Gear checklist, contact on site, special instructions..."
               {...register('notes')}
-              className="w-full rounded-xl border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
@@ -310,14 +323,14 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
             <div>
               <label
                 htmlFor="session-status"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 Status
               </label>
               <select
                 id="session-status"
                 {...register('status')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value="scheduled">Scheduled</option>
                 <option value="completed">Completed</option>
@@ -332,7 +345,7 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="cursor-pointer rounded-xl border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors disabled:opacity-50"
+              className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
@@ -340,7 +353,7 @@ export const SessionFormModal: React.FC<SessionFormModalProps> = ({
               type="submit"
               data-testid="session-submit-btn"
               disabled={isSubmitting}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

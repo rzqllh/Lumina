@@ -46,7 +46,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
         <div
           role="alert"
           data-testid="service-form-error-alert"
-          className="rounded-xl border border-status-danger/25 bg-status-danger/8 p-4 text-xs font-medium text-status-danger"
+          className="rounded-lg border border-status-danger-border bg-status-danger-subtle p-4 text-xs font-medium text-status-danger-text"
         >
           {serverError}
         </div>
@@ -54,19 +54,24 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
 
       {/* Service Label */}
       <div>
-        <label htmlFor="label" className="block text-xs font-semibold text-text-primary mb-1.5">
-          Service Name <span className="text-status-danger">*</span>
+        <label
+          htmlFor="label"
+          className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
+        >
+          Service Name <span className="text-status-danger-text">*</span>
         </label>
         <input
           id="label"
           type="text"
           placeholder="e.g. Full Day Photography or Same Day Edit Video"
           {...register('label')}
-          className={`w-full rounded-xl border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
-            errors.label ? 'border-status-danger' : 'border-border'
+          className={`w-full rounded-lg border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
+            errors.label ? 'border-status-danger-border' : 'border-border'
           }`}
         />
-        {errors.label && <p className="mt-1 text-xs text-status-danger">{errors.label.message}</p>}
+        {errors.label && (
+          <p className="mt-1 text-xs text-status-danger-text">{errors.label.message}</p>
+        )}
       </div>
 
       {/* Default Unit Price */}
@@ -74,11 +79,13 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
         <div className="flex items-center justify-between mb-1.5">
           <label
             htmlFor="default_unit_price"
-            className="block text-xs font-semibold text-text-primary"
+            className="block text-xs font-semibold uppercase tracking-wider text-text-muted"
           >
             Default Unit Price (IDR)
           </label>
-          <span className="text-xs font-bold text-primary">{formatIDR(currentPrice)}</span>
+          <span className="text-xs font-semibold tabular-nums text-primary-text">
+            {formatIDR(currentPrice)}
+          </span>
         </div>
         <input
           id="default_unit_price"
@@ -89,12 +96,14 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
           {...register('default_unit_price', {
             setValueAs: (v) => parseMoneyInput(v),
           })}
-          className={`w-full rounded-xl border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
-            errors.default_unit_price ? 'border-status-danger' : 'border-border'
+          className={`w-full rounded-lg border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
+            errors.default_unit_price ? 'border-status-danger-border' : 'border-border'
           }`}
         />
         {errors.default_unit_price && (
-          <p className="mt-1 text-xs text-status-danger">{errors.default_unit_price.message}</p>
+          <p className="mt-1 text-xs text-status-danger-text">
+            {errors.default_unit_price.message}
+          </p>
         )}
       </div>
 
@@ -102,7 +111,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
       <div>
         <label
           htmlFor="description"
-          className="block text-xs font-semibold text-text-primary mb-1.5"
+          className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
         >
           Description / Scope
         </label>
@@ -111,16 +120,16 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
           rows={3}
           placeholder="Optional notes or deliverables included with this service..."
           {...register('description')}
-          className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
       </div>
 
       {/* Active Toggle (in Edit mode) */}
       {isEdit && (
-        <div className="flex items-center justify-between rounded-xl border border-border bg-surface-muted/30 p-3.5">
+        <div className="flex items-center justify-between rounded-lg border border-border bg-surface-muted/40 p-3.5">
           <div>
             <span className="text-xs font-semibold text-text-primary block">Active in Catalog</span>
-            <span className="text-[11px] text-text-muted">
+            <span className="text-xs text-text-muted">
               Archived services cannot be selected for new package items.
             </span>
           </div>
@@ -128,7 +137,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
             type="checkbox"
             id="is_active"
             {...register('is_active')}
-            className="h-4 w-4 rounded text-primary focus:ring-primary"
+            className="h-4 w-4 rounded border-border text-primary focus:ring-ring"
           />
         </div>
       )}
@@ -139,7 +148,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="cursor-pointer rounded-xl border border-border bg-surface px-4 py-2.5 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+          className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
         >
           Cancel
         </button>
@@ -147,7 +156,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
           type="submit"
           disabled={isSubmitting}
           data-testid="service-submit-btn"
-          className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60 active:scale-[0.99]"
+          className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary-hover shadow-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
         >
           {isSubmitting ? (
             <>

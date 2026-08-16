@@ -22,15 +22,24 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
       case 'session':
         return {
           label: 'Shoot / Session',
-          style: 'bg-indigo-50 text-indigo-800 border-indigo-200',
+          style: 'bg-primary-subtle text-primary-text border-primary-border',
         };
       case 'deliverable':
-        return { label: 'Deliverable', style: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
+        return {
+          label: 'Deliverable',
+          style: 'bg-status-success-subtle text-status-success-text border-status-success-border',
+        };
       case 'revision':
-        return { label: 'Revision Due', style: 'bg-purple-50 text-purple-800 border-purple-200' };
+        return {
+          label: 'Revision Due',
+          style: 'bg-status-danger-subtle text-status-danger-text border-status-danger-border',
+        };
       case 'payment':
       default:
-        return { label: 'Payment Due', style: 'bg-amber-50 text-amber-800 border-amber-200' };
+        return {
+          label: 'Payment Due',
+          style: 'bg-status-warning-subtle text-status-warning-text border-status-warning-border',
+        };
     }
   };
 

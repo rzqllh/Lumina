@@ -99,16 +99,26 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
       aria-labelledby="collaborator-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs animate-in fade-in"
     >
-      <div className="relative w-full max-w-md rounded-2xl border border-border bg-surface shadow-xl flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-md rounded-xl border border-border bg-surface shadow-sheet flex flex-col max-h-[90vh] overflow-hidden">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200">
-              <Users className="h-4 w-4" />
+        <div className="flex items-center justify-between border-b border-border px-6 py-4 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-primary-text border border-primary-border">
+              <Users className="h-4 w-4" strokeWidth={1.75} />
             </div>
-            <h2 id="collaborator-modal-title" className="text-base font-bold text-text-primary">
-              {isEditing ? 'Edit Crew Engagement' : 'Engage External Crew'}
-            </h2>
+            <div>
+              <h2
+                id="collaborator-modal-title"
+                className="text-base font-semibold text-text-primary"
+              >
+                {isEditing ? 'Edit Crew Engagement' : 'Engage External Crew'}
+              </h2>
+              <p className="text-xs text-text-secondary">
+                {isEditing
+                  ? 'Update crew member fee and payment.'
+                  : 'Assign a contractor or assistant to this project.'}
+              </p>
+            </div>
           </div>
           <button
             type="button"
@@ -116,7 +126,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
             aria-label="Close modal"
             className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors cursor-pointer"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
         </div>
 
@@ -130,18 +140,18 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
             <div className="flex items-center justify-between mb-1.5">
               <label
                 htmlFor="collaborator-select"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted"
               >
-                Collaborator / Crew Member <span className="text-status-danger">*</span>
+                Collaborator / Crew Member <span className="text-status-danger-text">*</span>
               </label>
               {!isEditing && (
                 <button
                   type="button"
                   data-testid="inline-add-collaborator-btn"
                   onClick={() => setIsCreateCollabOpen(true)}
-                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-primary-text hover:underline cursor-pointer"
                 >
-                  <Plus className="h-3 w-3" />
+                  <Plus className="h-3 w-3" strokeWidth={1.75} />
                   <span>New Crew Member</span>
                 </button>
               )}
@@ -151,7 +161,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
                 id="collaborator-select"
                 {...register('collaborator_id')}
                 disabled={isEditing}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-60"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
               >
                 {collaborators.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -160,7 +170,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
                 ))}
               </select>
             ) : (
-              <div className="flex items-center justify-between rounded-xl border border-dashed border-border p-3 text-xs text-text-muted">
+              <div className="flex items-center justify-between rounded-lg border border-dashed border-border p-3 text-xs text-text-muted">
                 <span>
                   {isLoadingCollaborators
                     ? 'Loading crew catalog...'
@@ -170,15 +180,17 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
                   type="button"
                   data-testid="empty-inline-add-collaborator-btn"
                   onClick={() => setIsCreateCollabOpen(true)}
-                  className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2 py-1 text-[11px] font-bold text-primary hover:bg-primary/20 cursor-pointer"
+                  className="inline-flex items-center gap-1 rounded-lg bg-primary-subtle border border-primary-border px-2.5 py-1 text-xs font-semibold text-primary-text hover:bg-primary-subtle/80 cursor-pointer"
                 >
-                  <Plus className="h-3 w-3" />
+                  <Plus className="h-3 w-3" strokeWidth={1.75} />
                   <span>Create First</span>
                 </button>
               </div>
             )}
             {errors.collaborator_id && (
-              <p className="mt-1 text-xs text-status-danger">{errors.collaborator_id.message}</p>
+              <p className="mt-1 text-xs text-status-danger-text">
+                {errors.collaborator_id.message}
+              </p>
             )}
           </div>
 
@@ -186,19 +198,19 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
           <div>
             <label
               htmlFor="role-label"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
-              Assigned Role on Project <span className="text-status-danger">*</span>
+              Assigned Role on Project <span className="text-status-danger-text">*</span>
             </label>
             <input
               id="role-label"
               type="text"
               placeholder="e.g., Second Shooter, Drone Operator, Colorist"
               {...register('role_label')}
-              className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             {errors.role_label && (
-              <p className="mt-1 text-xs text-status-danger">{errors.role_label.message}</p>
+              <p className="mt-1 text-xs text-status-danger-text">{errors.role_label.message}</p>
             )}
           </div>
 
@@ -206,9 +218,9 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
           <div>
             <label
               htmlFor="agreed-fee"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
-              Agreed Fee ({currency}) <span className="text-status-danger">*</span>
+              Agreed Fee ({currency}) <span className="text-status-danger-text">*</span>
             </label>
             <input
               id="agreed-fee"
@@ -216,10 +228,10 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
               min="0"
               placeholder="e.g., 2000000"
               {...register('agreed_fee', { valueAsNumber: true })}
-              className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             {errors.agreed_fee && (
-              <p className="mt-1 text-xs text-status-danger">{errors.agreed_fee.message}</p>
+              <p className="mt-1 text-xs text-status-danger-text">{errors.agreed_fee.message}</p>
             )}
           </div>
 
@@ -228,14 +240,14 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
             <div>
               <label
                 htmlFor="crew-payment-status"
-                className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
               >
                 Payout Status
               </label>
               <select
                 id="crew-payment-status"
                 {...register('payment_status')}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value="unpaid">Unpaid</option>
                 <option value="partial">Partial</option>
@@ -247,7 +259,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
               <div>
                 <label
                   htmlFor="crew-paid-amount"
-                  className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+                  className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
                 >
                   Paid Amount ({currency})
                 </label>
@@ -257,7 +269,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
                   min="0"
                   placeholder="e.g., 1000000"
                   {...register('paid_amount', { valueAsNumber: true })}
-                  className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
             )}
@@ -267,7 +279,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
           <div>
             <label
               htmlFor="crew-notes"
-              className="block text-xs font-bold uppercase tracking-wider text-text-secondary mb-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-1.5"
             >
               Notes
             </label>
@@ -276,7 +288,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
               rows={2}
               placeholder="Call time requirements, gear provided..."
               {...register('notes')}
-              className="w-full rounded-xl border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
@@ -286,7 +298,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="cursor-pointer rounded-xl border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted transition-colors disabled:opacity-50"
+              className="cursor-pointer rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-surface-muted hover:text-text-primary transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
@@ -294,7 +306,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
               type="submit"
               data-testid="collaborator-submit-btn"
               disabled={isSubmitting || (collaborators.length === 0 && !isEditing)}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-hover shadow-subtle transition-colors disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
