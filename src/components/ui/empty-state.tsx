@@ -33,14 +33,22 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       <div
         data-testid={testId}
         className={cn(
-          'flex min-h-[30vh] flex-col items-center justify-center py-12 text-center',
+          'flex min-h-[32vh] flex-col items-center justify-center rounded-2xl border border-border bg-surface p-8 sm:p-12 text-center shadow-subtle',
           className
         )}
       >
-        {Icon && <Icon className="h-8 w-8 text-text-muted mb-3" strokeWidth={1.5} />}
-        <h3 className="text-sm font-semibold text-text-primary">{title}</h3>
-        {description && <p className="mt-1 max-w-xs text-xs text-text-secondary">{description}</p>}
-        {action && <div className="mt-4">{action}</div>}
+        {Icon && (
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-subtle text-primary mb-3.5 border border-primary-border/60 shadow-xs">
+            <Icon className="h-6 w-6" strokeWidth={1.75} />
+          </div>
+        )}
+        <h3 className="text-base font-semibold text-text-primary tracking-tight">{title}</h3>
+        {description && (
+          <p className="mt-1.5 max-w-sm text-xs leading-relaxed text-text-secondary">
+            {description}
+          </p>
+        )}
+        {action && <div className="mt-5">{action}</div>}
       </div>
     );
   }
@@ -50,15 +58,19 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     <div
       data-testid={testId}
       className={cn(
-        'flex items-center gap-3 rounded-lg bg-surface-muted/40 border border-border-subtle p-3.5',
+        'flex items-center gap-3 rounded-xl bg-surface-muted/60 border border-border-subtle p-4',
         className
       )}
     >
-      {Icon && <Icon className="h-5 w-5 text-text-muted shrink-0" strokeWidth={1.5} />}
+      {Icon && (
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-surface text-text-muted shrink-0 border border-border-subtle shadow-xs">
+          <Icon className="h-4.5 w-4.5" strokeWidth={1.75} />
+        </div>
+      )}
       <div className="min-w-0 flex-1 text-xs">
-        <span className="font-semibold text-text-primary">{title}</span>
-        {description && <p className="text-text-secondary mt-0.5">{description}</p>}
-        {action && <div className="mt-2">{action}</div>}
+        <span className="font-semibold text-text-primary block">{title}</span>
+        {description && <p className="text-text-secondary mt-0.5 text-xs">{description}</p>}
+        {action && <div className="mt-2.5">{action}</div>}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { useWorkflowTemplateMutations } from '../hooks/useWorkflowTemplateMutati
 import { WorkflowTemplateFormModal } from './WorkflowTemplateFormModal';
 import { EmptyState } from '@/components/ui/empty-state';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { FilterSegmentedControl } from '@/components/ui/filter-segmented-control';
 import type { WorkflowTemplateWithStages } from '../types/workflowTemplateTypes';
 import type { WorkflowTemplateFormData } from '../schemas/workflowTemplateSchemas';
 
@@ -82,42 +83,55 @@ export const WorkflowTemplatesList: React.FC<WorkflowTemplatesListProps> = ({ wo
 
   return (
     <div className="space-y-6">
-      {/* Action & Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-72">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted"
-              strokeWidth={1.75}
-            />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search templates or stages..."
-              className="w-full pl-9 pr-3.5 py-2 bg-surface border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
-          </div>
-
-          <label className="flex items-center gap-2 text-xs font-medium text-text-secondary cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={showArchived}
-              onChange={(e) => setShowArchived(e.target.checked)}
-              className="w-4 h-4 rounded border-border text-primary focus:ring-ring"
-            />
-            Include inactive
-          </label>
+      {/* Page Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary leading-tight">
+            Workflow Templates
+          </h1>
+          <p className="text-xs text-text-secondary mt-0.5">
+            Manage reusable production stage pipelines to standardize project workflows.
+          </p>
         </div>
 
         <button
           type="button"
           onClick={() => setIsCreateOpen(true)}
-          className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-lg transition-colors shadow-subtle shrink-0"
+          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-subtle transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring self-start sm:self-auto"
         >
-          <Plus className="w-4 h-4" strokeWidth={2} />
-          New Workflow Template
+          <Plus className="h-4 w-4" strokeWidth={2} />
+          <span>New Workflow Template</span>
         </button>
+      </div>
+
+      {/* Action & Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="relative flex-1 w-full sm:max-w-xs">
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search templates or stages..."
+            className="w-full pl-9 pr-3.5 py-2 bg-surface border border-border hover:border-border-interactive focus:border-primary rounded-lg text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors shadow-xs"
+          />
+        </div>
+
+        <FilterSegmentedControl
+          options={[
+            { id: 'active', label: 'Active' },
+            { id: 'all', label: 'All (incl. inactive)' },
+          ]}
+          value={showArchived ? 'all' : 'active'}
+          onChange={(val) => setShowArchived(val === 'all')}
+          variant="pill"
+          testIdPrefix="workflow-filter"
+          className="self-start sm:self-auto"
+        />
       </div>
 
       {/* Loading & Error States */}
@@ -145,7 +159,7 @@ export const WorkflowTemplatesList: React.FC<WorkflowTemplatesListProps> = ({ wo
           title={search ? 'No workflow templates match your search' : 'No workflow templates yet'}
           description={
             search
-              ? 'Try adjusting your search query.'
+              ? 'Try adjusting your search query or switching to show all templates.'
               : 'Create reusable production workflows (e.g. Wedding Standard, Corporate Video) that can be applied to new projects in one click.'
           }
           variant="page"
@@ -154,10 +168,10 @@ export const WorkflowTemplatesList: React.FC<WorkflowTemplatesListProps> = ({ wo
               <button
                 type="button"
                 onClick={() => setIsCreateOpen(true)}
-                className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-lg transition-colors"
+                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-subtle hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Plus className="w-4 h-4" strokeWidth={2} />
-                Create First Template
+                <span>Create First Template</span>
               </button>
             ) : undefined
           }

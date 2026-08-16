@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, NavLink } from 'react-router';
-import { Plus, Search, Sparkles, AlertCircle, Package } from 'lucide-react';
+import { Plus, Search, Sparkles, AlertCircle, Package, Workflow, Users } from 'lucide-react';
 import { useServices, ServiceCard } from '@/features/catalog';
 import { FilterSegmentedControl } from '@/components/ui/filter-segmented-control';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -32,21 +32,35 @@ export function ServicesListRoute() {
 
   return (
     <div className="space-y-6">
-      {/* Navigation Tabs between Services and Packages */}
-      <div className="flex items-center gap-2 border-b border-border-subtle pb-3">
+      {/* Navigation Tabs between Catalog items */}
+      <div className="flex items-center gap-2 border-b border-border-subtle pb-3 overflow-x-auto">
         <NavLink
           to="/services"
-          className="flex items-center gap-1.5 rounded-lg bg-surface-muted px-3 py-1.5 text-xs font-semibold text-text-primary shadow-subtle border border-border"
+          className="flex items-center gap-1.5 rounded-lg bg-surface-muted px-3 py-1.5 text-xs font-semibold text-text-primary shadow-subtle border border-border shrink-0"
         >
           <Sparkles className="h-3.5 w-3.5 text-primary-text" strokeWidth={1.75} />
           <span>Services</span>
         </NavLink>
         <NavLink
           to="/packages"
-          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors"
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors shrink-0"
         >
           <Package className="h-3.5 w-3.5" strokeWidth={1.75} />
           <span>Packages</span>
+        </NavLink>
+        <NavLink
+          to="/workflows"
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors shrink-0"
+        >
+          <Workflow className="h-3.5 w-3.5" strokeWidth={1.75} />
+          <span>Workflow Templates</span>
+        </NavLink>
+        <NavLink
+          to="/settings/collaborators"
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-text-muted hover:bg-surface-muted hover:text-text-primary transition-colors shrink-0"
+        >
+          <Users className="h-3.5 w-3.5" strokeWidth={1.75} />
+          <span>Crew & Collaborators</span>
         </NavLink>
       </div>
 
@@ -135,6 +149,7 @@ export function ServicesListRoute() {
       ) : filteredServices.length === 0 ? (
         <div data-testid="services-empty-state">
           <EmptyState
+            variant="page"
             icon={Sparkles}
             title={searchQuery ? 'No matching services found' : 'No services in catalog yet'}
             description={

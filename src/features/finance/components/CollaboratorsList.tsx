@@ -17,6 +17,7 @@ import {
   useDeleteCollaborator,
 } from '../hooks/useFinanceMutations';
 import { CollaboratorFormModal } from './CollaboratorFormModal';
+import { EmptyState } from '@/components/ui/empty-state';
 import type { Collaborator } from '../types';
 import type { CollaboratorFormValues } from '../schemas/financeSchemas';
 
@@ -91,20 +92,20 @@ export const CollaboratorsList: React.FC<CollaboratorsListProps> = ({ workspaceI
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary sm:text-2xl">
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary leading-tight">
             Crew & Collaborators
           </h1>
-          <p className="text-xs text-text-secondary mt-1">
-            Manage your roodex of second shooters, editors, drone operators, and crew.
+          <p className="text-xs text-text-secondary mt-0.5">
+            Manage your rolodex of second shooters, editors, drone operators, and crew.
           </p>
         </div>
         <button
           type="button"
           data-testid="add-collaborator-btn"
           onClick={handleOpenCreate}
-          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-xs hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-subtle hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring self-start sm:self-auto"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4 w-4" strokeWidth={2} />
           <span>Add Collaborator</span>
         </button>
       </div>
@@ -113,16 +114,16 @@ export const CollaboratorsList: React.FC<CollaboratorsListProps> = ({ workspaceI
       {actionError && (
         <div
           role="alert"
-          className="flex items-center justify-between rounded-xl border border-status-danger/25 bg-status-danger/8 p-3 text-xs text-status-danger"
+          className="flex items-center justify-between rounded-xl border border-status-danger-border bg-status-danger-subtle p-3 text-xs text-status-danger-text"
         >
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0" />
+            <AlertCircle className="h-4 w-4 shrink-0" strokeWidth={1.75} />
             <p className="font-medium">{actionError}</p>
           </div>
           <button
             type="button"
             onClick={() => setActionError(null)}
-            className="text-[11px] font-bold underline cursor-pointer"
+            className="text-[11px] font-semibold underline cursor-pointer"
           >
             Dismiss
           </button>
@@ -130,15 +131,18 @@ export const CollaboratorsList: React.FC<CollaboratorsListProps> = ({ workspaceI
       )}
 
       {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
+      <div className="relative max-w-sm">
+        <Search
+          className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted pointer-events-none"
+          strokeWidth={1.75}
+        />
         <input
           type="text"
           data-testid="collaborator-search-input"
           placeholder="Search by name, skill, phone, or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-xl border border-border bg-surface pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          className="w-full rounded-lg border border-border hover:border-border-interactive focus:border-primary bg-surface pl-9 pr-4 py-2 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors shadow-xs"
         />
       </div>
 
@@ -148,7 +152,7 @@ export const CollaboratorsList: React.FC<CollaboratorsListProps> = ({ workspaceI
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-20 animate-pulse rounded-2xl border border-border bg-surface-muted/60"
+              className="h-20 animate-pulse rounded-xl border border-border bg-surface-muted/60"
             />
           ))}
         </div>
@@ -159,10 +163,12 @@ export const CollaboratorsList: React.FC<CollaboratorsListProps> = ({ workspaceI
         <div
           role="alert"
           data-testid="collaborators-error"
-          className="flex flex-col items-center justify-center rounded-2xl border border-status-danger/25 bg-surface p-8 text-center"
+          className="flex flex-col items-center justify-center rounded-xl border border-status-danger-border bg-surface p-8 text-center shadow-subtle"
         >
-          <AlertCircle className="h-8 w-8 text-status-danger mb-2" />
-          <h3 className="text-sm font-bold text-text-primary">Failed to load collaborators</h3>
+          <AlertCircle className="h-8 w-8 text-status-danger-text mb-2" strokeWidth={1.75} />
+          <h3 className="text-base font-semibold text-text-primary">
+            Failed to load collaborators
+          </h3>
           <p className="mt-1 text-xs text-text-secondary max-w-sm">
             {error instanceof Error ? error.message : 'An unexpected error occurred.'}
           </p>
@@ -171,33 +177,30 @@ export const CollaboratorsList: React.FC<CollaboratorsListProps> = ({ workspaceI
 
       {/* Empty State */}
       {!isLoading && !error && filteredCollaborators.length === 0 && (
-        <div
-          data-testid="collaborators-empty-state"
-          className="flex flex-col items-center justify-center rounded-2xl border border-border bg-surface p-8 text-center"
-        >
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface-muted text-text-muted mb-3">
-            <Users className="h-6 w-6" />
-          </div>
-          <h3 className="text-sm font-bold text-text-primary">
-            {searchQuery ? 'No matching collaborators' : 'No collaborators added yet'}
-          </h3>
-          <p className="mt-1 text-xs text-text-secondary max-w-sm">
-            {searchQuery
+        <EmptyState
+          icon={Users}
+          title={searchQuery ? 'No matching collaborators' : 'No collaborators added yet'}
+          description={
+            searchQuery
               ? `No crew members found matching "${searchQuery}".`
-              : 'Add your regular assistants, second shooters, and freelance editors to quickly assign them to projects.'}
-          </p>
-          {!searchQuery && (
-            <button
-              type="button"
-              data-testid="empty-add-collaborator-btn"
-              onClick={handleOpenCreate}
-              className="mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>Add Your First Crew Member</span>
-            </button>
-          )}
-        </div>
+              : 'Add your regular assistants, second shooters, and freelance editors to quickly assign them to projects.'
+          }
+          variant="page"
+          testId="collaborators-empty-state"
+          action={
+            !searchQuery ? (
+              <button
+                type="button"
+                data-testid="empty-add-collaborator-btn"
+                onClick={handleOpenCreate}
+                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-subtle hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Plus className="h-4 w-4" strokeWidth={2} />
+                <span>Add Your First Crew Member</span>
+              </button>
+            ) : undefined
+          }
+        />
       )}
 
       {/* Collaborator Grid / List */}
