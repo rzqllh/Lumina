@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom';
+import { cleanup } from '@testing-library/react';
+import { afterEach, vi } from 'vitest';
 
 // Polyfill window.matchMedia for jsdom
 Object.defineProperty(window, 'matchMedia', {
@@ -13,4 +15,9 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: () => {},
     dispatchEvent: () => false,
   }),
+});
+
+afterEach(() => {
+  cleanup();
+  vi.clearAllTimers();
 });

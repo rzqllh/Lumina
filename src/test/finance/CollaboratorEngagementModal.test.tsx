@@ -54,7 +54,8 @@ describe('CollaboratorEngagementModal — Inline Collaborator Creation (STAB-P1-
     vi.clearAllMocks();
     queryClient = new QueryClient({
       defaultOptions: {
-        queries: { retry: false },
+        queries: { retry: false, gcTime: 0 },
+        mutations: { retry: false, gcTime: 0 },
       },
     });
   });
@@ -79,7 +80,7 @@ describe('CollaboratorEngagementModal — Inline Collaborator Creation (STAB-P1-
 
     expect(await screen.findByText(/Engage External Crew/i)).toBeInTheDocument();
     expect(screen.getByTestId('inline-add-collaborator-btn')).toBeInTheDocument();
-    expect(screen.getByText(/Budi Santoso \(Drone Operator\)/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Budi Santoso \(Drone Operator\)/i)).toBeInTheDocument();
   });
 
   it('opens inline create modal and creates a new collaborator on the fly', async () => {

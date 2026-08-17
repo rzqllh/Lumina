@@ -9,6 +9,9 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    pool: 'threads',
+    testTimeout: 10000,
+    teardownTimeout: 1000,
     env: {
       VITE_SUPABASE_URL: 'https://placeholder-test-project.supabase.co',
       VITE_SUPABASE_ANON_KEY: 'placeholder-test-anon-key',

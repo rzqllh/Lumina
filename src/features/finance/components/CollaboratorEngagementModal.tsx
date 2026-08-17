@@ -11,7 +11,7 @@ import {
 import { useWorkspaceCollaborators } from '../hooks';
 import { useCreateCollaborator } from '../hooks/useFinanceMutations';
 import { CollaboratorFormModal } from './CollaboratorFormModal';
-import type { CollaboratorEngagement } from '../types';
+import type { Collaborator, CollaboratorEngagement } from '../types';
 
 interface CollaboratorEngagementModalProps {
   isOpen: boolean;
@@ -22,6 +22,8 @@ interface CollaboratorEngagementModalProps {
   currency?: string;
   isSubmitting?: boolean;
 }
+
+const EMPTY_COLLABORATORS: Collaborator[] = [];
 
 export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalProps> = ({
   isOpen,
@@ -35,7 +37,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
   const isEditing = Boolean(initialData);
   const [isCreateCollabOpen, setIsCreateCollabOpen] = useState(false);
 
-  const { data: collaborators = [], isLoading: isLoadingCollaborators } =
+  const { data: collaborators = EMPTY_COLLABORATORS, isLoading: isLoadingCollaborators } =
     useWorkspaceCollaborators(workspaceId);
   const createCollabMutation = useCreateCollaborator(workspaceId);
 
@@ -59,6 +61,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
   });
 
   const paymentStatus = watch('payment_status');
+  const firstCollaboratorId = collaborators[0]?.id || '';
 
   useEffect(() => {
     if (isOpen) {
@@ -73,7 +76,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
         });
       } else {
         reset({
-          collaborator_id: collaborators[0]?.id || '',
+          collaborator_id: firstCollaboratorId,
           role_label: '',
           agreed_fee: 0,
           payment_status: 'unpaid',
@@ -82,7 +85,7 @@ export const CollaboratorEngagementModal: React.FC<CollaboratorEngagementModalPr
         });
       }
     }
-  }, [isOpen, initialData, reset, collaborators]);
+  }, [isOpen, initialData, reset, firstCollaboratorId]);
 
   if (!isOpen) return null;
 
