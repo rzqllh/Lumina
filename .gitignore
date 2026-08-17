@@ -40,6 +40,9 @@ supabase/.branches
 
 # AI Agent configuration, skills & custom rules
 .agents/
+.claude/
+anti-slop/
+skills-lock.json
 AGENTS.md
 CLAUDE.md
 GEMINI.md
