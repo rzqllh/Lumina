@@ -42,6 +42,16 @@ const mockIntakeData = {
           value: false,
           position: 1,
         },
+        {
+          id: 'f-3',
+          field_type: 'short_text',
+          label: 'Studio Reference',
+          helper_text: null,
+          is_required: false,
+          visibility: 'client_can_view',
+          value: 'Read only project context',
+          position: 2,
+        },
       ],
     },
   ],
@@ -84,6 +94,8 @@ describe('PublicBriefIntakeRoute (BRIEF-REQ-004 / INV-003 / INV-004)', () => {
     expect(await screen.findByText('Bali Destination Wedding')).toBeInTheDocument();
     expect(screen.getByText('Creative Preferences')).toBeInTheDocument();
     expect(screen.getByText('Primary Color Palette')).toBeInTheDocument();
+    expect(screen.getByText('Read only project context')).toBeInTheDocument();
+    expect(screen.queryByTestId('brief-input-f-3')).not.toBeInTheDocument();
 
     // Attempt submit with required question empty
     const submitBtn = screen.getByTestId('submit-public-intake-btn');
@@ -127,6 +139,11 @@ describe('PublicBriefIntakeRoute (BRIEF-REQ-004 / INV-003 / INV-004)', () => {
         },
       });
     });
+
+    // Read-only field f-3 must not be persisted in client's answers.
+    const submittedCalls = vi.mocked(supabase.rpc).mock.calls.filter(([fn]) => fn === 'submit_public_brief');
+    expect(submittedCalls).toHaveLength(1);
+    expect(submittedCalls[0]?.[1]).not.toHaveProperty('p_answers.f-3');
 
     expect(await screen.findByTestId('brief-submission-success')).toBeInTheDocument();
     expect(screen.getByText(/Thank You, Sophia & Alexander!/i)).toBeInTheDocument();
