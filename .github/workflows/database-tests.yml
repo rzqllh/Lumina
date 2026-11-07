@@ -1,0 +1,36 @@
+name: Lumina Database Security Tests
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'supabase/migrations/**'
+      - 'supabase/tests/database/**'
+      - '.github/workflows/database-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumina-db-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  postgres-pgtap:
+    name: Local migrations and pgTAP (no linked project)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.114.0
+      - name: Start local database and run migrations
+        run: supabase db start
+      - name: Run all isolated database regression tests
+        run: supabase test db
+      - name: Clean up local containers
+        if: always()
+        run: supabase stop --no-backup
