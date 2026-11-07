@@ -80,6 +80,14 @@
 - **Bukti:** [migration 00021](../../supabase/migrations/00021_brief_builder_and_intake_integrity.sql), [submission schema](../../supabase/migrations/00006_briefs_and_submissions.sql), [migration draft 00025 + pgTAP 14 in PR #1](https://github.com/rzqllh/Lumina/pull/1).
 - **Next/DoD:** Draft implements bounds and field/required/type rejection with negative pgTAP and frontend submit filtering. Run DB workflow on exact SHA then anon-token staging tests; define rate limits and duplicate-submit policy separately with the owner. No live database mutation without authorization.
 
+
+### LUM-P1-08 — SECURITY DEFINER client link RPC grants belum mencabut implicit PUBLIC execute
+
+- **Status:** SOURCE_CONFIRMED / PATCH_DRAFT / DB_VERIFICATION_OPEN.
+- **Temuan/batas bukti:** Migrasi `00021` dan `00022` secara eksplisit memberi role `authenticated` hak untuk membuat/mencabut tautan tetapi tidak mencabut default PostgreSQL `EXECUTE` untuk `PUBLIC`. Beberapa RPC memeriksa membership di body, tetapi batas `EXECUTE` role adalah lapisan pengamanan terpisah. Tidak ada bukti bahwa role anonymous sukses mengeksploitasi endpoint atau konfigurasi live memiliki ACL yang sama.
+- **Bukti:** [migration 00021](../../supabase/migrations/00021_brief_builder_and_intake_integrity.sql), [migration 00022](https://github.com/rzqllh/Lumina/blob/master/supabase/migrations/00022_public_status_portal_integrity.sql), [draft grant-hardening migration 00026 / tests 15](https://github.com/rzqllh/Lumina/pull/1).
+- **Next/DoD:** Jalankan semua migrasi dan `15_client_rpc_privileges.test.sql` pada Postgres lokal; uji `has_function_privilege` dengan anonymous/authenticated pada staging serta periksa ACL langsung tanpa memberi akses baru ke internal-only RPC. Pertahankan hanya public bearer-token reads/submission yang memang dirancang anonim.
+
 ## P2 — Medium
 
 ### LUM-P2-01 — Finance PaymentsList test memakai tanggal sistem aktual
