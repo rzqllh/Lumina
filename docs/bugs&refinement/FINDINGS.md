@@ -40,9 +40,9 @@
 
 ### LUM-P1-02 — Public brief/status links: akses, TTL, revokasi, redaksi data internal
 
-- **Status:** ACCEPTANCE_OPEN.
-- **Temuan/batas bukti:** RPC intake dan public status sudah punya schema/tests source; belum ada bukti uji URL sharing pada staging/production di autentikasi, expiry dan integritas.
-- **Bukti:** [migrations 00021–00022](../../supabase/migrations/00021_brief_builder_and_intake_integrity.sql), [intake tests](../../supabase/tests/database/11_briefs_and_intake.test.sql).
+- **Status:** SOURCE_CONFIRMED / PATCH_DRAFT / ACCEPTANCE_OPEN.
+- **Temuan/batas bukti:** RPC intake/status memiliki schema dan tests source. Modal berbagi sebelumnya membuat URL placeholder `/brief/active-link` dan `/share/active-status` saat link yang sudah aktif tidak memiliki raw token (hash satu arah). Itu URL palsu yang tidak bisa digunakan. Draft PR #1 menghilangkan URL palsu dan meminta konfirmasi saat rotasi brief link. Belum ada bukti staging/production untuk autentikasi, expiry, revokasi, dan integritas.
+- **Bukti:** [migrations 00021–00022](../../supabase/migrations/00021_brief_builder_and_intake_integrity.sql), [intake tests](../../supabase/tests/database/11_briefs_and_intake.test.sql), [draft UX fixes PR #1](https://github.com/rzqllh/Lumina/pull/1).
 - **Next/DoD:** Uji token tamper, revoked/expired, internal-only redaction, cross-workspace link dan no token leakage pada logs/history.
 
 ### LUM-P1-03 — Backup/restore/RPO-RTO database dan artefak belum dibuktikan
@@ -75,10 +75,10 @@
 
 ### LUM-P1-07 — Public brief intake stores unvalidated answer JSON
 
-- **Status:** SOURCE_CONFIRMED / RUNTIME_NOT_TESTED.
+- **Status:** SOURCE_CONFIRMED / PATCH_DRAFT / RUNTIME_NOT_TESTED.
 - **Temuan/batas bukti:** `public.submit_public_brief(p_token TEXT, p_answers JSONB)` (migration 00021) checks that the share token is valid, then writes `p_answers` directly into `brief_submissions.submitted_values`. The inspected function has no validation of JSON object shape, allowed field UUIDs/visibility, answer types or payload size. The base table enforces `NOT NULL` but no equivalent answer schema. A token holder may therefore create malformed, oversized or out-of-brief submissions; **actual abuse, database-level request limits and live behavior are untested**. This is a distinct public intake boundary, not evidence of the already identified approval RPC vulnerability.
-- **Bukti:** [migration 00021](../../supabase/migrations/00021_brief_builder_and_intake_integrity.sql), [submission schema](../../supabase/migrations/00006_briefs_and_submissions.sql), [draft review patch PR #1](https://github.com/rzqllh/Lumina/pull/1).
-- **Next/DoD:** Specify a backwards-compatible intake schema and maximum accepted body/answer lengths; reject non-object/unknown/internal-only/unrelated field IDs, bad required answers, and abusive repeated submits. Check HTTP/Edge rate limits separately. Add negative pgTAP and real anon-token staging tests; no live database mutation without authorization.
+- **Bukti:** [migration 00021](../../supabase/migrations/00021_brief_builder_and_intake_integrity.sql), [submission schema](../../supabase/migrations/00006_briefs_and_submissions.sql), [migration draft 00025 + pgTAP 14 in PR #1](https://github.com/rzqllh/Lumina/pull/1).
+- **Next/DoD:** Draft implements bounds and field/required/type rejection with negative pgTAP and frontend submit filtering. Run DB workflow on exact SHA then anon-token staging tests; define rate limits and duplicate-submit policy separately with the owner. No live database mutation without authorization.
 
 ## P2 — Medium
 
@@ -91,7 +91,7 @@
 
 ### LUM-P2-02 — README masih menyatakan implementasi feature belum dimulai
 
-- **Status:** SOURCE_CONFIRMED_DOC_DRIFT.
+- **Status:** SOURCE_CONFIRMED_DOC_DRIFT / PATCH_DRAFT.
 - **Temuan/batas bukti:** README berlabel Repository Foundation/placeholder routes, sementara `src/features` berisi dashboard/clients/projects/briefs/finance/deliverables, dan CI menjalankan puluhan DOM tests. Ini klaim status yang menyesatkan, bukan bukti semua modul siap.
 - **Bukti:** [README](../../README.md), [features](https://github.com/rzqllh/Lumina/tree/master/src/features).
 - **Next/DoD:** Perbarui status per modul sesuai build/tests/live evidence; pisahkan IMPLEMENTED, TESTED, STAGING_PENDING dan PRODUCTION_UNKNOWN.
@@ -128,7 +128,7 @@
 
 ### LUM-P3-03 — Buat documentation-to-feature evidence map
 
-- **Status:** PROPOSED_REFINEMENT.
+- **Status:** PROPOSED_REFINEMENT / PARTIAL_DOC_DRAFT.
 - **Temuan/batas bukti:** Traceability migration→API→UI→test belum tersaji sebagai matrix per modul di README.
 - **Bukti:** [README](../../README.md).
 - **Next/DoD:** Tautkan test dan decision log pada setiap fitur, beri owner/last-checked SHA dan singkirkan klaim README yang stale.
@@ -151,3 +151,9 @@
 - **Patch:** [PR #1](https://github.com/rzqllh/Lumina/pull/1) — draft, CI frontend [success](https://github.com/rzqllh/Lumina/actions/runs/42319807369), DB tests **NOT RUN**, no database writes.
 - **No silent architecture changes:** React/Vite/Supabase/Cloudflare contract is left as-is; R2/media/backup items are proposals until implementation evidence and owner decisions exist.
 - **Definition of closure:** link to merged code SHA + regression (negative where relevant) + exact-head CI + staging/live evidence if risk depends on real auth or vendor.
+
+## Enterprise implementation checkpoint — 7 November 2026
+
+- [Code/security draft PR #1](https://github.com/rzqllh/Lumina/pull/1): authorization RPC hardening, new intake validation migration, pgTAP, frontend submit/URI/link hardening, deterministic finance date test and local-only DB CI workflow.
+- [Enterprise acceptance contract](https://github.com/rzqllh/Lumina/blob/fix/20261107-brief-review-authorization/docs/engineering/ENTERPRISE_READINESS.md): proof criteria and operations gates, not a certification.
+- Source CI must be checked at the **current PR head**, not an earlier success; DB workflow and staging account must pass independently. Supabase Lumina remains **INACTIVE** per account's project inventory; no hosted schema change was performed.
