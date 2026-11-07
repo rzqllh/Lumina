@@ -38,7 +38,7 @@ VALUES ('11111111-1111-1111-1111-111111111111', '33333333-3333-3333-3333-3333333
 CREATE OR REPLACE FUNCTION pg_temp.run_status_portal_tap()
 RETURNS SETOF TEXT
 LANGUAGE plpgsql
-AS $
+AS $body$
 DECLARE
     gen_result JSONB;
     raw_tok TEXT;
@@ -87,7 +87,7 @@ BEGIN
         RETURN NEXT ok(TRUE, 'Calling get_public_project_status with revoked token fails gracefully');
     END;
 END;
-$;
+$body$;
 
 SELECT * FROM pg_temp.run_status_portal_tap();
 SELECT * FROM finish();
