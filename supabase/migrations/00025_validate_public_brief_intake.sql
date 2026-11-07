@@ -77,10 +77,15 @@ BEGIN
                 RAISE EXCEPTION 'Invalid checkbox answer' USING ERRCODE = '22023';
             END IF;
         ELSIF field_record.field_type = 'number' THEN
-            -- Browser input[type=number] serializes strings; allow numeric JSON as well.
-            IF answer_type NOT IN ('string', 'number', 'null')
-               OR (answer_type = 'string' AND (answer_value #>> '{}') !~
-                   '^[+-]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)?$') THEN
+            -- Browser input[type=number] serializes strings; empty optional inputs
+            -- and numeric JSON are accepted, but arbitrary non-numeric strings are not.
+            IF answer_type NOT IN ('string', 'number', 'null') THEN
+                RAISE EXCEPTION 'Invalid numeric answer' USING ERRCODE = '22023';
+            END IF;
+            IF answer_type = 'string'
+               AND btrim(answer_value #>> '{}') <> ''
+               AND btrim(answer_value #>> '{}') !~
+                   '^[+-]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)?$' THEN
                 RAISE EXCEPTION 'Invalid numeric answer' USING ERRCODE = '22023';
             END IF;
         ELSIF field_record.field_type IN ('multi_select', 'checklist', 'schedule_timeline') THEN
@@ -88,11 +93,13 @@ BEGIN
             IF answer_type NOT IN ('string', 'array', 'null') THEN
                 RAISE EXCEPTION 'Invalid structured answer' USING ERRCODE = '22023';
             END IF;
-            IF answer_type = 'array' AND EXISTS (
-                SELECT 1 FROM jsonb_array_elements(answer_value) AS el(value)
-                 WHERE jsonb_typeof(el.value) NOT IN ('string', 'number', 'boolean')
-            ) THEN
-                RAISE EXCEPTION 'Invalid structured answer items' USING ERRCODE = '22023';
+            IF answer_type = 'array' THEN
+                IF jsonb_array_length(answer_value) > 50 OR EXISTS (
+                    SELECT 1 FROM jsonb_array_elements(answer_value) AS el(value)
+                    WHERE jsonb_typeof(el.value) NOT IN ('string', 'number', 'boolean')
+                ) THEN
+                    RAISE EXCEPTION 'Invalid structured answer items' USING ERRCODE = '22023';
+                END IF;
             END IF;
         ELSE
             -- Fields in the current renderer are text controls; reject object injection.
