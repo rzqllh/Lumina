@@ -34,8 +34,15 @@ SELECT ok(has_function_privilege('anon', 'public.submit_public_brief(text,jsonb)
 SELECT ok(has_function_privilege('anon', 'public.get_public_project_status(text)', 'EXECUTE'),
  'Anonymous bearer token may view allowed status projection');
 
-SELECT ok(NOT has_function_privilege('public', 'public.is_workspace_member(uuid)', 'EXECUTE'),
- 'PUBLIC must not execute workspace membership helper');
+-- PUBLIC is a pseudo-role (ACL grantee OID 0), not a named role.
+SELECT ok(NOT EXISTS (
+ SELECT 1
+ FROM pg_proc AS p
+ CROSS JOIN LATERAL aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) AS acl
+ WHERE p.oid = 'public.is_workspace_member(uuid)'::regprocedure
+   AND acl.grantee = 0
+   AND acl.privilege_type = 'EXECUTE'
+), 'PUBLIC must not execute workspace membership helper');
 SELECT ok(NOT has_function_privilege('anon', 'public.is_workspace_member(uuid)', 'EXECUTE'),
  'Anonymous user must not invoke membership helper');
 SELECT ok(has_function_privilege('authenticated', 'public.is_workspace_member(uuid)', 'EXECUTE'),
