@@ -1,0 +1,167 @@
+# Lumina — Bugs & Refinement Register
+
+**Updated:** 2026-11-07 (Asia/Jakarta). **Default baseline:** `master@130bf73b736158f2239dce0e8e5184a3789c1a11`. **Register only:** writing this document does not implement fixes.
+
+**Evidence rule:** CODE_CONFIRMED/SOURCE_CONFIRMED refers to a named inspected file; PATCH_DRAFT is not merged or applied; CI_VERIFIED is only the named workflow/commit; ACCEPTANCE_OPEN means not independently demonstrated; PROPOSED_REFINEMENT is an idea, not an observed defect. Each row needs fresh triage when merged into newer code.
+
+**Security disclosure:** public descriptions intentionally avoid exploit payloads, private tenant identifiers or credentials. Vulnerabilities belong in private advisories if sensitive.
+
+## P0 — Urgent
+
+### LUM-P0-01 — SECURITY DEFINER brief-review RPC dapat menerima field UUID di luar brief asal
+
+- **Status:** PATCH_DRAFT / CODE_CONFIRMED.
+- **Temuan/batas bukti:** Migration `00023` mengecek membership terhadap brief submission, tetapi UPDATE ke `brief_fields` lama hanya memakai field ID. Risiko mutasi lintas brief/workspace tidak boleh dianggap tertutup hingga migrasi baru dijalankan dan diuji sebagai role riil.
+- **Bukti:** [migration 00023](../../supabase/migrations/00023_fix_apply_brief_submission_review.sql), [draft fix PR #1](https://github.com/rzqllh/Lumina/pull/1).
+- **Next/DoD:** Jalankan `00024` pada staging, pgTAP negative cross-workspace/cross-brief, cek grants dan rollback; audit produksi hanya melalui prosedur yang disetujui.
+
+### LUM-P0-02 — Supabase project inactive; tidak ada bukti migrasi keamanan dan pgTAP berjalan
+
+- **Status:** BLOCKED_EXTERNAL.
+- **Temuan/batas bukti:** CI frontend hijau bukan validasi Postgres/RLS. SQL baru `00024` dan regresi `13_...` ada **di draft PR** bukan database default/live.
+- **Bukti:** [draft PR #1](https://github.com/rzqllh/Lumina/pull/1), [CI successful](https://github.com/rzqllh/Lumina/actions/runs/42319807369).
+- **Next/DoD:** Siapkan staging dengan persetujuan pemilik; jalankan seluruh migrasi + pgTAP, verify SQL constraints dan privilege dari JWT user/anonymous; simpan bukti SHA.
+
+### LUM-P0-03 — Verifikasi isolasi data RLS dua workspace dan akses publik belum memenuhi bukti live
+
+- **Status:** ACCEPTANCE_OPEN.
+- **Temuan/batas bukti:** Unit/pgTAP source tidak menggantikan uji Supabase REST/RPC sebagai dua akun berbeda, anonymous dan client public link; severity berdasarkan potensi kebocoran data klien.
+- **Bukti:** [RLS schema](../../supabase/migrations/00010_security_and_rls.sql), [DB tests](../../supabase/tests/database/01_invariants_and_rls.test.sql).
+- **Next/DoD:** Uji pembacaan, pembuatan, perubahan, delete serta cross-tenant access; gunakan fixture disposable dan bersihkan setelahnya.
+
+## P1 — High
+
+### LUM-P1-01 — Semantik review brief: hanya nilai klien dan field client-fillable yang dapat diterima
+
+- **Status:** PATCH_DRAFT.
+- **Temuan/batas bukti:** Patch `00024` memvalidasi submitted_values, section/brief dan visibility. Belum terbukti interaksi dengan pending/reviewed, retry, duplicate accepted field atau role staff.
+- **Bukti:** [migration draft 00024](https://github.com/rzqllh/Lumina/blob/fix/20261107-brief-review-authorization/supabase/migrations/00024_secure_brief_submission_review.sql).
+- **Next/DoD:** Tambah acceptance DB role-based, double-review/idempotence, rejected-fields dan kegagalan atomik; jangan asal menyetujui setiap workspace member jika policy produk mensyaratkan role lebih tinggi.
+
+### LUM-P1-02 — Public brief/status links: akses, TTL, revokasi, redaksi data internal
+
+- **Status:** SOURCE_CONFIRMED / PATCH_DRAFT / ACCEPTANCE_OPEN.
+- **Temuan/batas bukti:** RPC intake/status memiliki schema dan tests source. Modal berbagi sebelumnya membuat URL placeholder `/brief/active-link` dan `/share/active-status` saat link yang sudah aktif tidak memiliki raw token (hash satu arah). Itu URL palsu yang tidak bisa digunakan. Draft PR #1 menghilangkan URL palsu dan meminta konfirmasi saat rotasi brief link. Belum ada bukti staging/production untuk autentikasi, expiry, revokasi, dan integritas.
+- **Bukti:** [migrations 00021–00022](../../supabase/migrations/00021_brief_builder_and_intake_integrity.sql), [intake tests](../../supabase/tests/database/11_briefs_and_intake.test.sql), [draft UX fixes PR #1](https://github.com/rzqllh/Lumina/pull/1).
+- **Next/DoD:** Uji token tamper, revoked/expired, internal-only redaction, cross-workspace link dan no token leakage pada logs/history.
+
+### LUM-P1-03 — Backup/restore/RPO-RTO database dan artefak belum dibuktikan
+
+- **Status:** ACCEPTANCE_OPEN.
+- **Temuan/batas bukti:** Pola `pg_dump` terjadwal tidak otomatis setara managed PITR; penyimpanan object di R2 (jika kelak dipakai) tidak ikut PostgreSQL dump.
+- **Bukti:** [project architecture](../../README.md).
+- **Next/DoD:** Tetapkan RPO/RTO/retention, snapshot terenkripsi di lokasi terpisah, audit akses, uji pemulihan staging, jadwalkan evidence. Jangan mengklaim ping harian mencegah pause Supabase Free.
+
+### LUM-P1-04 — Otorisasi media R2 jika fitur upload langsung diaktifkan
+
+- **Status:** PROPOSED_REFINEMENT / NOT_IMPLEMENTATION_FINDING.
+- **Temuan/batas bukti:** Belum ada bukti R2 sebagai storage media utama atau implementasi signing siap produksi. Presigned URL adalah bearer credential; Supabase RLS tidak melindungi R2 secara otomatis.
+- **Bukti:** [media boundary](../../README.md).
+- **Next/DoD:** Sebelum implementasi, gate server dengan JWT + owner/project permission, short-lived PUT/GET scope, object key random, post-upload verification, delete/revoke dan audit.
+
+### LUM-P1-05 — Integritas upload: jangan bergantung hanya pada Content-Length presigned PUT
+
+- **Status:** PROPOSED_REFINEMENT / NOT_IMPLEMENTATION_FINDING.
+- **Temuan/batas bukti:** R2 presigned PUT tidak otomatis menerapkan POST-policy content-length-range; ukuran/MIME dari browser tidak boleh dipercaya.
+- **Bukti:** [media boundary](../../README.md).
+- **Next/DoD:** Validasi batas dan tipe di server, cek object HEAD sesudah upload, karantina file tak sesuai, cleanup orphan/multipart. Simpan metadata dan ownership.
+
+### LUM-P1-06 — Approval, deliverable, finance dan project closure perlu real-user journey testing
+
+- **Status:** ACCEPTANCE_OPEN.
+- **Temuan/batas bukti:** Migrations & unit DOM tidak membuktikan perjalanan DP→brief→session→revisi→persetujuan→lunas→tutup, termasuk force-close, hak akses, audit dan timezone.
+- **Bukti:** [feature modules](https://github.com/rzqllh/Lumina/tree/master/src/features), [DB finance tests](../../supabase/tests/database/10_finance_and_closure.test.sql).
+- **Next/DoD:** Uji happy/unhappy paths di staging; audit paid-status reversibility, referensi ke files/deliverables dan atomicity.
+
+### LUM-P1-07 — Public brief intake stores unvalidated answer JSON
+
+- **Status:** SOURCE_CONFIRMED / PATCH_DRAFT / RUNTIME_NOT_TESTED.
+- **Temuan/batas bukti:** `public.submit_public_brief(p_token TEXT, p_answers JSONB)` (migration 00021) checks that the share token is valid, then writes `p_answers` directly into `brief_submissions.submitted_values`. The inspected function has no validation of JSON object shape, allowed field UUIDs/visibility, answer types or payload size. The base table enforces `NOT NULL` but no equivalent answer schema. A token holder may therefore create malformed, oversized or out-of-brief submissions; **actual abuse, database-level request limits and live behavior are untested**. This is a distinct public intake boundary, not evidence of the already identified approval RPC vulnerability.
+- **Bukti:** [migration 00021](../../supabase/migrations/00021_brief_builder_and_intake_integrity.sql), [submission schema](../../supabase/migrations/00006_briefs_and_submissions.sql), [migration draft 00025 + pgTAP 14 in PR #1](https://github.com/rzqllh/Lumina/pull/1).
+- **Next/DoD:** Draft implements bounds and field/required/type rejection with negative pgTAP and frontend submit filtering. Run DB workflow on exact SHA then anon-token staging tests; define rate limits and duplicate-submit policy separately with the owner. No live database mutation without authorization.
+
+
+### LUM-P1-08 — SECURITY DEFINER client link RPC grants belum mencabut implicit PUBLIC execute
+
+- **Status:** SOURCE_CONFIRMED / PATCH_DRAFT / DB_VERIFICATION_OPEN.
+- **Temuan/batas bukti:** Migrasi `00021` dan `00022` secara eksplisit memberi role `authenticated` hak untuk membuat/mencabut tautan tetapi tidak mencabut default PostgreSQL `EXECUTE` untuk `PUBLIC`. Beberapa RPC memeriksa membership di body, tetapi batas `EXECUTE` role adalah lapisan pengamanan terpisah. Tidak ada bukti bahwa role anonymous sukses mengeksploitasi endpoint atau konfigurasi live memiliki ACL yang sama.
+- **Bukti:** [migration 00021](../../supabase/migrations/00021_brief_builder_and_intake_integrity.sql), [migration 00022](https://github.com/rzqllh/Lumina/blob/master/supabase/migrations/00022_public_status_portal_integrity.sql), [draft grant-hardening migration 00026 / tests 15](https://github.com/rzqllh/Lumina/pull/1).
+- **Next/DoD:** Jalankan semua migrasi dan `15_client_rpc_privileges.test.sql` pada Postgres lokal; uji `has_function_privilege` dengan anonymous/authenticated pada staging serta periksa ACL langsung tanpa memberi akses baru ke internal-only RPC. Pertahankan hanya public bearer-token reads/submission yang memang dirancang anonim.
+
+## P2 — Medium
+
+### LUM-P2-01 — Finance PaymentsList test memakai tanggal sistem aktual
+
+- **Status:** PATCH_DRAFT / CI_VERIFIED.
+- **Temuan/batas bukti:** Assert `payment-status-upcoming` menjadi gagal setelah due date fixture berlalu; draft patch membekukan Date dan CI berikutnya hijau.
+- **Bukti:** [draft PR #1](https://github.com/rzqllh/Lumina/pull/1), [CI](https://github.com/rzqllh/Lumina/actions/runs/42319807369).
+- **Next/DoD:** Pertahankan fake Date hanya untuk clock, jalankan ulang pada head yang nanti di-merge; scan tes status tanggal yang sejenis.
+
+### LUM-P2-02 — README masih menyatakan implementasi feature belum dimulai
+
+- **Status:** SOURCE_CONFIRMED_DOC_DRIFT / PATCH_DRAFT.
+- **Temuan/batas bukti:** README berlabel Repository Foundation/placeholder routes, sementara `src/features` berisi dashboard/clients/projects/briefs/finance/deliverables, dan CI menjalankan puluhan DOM tests. Ini klaim status yang menyesatkan, bukan bukti semua modul siap.
+- **Bukti:** [README](../../README.md), [features](https://github.com/rzqllh/Lumina/tree/master/src/features).
+- **Next/DoD:** Perbarui status per modul sesuai build/tests/live evidence; pisahkan IMPLEMENTED, TESTED, STAGING_PENDING dan PRODUCTION_UNKNOWN.
+
+### LUM-P2-03 — PWA, responsive, aksesibilitas dan offline state belum diterima secara manual
+
+- **Status:** ACCEPTANCE_OPEN.
+- **Temuan/batas bukti:** Vite/PWA shell dan unit test tidak sama dengan mobile standalone, keyboard/VoiceOver, slow/offline, safe area atau upload interruption.
+- **Bukti:** [README](../../README.md).
+- **Next/DoD:** Buat Playwright Chromium/WebKit journey dan uji perangkat fisik terarah; catat SHA, viewport, OS, network, expected/actual.
+
+### LUM-P2-04 — Secret exposure, audit log, observability, error privacy belum diverifikasi deploy
+
+- **Status:** ACCEPTANCE_OPEN.
+- **Temuan/batas bukti:** RLS source/Cloudflare config/Edge Function health bukan proof log bebas data sensitif, monitoring dan recovery.
+- **Bukti:** [CI](https://github.com/rzqllh/Lumina/actions/runs/42319807369), [Edge Functions](https://github.com/rzqllh/Lumina/tree/master/supabase/functions).
+- **Next/DoD:** Gunakan staging untuk negative auth, error redaction, CSP/CORS, audit retained events dan restore; jangan publish private URL/token.
+
+## P3 — Light
+
+### LUM-P3-01 — Standarkan status payment: upcoming, overdue, partially paid, paid
+
+- **Status:** PROPOSED_REFINEMENT.
+- **Temuan/batas bukti:** Tanggal fixture sebelumnya memperlihatkan ketergantungan waktu; UX label dan timezone harus mengikuti definisi product finance, bukan clock arbitrary.
+- **Bukti:** [PaymentsList test](https://github.com/rzqllh/Lumina/blob/master/src/test/finance/PaymentsList.test.tsx).
+- **Next/DoD:** Tentukan kebijakan timezone dan due-date inclusive; buat table-driven tests di boundary tanggal dan aksesibilitas badge.
+
+### LUM-P3-02 — Definisikan preview foto/video tanpa mengubah master media
+
+- **Status:** PROPOSED_REFINEMENT.
+- **Temuan/batas bukti:** Tidak ada keputusan produk terverifikasi untuk WebP quality, batas 720p/50–100MB atau storage master dalam repository.
+- **Bukti:** [files boundary](../../README.md).
+- **Next/DoD:** Uji preview/thumbnail sebagai turunan opsional; original client tetap utuh dan link external bisa diperbarui/di-revoke.
+
+### LUM-P3-03 — Buat documentation-to-feature evidence map
+
+- **Status:** PROPOSED_REFINEMENT / PARTIAL_DOC_DRAFT.
+- **Temuan/batas bukti:** Traceability migration→API→UI→test belum tersaji sebagai matrix per modul di README.
+- **Bukti:** [README](../../README.md).
+- **Next/DoD:** Tautkan test dan decision log pada setiap fitur, beri owner/last-checked SHA dan singkirkan klaim README yang stale.
+
+### LUM-P3-04 — Cek empty/loading/error copy, focus return dan form validation
+
+- **Status:** PROPOSED_REFINEMENT.
+- **Temuan/batas bukti:** Ini QA backlog, **bukan bug yang telah direproduksi**; jangan membuat PR UI berdasarkan asumsi.
+- **Bukti:** [feature modules](https://github.com/rzqllh/Lumina/tree/master/src/features).
+- **Next/DoD:** Audit keyboard, form errors, busy state, undo dan pengukuran density di mobile/desktop.
+
+## Documentation PR CI evidence (7 November 2026)
+
+- [PR #2 CI run 42337014688](https://github.com/rzqllh/Lumina/actions/runs/42337014688) returned **FAILURE** on unchanged `master` application test `src/test/finance/PaymentsList.test.tsx`: the date-dependent `payment-status-upcoming` assertion expected an August 2026 due date still to be upcoming in November 2026. GitHub recorded **164 passed / 1 failed**. This branch contains only `docs/bugs&refinement/*.md`, so do not attribute it to a documentation implementation change.
+- Separate proposed code fix [PR #1](https://github.com/rzqllh/Lumina/pull/1) freezes the test clock and had [CI success](https://github.com/rzqllh/Lumina/actions/runs/42319807369). It remains unmerged; neither result tests live Supabase migrations or security policy.
+- **Gate:** the docs are reviewable, but do not force-merge/bypass the CI policy. Only after a separately approved fix or other authorized gate resolution can the review branch pass required checks.
+
+## Checkpoint lintas area
+
+- **Patch:** [PR #1](https://github.com/rzqllh/Lumina/pull/1) — draft, CI frontend [success](https://github.com/rzqllh/Lumina/actions/runs/42319807369), DB tests **NOT RUN**, no database writes.
+- **No silent architecture changes:** React/Vite/Supabase/Cloudflare contract is left as-is; R2/media/backup items are proposals until implementation evidence and owner decisions exist.
+- **Definition of closure:** link to merged code SHA + regression (negative where relevant) + exact-head CI + staging/live evidence if risk depends on real auth or vendor.
+
+## Enterprise implementation checkpoint — 7 November 2026
+
+- [Code/security draft PR #1](https://github.com/rzqllh/Lumina/pull/1): authorization RPC hardening, new intake validation migration, pgTAP, frontend submit/URI/link hardening, deterministic finance date test and local-only DB CI workflow.
+- [Enterprise acceptance contract](https://github.com/rzqllh/Lumina/blob/fix/20261107-brief-review-authorization/docs/engineering/ENTERPRISE_READINESS.md): proof criteria and operations gates, not a certification.
+- Source CI must be checked at the **current PR head**, not an earlier success; DB workflow and staging account must pass independently. Supabase Lumina remains **INACTIVE** per account's project inventory; no hosted schema change was performed.
