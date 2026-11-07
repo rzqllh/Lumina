@@ -1,5 +1,5 @@
 BEGIN;
-SELECT plan(10);
+SELECT plan(11);
 
 -- Dedicated fixture identities; no production data is touched.
 INSERT INTO auth.users (id, email) VALUES
@@ -89,5 +89,22 @@ SELECT is((public.apply_brief_submission_review(
 )->>'fields_applied')::int, 1, 'Valid submitted field can be accepted');
 SELECT is((SELECT value #>> '{}' FROM public.brief_fields WHERE id='70000000-0000-4000-8000-000000000001'), 'accepted-a1', 'Accepted value updates only the canonical field');
 SELECT is((SELECT review_status FROM public.brief_submissions WHERE id='80000000-0000-4000-8000-000000000001'), 'reviewed', 'Valid review marks submission reviewed');
+-- Completed reviews must be immutable, even when retried with an identical payload.
+CREATE TEMP TABLE review_replay_probe (denied BOOLEAN);
+DO $replay$
+BEGIN
+    BEGIN
+        PERFORM public.apply_brief_submission_review(
+            '80000000-0000-4000-8000-000000000001',
+            '[{"field_id":"70000000-0000-4000-8000-000000000001","value":"accepted-a1"}]'::jsonb
+        );
+        INSERT INTO review_replay_probe VALUES (FALSE);
+    EXCEPTION WHEN OTHERS THEN
+        INSERT INTO review_replay_probe VALUES (SQLSTATE = '22023');
+    END;
+END;
+$replay$;
+SELECT ok((SELECT denied FROM review_replay_probe), 'Completed review cannot be replayed');
+
 SELECT * FROM finish();
 ROLLBACK;
