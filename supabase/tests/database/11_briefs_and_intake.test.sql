@@ -71,7 +71,7 @@ SELECT is(
 CREATE OR REPLACE FUNCTION pg_temp.run_brief_intake_tap()
 RETURNS SETOF TEXT
 LANGUAGE plpgsql
-AS $
+AS $body$
 DECLARE
     gen_result JSONB;
     raw_tok TEXT;
@@ -136,7 +136,7 @@ BEGIN
         'Submission record marked reviewed'
     );
 END;
-$;
+$body$;
 
 SELECT * FROM pg_temp.run_brief_intake_tap();
 SELECT * FROM finish();
