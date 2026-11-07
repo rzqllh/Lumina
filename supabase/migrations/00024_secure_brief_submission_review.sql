@@ -18,7 +18,7 @@ DECLARE
     accepted_key TEXT;
     applied_count INTEGER := 0;
 BEGIN
-    SELECT id, brief_id, submitted_values
+    SELECT id, brief_id, submitted_values, review_status
       INTO submission_row
       FROM public.brief_submissions
      WHERE id = p_submission_id
@@ -33,6 +33,12 @@ BEGIN
      WHERE id = submission_row.brief_id;
     IF NOT FOUND OR NOT public.is_workspace_member(owning_brief.workspace_id) THEN
         RAISE EXCEPTION 'Brief review not permitted' USING ERRCODE = '42501';
+    END IF;
+
+    -- A reviewed submission is immutable. A retry must not rewrite fields or decisions.
+    IF submission_row.review_status IS DISTINCT FROM 'pending' THEN
+        RAISE EXCEPTION 'Brief submission has already been reviewed'
+            USING ERRCODE = '22023';
     END IF;
 
     IF jsonb_typeof(p_accepted_fields) IS DISTINCT FROM 'array'
