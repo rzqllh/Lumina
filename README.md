@@ -10,32 +10,22 @@ It is designed as a lightweight operational workspace — not a photo editor, vi
 
 ## Status
 
-> **Current stage: Repository Foundation**
+> **Stage: Feature implementation and security hardening; enterprise production acceptance NOT complete** (7 November 2026).
 
-Lumina is currently in active development.
+The application contains implemented React routes and feature modules for dashboard, client/contact management, service/package catalog, project workflows, sessions, briefs, deliverables/revisions, finance, files, calendar and public link screens. Source presence and DOM test coverage do **not** establish live readiness.
 
-The product model, workflow rules, technical architecture, database design, security boundaries, and integration strategy have been defined.
+| Evidence layer | Current interpretation |
+| --- | --- |
+| Source code | Modules, routes, schema migrations and unit/DOM tests exist. |
+| GitHub CI | TypeScript, lint, DOM tests and build run on PRs. Exact SHA required to report a PASS. |
+| Database | Migration `00024` (review authorization) and `00025` (public intake validation) are proposed in [draft PR #1](https://github.com/rzqllh/Lumina/pull/1). Local pgTAP workflow is proposed but must pass on the exact PR SHA. |
+| Hosted Supabase | Historical project state was inactive. No authorized staging migration, multi-account RLS acceptance, restore drill or hosted JWT verification has been demonstrated. |
+| Production | No release, security audit, enterprise assurance or production acceptance is implied by source, documentation or green frontend CI. |
 
-The repository foundation is also in place, including:
-
-- React + TypeScript application shell
-- Vite build system
-- Tailwind CSS design foundation
-- client-side routing
-- PWA foundation
-- Supabase local project structure
-- PostgreSQL migrations
-- Row Level Security design
-- pgTAP database test suite
-- Supabase Edge Function foundation
-- GitHub Actions CI
-- Cloudflare Workers Static Assets configuration
-
-Product feature implementation has **not** started yet.
-
-The current UI contains only foundational layout and placeholder routes.
+See [Enterprise Readiness Gates](docs/engineering/ENTERPRISE_READINESS.md) for evidence, blockers and owner-controlled rollout. See [Bugs & Refinement draft PR #2](https://github.com/rzqllh/Lumina/pull/2) for the register, which is not yet on `master`.
 
 ---
+
 
 ## What Lumina Is
 
@@ -718,50 +708,14 @@ Lumina intentionally does not include:
 
 ## Current Development Roadmap
 
-```text
-Product Discovery
-        ✓
-
-Domain & Workflow Model
-        ✓
-
-Technical Architecture
-        ✓
-
-Database & Security Design
-        ✓
-
-Repository Foundation
-        ◐
-
-Feature Specifications
-        ↓
-
-Feature Implementation
-        ↓
-
-Production Validation
-```
-
-Repository Foundation currently includes the application scaffold, database migrations, test infrastructure, and CI.
-
-Local database and RLS runtime verification remains part of foundation hardening before feature implementation proceeds.
-
----
+- **Implemented in source:** the React feature modules and SQL migrations described above. Source-level verification is separate from user acceptance.
+- **In draft review:** secure brief-review authorization, validated public brief intake, and automatic local DB/pgTAP CI gate.
+- **Not yet accepted:** hosted Supabase migration/RLS, backup and restore, verified public-link revocation, physical-device flows, production observability and operational release gates.
+- **Proposed or conditional:** direct R2 upload architecture, external media lifecycle and expanded enterprise controls. These are not implemented features or mandatory dependencies.
 
 ## Next Milestone
 
-The next milestone is to select the first Lumina product feature and create its specification:
-
-```text
-requirements.md
-→ design.md
-→ tasks.md
-→ implementation
-→ verification.md
-```
-
-Feature implementation begins only after the feature's scope and behavior are explicitly defined.
+Follow the evidence-ordered release gates in [Enterprise Readiness](docs/engineering/ENTERPRISE_READINESS.md): pass local migration and pgTAP tests; confirm role-scoped staging REST/JWT behavior; complete backup/restore and multi-user E2E acceptance; then request an explicit production authorization. Never deploy a migration or silently change vendor configuration as a side effect of CI.
 
 ---
 
