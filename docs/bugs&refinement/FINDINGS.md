@@ -133,6 +133,12 @@
 - **Bukti:** [feature modules](https://github.com/rzqllh/Lumina/tree/master/src/features).
 - **Next/DoD:** Audit keyboard, form errors, busy state, undo dan pengukuran density di mobile/desktop.
 
+## Documentation PR CI evidence (7 November 2026)
+
+- [PR #2 CI run 42337014688](https://github.com/rzqllh/Lumina/actions/runs/42337014688) returned **FAILURE** on unchanged `master` application test `src/test/finance/PaymentsList.test.tsx`: the date-dependent `payment-status-upcoming` assertion expected an August 2026 due date still to be upcoming in November 2026. GitHub recorded **164 passed / 1 failed**. This branch contains only `docs/bugs&refinement/*.md`, so do not attribute it to a documentation implementation change.
+- Separate proposed code fix [PR #1](https://github.com/rzqllh/Lumina/pull/1) freezes the test clock and had [CI success](https://github.com/rzqllh/Lumina/actions/runs/42319807369). It remains unmerged; neither result tests live Supabase migrations or security policy.
+- **Gate:** the docs are reviewable, but do not force-merge/bypass the CI policy. Only after a separately approved fix or other authorized gate resolution can the review branch pass required checks.
+
 ## Checkpoint lintas area
 
 - **Patch:** [PR #1](https://github.com/rzqllh/Lumina/pull/1) — draft, CI frontend [success](https://github.com/rzqllh/Lumina/actions/runs/42319807369), DB tests **NOT RUN**, no database writes.
