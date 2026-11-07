@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useGenerateBriefShareLink } from '../hooks/useBriefMutations';
+import { revokeProjectShareLinkRpc } from '@/features/files/api/filesApi';
 import { X, Share2, Copy, Check, ExternalLink, ShieldCheck } from 'lucide-react';
 
 interface ShareBriefLinkModalProps {
@@ -15,6 +16,8 @@ export const ShareBriefLinkModal: React.FC<ShareBriefLinkModalProps> = ({
 }) => {
   const generateLinkMutation = useGenerateBriefShareLink();
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [existingLinkId, setExistingLinkId] = useState<string | null>(null);
+  const [isRotating, setIsRotating] = useState(false);
   const [hasCopied, setHasCopied] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -24,6 +27,7 @@ export const ShareBriefLinkModal: React.FC<ShareBriefLinkModalProps> = ({
   React.useEffect(() => {
     if (isOpen && projectId) {
       setShareUrl(null);
+      setExistingLinkId(null);
       setHasCopied(false);
       setErrorMessage(null);
 
@@ -34,8 +38,12 @@ export const ShareBriefLinkModal: React.FC<ShareBriefLinkModalProps> = ({
             const fullUrl = `${window.location.origin}/brief/${res.raw_token}`;
             setShareUrl(fullUrl);
           } else {
-            // Existing link without exposed raw token, generate fresh share link or inform user
-            setShareUrl(`${window.location.origin}/brief/active-link`);
+            // A hash cannot be reversed to a client URL; show an explicit rotate action.
+            setShareUrl(null);
+            setExistingLinkId(res.link_id);
+            setErrorMessage(
+              'An active questionnaire link exists, but its original token cannot be recovered. Rotate it to create a new link; existing client links will stop working.'
+            );
           }
         })
         .catch((err) => {
@@ -45,6 +53,26 @@ export const ShareBriefLinkModal: React.FC<ShareBriefLinkModalProps> = ({
   }, [isOpen, projectId]);
 
   if (!isOpen) return null;
+
+  async function handleRotate() {
+    if (!existingLinkId || isRotating) return;
+    if (!window.confirm('Rotate this questionnaire link? All previously shared links will stop working.')) return;
+
+    setIsRotating(true);
+    try {
+      // Reuse the existing role-checked revocation RPC; never expose hashed tokens.
+      await revokeProjectShareLinkRpc(existingLinkId);
+      setExistingLinkId(null);
+      const newLink = await generateLinkMutation.mutateAsync(projectId);
+      if (!newLink.raw_token) throw new Error('Unable to generate a fresh questionnaire token.');
+      setShareUrl(`${window.location.origin}/brief/${newLink.raw_token}`);
+      setErrorMessage(null);
+    } catch (err: unknown) {
+      setErrorMessage((err as Error)?.message || 'Unable to rotate the questionnaire link.');
+    } finally {
+      setIsRotating(false);
+    }
+  }
 
   async function handleCopy() {
     if (shareUrl) {
@@ -99,8 +127,19 @@ export const ShareBriefLinkModal: React.FC<ShareBriefLinkModalProps> = ({
               Generating secure link...
             </div>
           ) : errorMessage ? (
-            <div className="rounded-lg border border-status-danger-border bg-status-danger-subtle p-3 text-xs text-status-danger-text">
-              {errorMessage}
+            <div className="rounded-lg border border-status-danger-border bg-status-danger-subtle p-3 text-xs text-status-danger-text space-y-2">
+              <p>{errorMessage}</p>
+              {existingLinkId && (
+                <button
+                  type="button"
+                  data-testid="rotate-brief-link-btn"
+                  disabled={isRotating}
+                  onClick={handleRotate}
+                  className="rounded-lg border border-status-danger-border px-3 py-2 text-xs font-semibold disabled:opacity-50"
+                >
+                  {isRotating ? 'Rotating link...' : 'Rotate existing link'}
+                </button>
+              )}
             </div>
           ) : (
             <div className="space-y-2">

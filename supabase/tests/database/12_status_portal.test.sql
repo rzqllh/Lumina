@@ -33,7 +33,12 @@ INSERT INTO public.expenses (workspace_id, project_id, category, amount, label, 
 VALUES ('11111111-1111-1111-1111-111111111111', '33333333-3333-3333-3333-333333333333', 'Equipment Rental', 2500000, 'Tilt-shift lens rental', CURRENT_DATE);
 
 -- Test 1: Generate Status Share Link
-DO $$
+-- pg_prove captures TAP rows returned by SELECT, not PERFORM results inside DO.
+-- Keep every prior assertion; return its result from an isolated test function.
+CREATE OR REPLACE FUNCTION pg_temp.run_status_portal_tap()
+RETURNS SETOF TEXT
+LANGUAGE plpgsql
+AS $body$
 DECLARE
     gen_result JSONB;
     raw_tok TEXT;
@@ -48,23 +53,23 @@ BEGIN
     -- Test 2: Project status returns correct client title and client name
     status_proj := get_public_project_status(raw_tok);
     
-    PERFORM is(status_proj->'project'->>'title', 'Commercial Architecture Shoot', 'Public portal projects correct project title');
-    PERFORM is(status_proj->'client'->>'display_name', 'Marcus Aurelius', 'Public portal projects correct client display name');
+    RETURN NEXT is(status_proj->'project'->>'title', 'Commercial Architecture Shoot', 'Public portal projects correct project title');
+    RETURN NEXT is(status_proj->'client'->>'display_name', 'Marcus Aurelius', 'Public portal projects correct client display name');
     
     -- Test 3: Approved deliverable includes client-visible Google Drive link
-    PERFORM is(
+    RETURN NEXT is(
         status_proj->'deliverables'->0->'files'->0->>'display_name',
         'High-Res Stills (Google Drive)',
         'Client-visible Google Drive gallery file attached to deliverable'
     );
 
     -- Test 4: Verify internal expense, payments, and financial details are NOT in projection (INV-004)
-    PERFORM is(
+    RETURN NEXT is(
         status_proj ? 'expenses',
         FALSE,
         'Internal studio expenses are completely omitted from public projection (INV-004)'
     );
-    PERFORM is(
+    RETURN NEXT is(
         status_proj ? 'payments',
         FALSE,
         'Payment schedules are completely omitted from public projection (INV-004)'
@@ -72,17 +77,18 @@ BEGIN
 
     -- Test 5: Revoke Link RPC (INV-010)
     revoke_res := revoke_project_share_link(link_id);
-    PERFORM is((revoke_res->>'success')::boolean, TRUE, 'revoke_project_share_link succeeded');
+    RETURN NEXT is((revoke_res->>'success')::boolean, TRUE, 'revoke_project_share_link succeeded');
     
     -- Test 6: Querying with revoked token raises error
     BEGIN
         PERFORM get_public_project_status(raw_tok);
-        PERFORM ok(FALSE, 'Should have failed on revoked token');
+        RETURN NEXT ok(FALSE, 'Should have failed on revoked token');
     EXCEPTION WHEN OTHERS THEN
-        PERFORM ok(TRUE, 'Calling get_public_project_status with revoked token fails gracefully');
+        RETURN NEXT ok(TRUE, 'Calling get_public_project_status with revoked token fails gracefully');
     END;
 END;
-$$;
+$body$;
 
+SELECT * FROM pg_temp.run_status_portal_tap();
 SELECT * FROM finish();
 ROLLBACK;

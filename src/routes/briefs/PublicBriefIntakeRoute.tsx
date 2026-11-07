@@ -21,6 +21,8 @@ export function PublicBriefIntakeRoute() {
       const initial: Record<string, unknown> = {};
       for (const sec of intakeData.sections) {
         for (const f of sec.fields) {
+          // Read-only fields are projected for display, never submitted as answers.
+          if (f.visibility !== 'client_can_fill' && f.visibility !== 'client_must_fill') continue;
           if (f.value !== null && f.value !== undefined) {
             initial[f.id] = f.value;
           }
@@ -94,7 +96,7 @@ export function PublicBriefIntakeRoute() {
             onClick={() => setIsSubmitted(false)}
             className="text-xs font-bold text-primary hover:underline cursor-pointer pt-2"
           >
-            Edit your responses
+            Submit another response
           </button>
         </div>
       </div>
@@ -116,6 +118,7 @@ export function PublicBriefIntakeRoute() {
     // Validate required fields
     for (const sec of intakeData!.sections) {
       for (const field of sec.fields) {
+        if (field.visibility !== 'client_can_fill' && field.visibility !== 'client_must_fill') continue;
         const isMustFill = field.is_required || field.visibility === 'client_must_fill';
         const val = answers[field.id];
 
@@ -129,8 +132,20 @@ export function PublicBriefIntakeRoute() {
       }
     }
 
+    // Defense in depth: route transitions or stale state cannot inject unrelated IDs.
+    const editableIds = new Set(
+      intakeData!.sections.flatMap((section) =>
+        section.fields
+          .filter((field) => field.visibility === 'client_can_fill' || field.visibility === 'client_must_fill')
+          .map((field) => field.id)
+      )
+    );
+    const editableAnswers = Object.fromEntries(
+      Object.entries(answers).filter(([fieldId]) => editableIds.has(fieldId))
+    );
+
     try {
-      await submitMutation.mutateAsync(answers);
+      await submitMutation.mutateAsync(editableAnswers);
       setIsSubmitted(true);
     } catch (err: unknown) {
       setValidationError(

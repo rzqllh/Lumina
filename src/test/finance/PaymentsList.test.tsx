@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PaymentsList } from '@/features/finance/components/PaymentsList';
@@ -64,12 +64,19 @@ describe('PaymentsList (FIN-REQ-001 / FIN-REQ-002)', () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {
+    // Date-only clock makes upcoming/overdue assertions independent of CI wall time.
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-09-01T12:00:00Z'));
     vi.clearAllMocks();
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
       },
     });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   function renderList(isForceClosed = false) {

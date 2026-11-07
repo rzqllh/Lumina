@@ -44,7 +44,11 @@ export const ShareProjectStatusModal: React.FC<ShareProjectStatusModalProps> = (
           if (res.raw_token) {
             setShareUrl(`${window.location.origin}/share/${res.raw_token}`);
           } else {
-            setShareUrl(`${window.location.origin}/share/active-status`);
+            // Tokens are stored hashed; never invent a URL that looks shareable.
+            setShareUrl(null);
+            setErrorMessage(
+              'An active status link exists, but its secret token cannot be recovered. Revoke the old link below and reopen this dialog to generate a new link. Existing client links will stop working.'
+            );
           }
         })
         .catch((err) => {

@@ -54,6 +54,28 @@ describe('ShareProjectStatusModal (PORTAL-REQ-002 / INV-004 / INV-010)', () => {
     expect(screen.getByTestId('copy-status-link-btn')).toBeInTheDocument();
   });
 
+  it('does not fabricate a link when the stored token hash is irrecoverable', async () => {
+    vi.mocked(supabase.rpc).mockResolvedValue({
+      data: { link_id: 'existing-link', is_existing: true, expires_at: null },
+      error: null,
+    } as never);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <ShareProjectStatusModal
+          isOpen={true}
+          onClose={vi.fn()}
+          workspaceId="ws-123"
+          projectId="proj-123"
+        />
+      </QueryClientProvider>
+    );
+
+    expect(await screen.findByText(/secret token cannot be recovered/i)).toBeInTheDocument();
+    expect(screen.queryByTestId('status-share-url-input')).not.toBeInTheDocument();
+    expect(screen.getByTestId('revoke-status-link-btn')).toBeInTheDocument();
+  });
+
   it('revokes status link when Revoke Link button is clicked', async () => {
     vi.mocked(supabase.rpc).mockImplementation((func: string) => {
       if (func === 'generate_project_status_share_link') {

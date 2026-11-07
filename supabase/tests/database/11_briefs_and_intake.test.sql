@@ -66,7 +66,12 @@ SELECT is(
 );
 
 -- Test 4: Generate Brief Share Link RPC
-DO $$
+-- pg_prove captures TAP rows returned by SELECT, not PERFORM results inside DO.
+-- Keep every prior assertion; return its result from an isolated test function.
+CREATE OR REPLACE FUNCTION pg_temp.run_brief_intake_tap()
+RETURNS SETOF TEXT
+LANGUAGE plpgsql
+AS $body$
 DECLARE
     gen_result JSONB;
     raw_tok TEXT;
@@ -83,11 +88,11 @@ BEGIN
     pub_brief := get_public_brief_intake(raw_tok);
     
     -- Assert project_title and client_name exist
-    PERFORM is(pub_brief->>'project_title', 'Editorial Fashion Shoot', 'Public intake projects correct project title');
-    PERFORM is(pub_brief->>'client_name', 'Emma Watson', 'Public intake projects correct client name');
+    RETURN NEXT is(pub_brief->>'project_title', 'Editorial Fashion Shoot', 'Public intake projects correct project title');
+    RETURN NEXT is(pub_brief->>'client_name', 'Emma Watson', 'Public intake projects correct client name');
     
     -- Assert only client-visible field is present (1 of 2 fields)
-    PERFORM is(
+    RETURN NEXT is(
         jsonb_array_length(pub_brief->'sections'->0->'fields'),
         1,
         'Public intake projection strips internal_only fields'
@@ -97,11 +102,11 @@ BEGIN
     f_id := pub_brief->'sections'->0->'fields'->0->>'id';
     sub_result := submit_public_brief(raw_tok, jsonb_build_object(f_id, 'https://pinterest.com/client-vibe'));
     
-    PERFORM is((sub_result->>'success')::boolean, TRUE, 'submit_public_brief returns success');
+    RETURN NEXT is((sub_result->>'success')::boolean, TRUE, 'submit_public_brief returns success');
     sub_id := (sub_result->>'submission_id')::UUID;
 
     -- Assert submission is pending
-    PERFORM is(
+    RETURN NEXT is(
         (SELECT review_status FROM public.brief_submissions WHERE id = sub_id),
         'pending',
         'New submission is marked pending review'
@@ -115,23 +120,24 @@ BEGIN
         )
     );
 
-    PERFORM is((apply_result->>'success')::boolean, TRUE, 'apply_brief_submission_review returns success');
+    RETURN NEXT is((apply_result->>'success')::boolean, TRUE, 'apply_brief_submission_review returns success');
 
     -- Assert canonical brief field updated
-    PERFORM is(
+    RETURN NEXT is(
         (SELECT value #>> '{}' FROM public.brief_fields WHERE id = f_id::UUID),
         'https://pinterest.com/client-vibe',
         'Canonical brief field value updated after owner acceptance'
     );
 
     -- Assert submission marked reviewed
-    PERFORM is(
+    RETURN NEXT is(
         (SELECT review_status FROM public.brief_submissions WHERE id = sub_id),
         'reviewed',
         'Submission record marked reviewed'
     );
 END;
-$$;
+$body$;
 
+SELECT * FROM pg_temp.run_brief_intake_tap();
 SELECT * FROM finish();
 ROLLBACK;

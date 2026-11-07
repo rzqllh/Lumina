@@ -15,6 +15,20 @@ import {
   Edit3,
 } from 'lucide-react';
 
+// Only explicit HTTP(S) URLs can become clickable links in client-supplied fields.
+// Other schemes stay visible as text; do not trust a text field to be a safe href.
+function safeHttpHref(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  try {
+    const parsed = new URL(value);
+    if ((parsed.protocol !== 'https:' && parsed.protocol !== 'http:') ||
+        parsed.username || parsed.password) return null;
+    return parsed.href;
+  } catch {
+    return null;
+  }
+}
+
 interface BriefFieldRendererProps {
   field: BriefField;
   isReadOnly?: boolean;
@@ -31,6 +45,7 @@ export const BriefFieldRenderer: React.FC<BriefFieldRendererProps> = ({
   showVisibilityBadge = false,
 }) => {
   const currentValue = value !== undefined ? value : field.value;
+  const safeHref = field.field_type === 'url' ? safeHttpHref(currentValue) : null;
 
   function getFieldIcon(type: BriefFieldType) {
     switch (type) {
@@ -199,9 +214,9 @@ export const BriefFieldRenderer: React.FC<BriefFieldRendererProps> = ({
         {currentValue !== null &&
         currentValue !== undefined &&
         String(currentValue).trim() !== '' ? (
-          field.field_type === 'url' ? (
+          field.field_type === 'url' && safeHref ? (
             <a
-              href={String(currentValue)}
+              href={safeHref}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs font-medium text-primary-text hover:underline flex items-center gap-1 truncate"
