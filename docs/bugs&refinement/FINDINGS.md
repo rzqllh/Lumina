@@ -73,6 +73,13 @@
 - **Bukti:** [feature modules](https://github.com/rzqllh/Lumina/tree/master/src/features), [DB finance tests](../../supabase/tests/database/10_finance_and_closure.test.sql).
 - **Next/DoD:** Uji happy/unhappy paths di staging; audit paid-status reversibility, referensi ke files/deliverables dan atomicity.
 
+### LUM-P1-07 — Public brief intake stores unvalidated answer JSON
+
+- **Status:** SOURCE_CONFIRMED / RUNTIME_NOT_TESTED.
+- **Temuan/batas bukti:** `public.submit_public_brief(p_token TEXT, p_answers JSONB)` (migration 00021) checks that the share token is valid, then writes `p_answers` directly into `brief_submissions.submitted_values`. The inspected function has no validation of JSON object shape, allowed field UUIDs/visibility, answer types or payload size. The base table enforces `NOT NULL` but no equivalent answer schema. A token holder may therefore create malformed, oversized or out-of-brief submissions; **actual abuse, database-level request limits and live behavior are untested**. This is a distinct public intake boundary, not evidence of the already identified approval RPC vulnerability.
+- **Bukti:** [migration 00021](../../supabase/migrations/00021_brief_builder_and_intake_integrity.sql), [submission schema](../../supabase/migrations/00006_briefs_and_submissions.sql), [draft review patch PR #1](https://github.com/rzqllh/Lumina/pull/1).
+- **Next/DoD:** Specify a backwards-compatible intake schema and maximum accepted body/answer lengths; reject non-object/unknown/internal-only/unrelated field IDs, bad required answers, and abusive repeated submits. Check HTTP/Edge rate limits separately. Add negative pgTAP and real anon-token staging tests; no live database mutation without authorization.
+
 ## P2 — Medium
 
 ### LUM-P2-01 — Finance PaymentsList test memakai tanggal sistem aktual
